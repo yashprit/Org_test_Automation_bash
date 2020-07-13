@@ -1,0 +1,19 @@
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0369
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_slack
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_slack_masterName" ]
+            - |
+              [ ! -z "$int_i_slack_url" ]
+            - |
+              [ ! -z "$int_i_slack_id" ]
+            - |
+              [ ! -z "$int_i_slack_name" ]

@@ -1,0 +1,23 @@
+resources:
+   - name: S_Bash_0219_vmCluster
+     type: VmCluster
+     configuration:
+       sshKey: sshkeys
+       targets:
+         - 1.2.3.4
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0219
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0219_vmCluster
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."
+
+
+  

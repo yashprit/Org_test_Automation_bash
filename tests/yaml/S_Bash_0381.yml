@@ -1,0 +1,21 @@
+pipelines:
+  - name: pipelines_S_Bash_0381
+    steps:
+      - name: S_Bash_0381
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_sshKey
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_sshKey_masterName" ]
+            - |
+              [ ! -z "$int_i_sshKey_privateKey" ]
+            - |
+              [ ! -z "$int_i_sshKey_publicKey" ]
+            - |
+              [ ! -z "$int_i_sshKey_id" ]
+            - |
+              [ ! -z "$int_i_sshKey_name" ]

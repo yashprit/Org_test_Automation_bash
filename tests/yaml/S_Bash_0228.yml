@@ -1,0 +1,21 @@
+resources:
+   - name: S_Bash_0228_vmCluster
+     type: VmCluster
+     configuration:
+       sshKey: sshkeys
+       targets:
+         - 192.168.33.11
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0228
+        type: Bash
+        configuration:
+          outputResources:
+            - name: S_Bash_0228_vmCluster
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - echo testing > auto.sh
+            - write_output S_Bash_0228_vmCluster "targets=$run_id"

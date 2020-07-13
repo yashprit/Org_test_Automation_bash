@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0062
+        type: Bash
+        execution:
+          onExecute:
+            - echo "onExecute"
+          onSuccess:
+            - echo "onSuccess"

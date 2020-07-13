@@ -1,0 +1,38 @@
+pipelines:
+  - name: pipelines_S_Bash_0324
+    steps:
+      - name: S_Bash_0324
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_IncomingWebhookTokenAuth
+            - name: i_IncomingWebhookBasicAuth
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_IncomingWebhookTokenAuth_name"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookTokenAuth_id"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookTokenAuth_masterName"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookTokenAuth_authType"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookTokenAuth_authorization"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_secret"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_authType"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_masterName"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_username"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_name"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_password"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_id"  ]
+            - |
+              [ ! -z "$int_i_IncomingWebhookBasicAuth_authorization"  ]

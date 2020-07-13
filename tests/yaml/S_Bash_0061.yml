@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0061
+        type: Bash
+        execution:
+          onExecute:
+            - java --version
+          onFailure:
+            - echo "Job well done!"

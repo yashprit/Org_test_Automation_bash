@@ -1,0 +1,23 @@
+pipelines:
+  - name: pipelines_S_Bash_0239
+    steps:
+      - name: S_Bash_0239
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_s_artifactory_url"  ]
+            - |
+              [ ! -z "$int_s_artifactory_masterName" ]
+            - |
+              [ ! -z "$int_s_artifactory_apikey" ]
+            - |
+              [ ! -z "$int_s_artifactory_id" ]
+            - |
+              [ ! -z "$int_s_artifactory_name" ]
+            - |
+              [ ! -z  "$int_s_artifactory_user" ]

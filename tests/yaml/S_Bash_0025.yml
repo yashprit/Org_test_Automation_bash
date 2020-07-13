@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: api_pipeline
+        type: Bash
+        configuration:
+          timeoutSeconds: 2.45739
+        execution:
+          onExecute:
+            - echo "hi"

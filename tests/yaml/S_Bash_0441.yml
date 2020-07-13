@@ -1,0 +1,18 @@
+resources:
+  - name: r_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: art-docker # required, either this or aql
+      aql: items.find({"@build.name":{"$eq":"artifactory"}}) # required, either this or pattern
+      props: "key=value"
+      recursive: true
+      flat: true
+      excludePatterns: "*.sha1"
+      archiveEntries: "artifactory"
+      buildName: test
+      buildNumber: 10
+      sortBy: size
+      sortOrder: desc
+      limit: 1.3444 #limit should be integer or string
+      offset: 3

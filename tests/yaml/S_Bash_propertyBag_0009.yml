@@ -1,0 +1,17 @@
+resources:
+  - name: S_Bash_0009_propertyBag
+    type: PropertyBag
+    configuration:
+      property1: "test/1"
+
+pipelines:
+  - name: pipelines_S_Bash_propertyBag_0009
+    steps:
+      - name: S_Bash_propertyBag_0009
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0009_propertyBag
+        execution:
+          onExecute:
+            - echo "executing step..."

@@ -1,0 +1,22 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0233
+    steps:
+      - name: S_Bash_0233
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_airBrake
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_airBrake_url" ]
+            - |
+              [ ! -z "$int_i_airBrake_masterName" ]
+            - |
+              [ ! -z "$int_i_airBrake_id" ]
+            - |
+              [ ! -z "$int_i_airBrake_name" ]
+            - |
+              [ ! -z "$int_i_airBrake_token" ]

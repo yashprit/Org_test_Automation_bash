@@ -1,0 +1,26 @@
+resources:
+  - name: repo_pipe
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: pipeline_S_Bash_Util_0007
+    steps:
+      - name: S_Bash_Util_0007
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo_pipe
+
+        execution:
+          onExecute:
+            - pushd $res_repo_pipe_resourcePath
+            - python -m py_compile tests/core/sampleExecutionFile/calc.py
+            - pip install --upgrade pip
+            - hash -d pip
+            - pip install pytest
+            - py.test --verbose --junit-xml test-reports/results.xml tests/core/sampleExecutionFile/test_calc.py
+            - save_tests $res_repo_pipe_resourcePath
+            - popd

@@ -1,0 +1,14 @@
+pipelines:
+
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0306
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_githubEnterprise
+        execution:
+          onStart:
+             - echo "Preparing for work..."
+          onExecute:
+            - echo "executing step..."

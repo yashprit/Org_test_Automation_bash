@@ -1,0 +1,9 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: api_pipeline
+        type: imag
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - echo "hi"

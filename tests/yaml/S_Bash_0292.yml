@@ -1,0 +1,26 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0292
+    steps:
+      - name: S_Bash_0292
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_fileServer
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_fileServer_name"  ]
+            - |
+              [ ! -z "$int_i_fileServer_masterName"  ]
+            - |
+              [ ! -z "$int_i_fileServer_username"  ]
+            - |
+              [ ! -z "$int_i_fileServer_protocol"  ]
+            - |
+              [ ! -z "$int_i_fileServer_id"  ]
+            - |
+              [ ! -z "$int_i_fileServer_password"  ] 
+            - |
+              [ ! -z "$int_i_fileServer_url"  ]

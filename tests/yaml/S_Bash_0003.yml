@@ -1,0 +1,51 @@
+resources:
+  - name: S_Bash_0003_HelmChart
+    type: HelmChart
+    configuration:
+      sourceArtifactory: i_artifactory
+      repository: helm-remote
+      chart: consul
+      version: 1.0.0
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0003
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0003_HelmChart
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_sourceArtifactory_user"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_resourceId"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_chart"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_sourceArtifactory_masterName"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_version"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_sourceArtifactory_url"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_sourceArtifactory_apikey"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_sourceArtifactory_id"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_integrationName"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_resourcePath"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_repository"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_integrationAlias"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_operation"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_sourceArtifactory_name"  ]
+            - |
+              [ ! -z "$res_S_Bash_0003_HelmChart_isTrigger"  ]
+               

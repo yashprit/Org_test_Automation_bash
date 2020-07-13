@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipelines_S_Bash_0351
+    steps:
+      - name: S_Bash_0351
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_kubernetes
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_kubernetes_masterName"  ]
+            - |
+              [ ! -z "$int_i_kubernetes_id"  ]
+            - |
+              [ ! -z "$KUBECONFIG"  ]
+            - |
+              [ ! -z "$int_i_kubernetes_kubeconfig"  ]
+            - |
+              [ ! -z "$int_i_kubernetes_name"  ]
+            

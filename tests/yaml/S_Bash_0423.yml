@@ -1,0 +1,18 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0423
+        type: Bash
+        configuration:
+           Integrations: # optional
+            - name: s_aws
+          type: image
+            image: # should be present if type is image
+              custom:
+                name: ubuntu
+                tag: latest
+                autoPull: false
+                region: us-east-1
+        execution:
+          onExecute:
+            - echo "hi"

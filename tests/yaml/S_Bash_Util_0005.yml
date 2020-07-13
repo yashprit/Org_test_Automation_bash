@@ -1,0 +1,36 @@
+resources:
+  - name: repo_pipe
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: pipeline_S_Bash_Util_0005
+    steps:
+      - name: S_Bash_Util_0005
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo_pipe
+
+        execution:
+          onExecute:
+            - echo "image resource path is $res_myImage_resourcePath"
+            - touch file.txt
+            - echo "Hello frog" >> file.txt
+            - add_run_files file.txt jfrog_pipeline
+
+      - name: S_Bash_Util_0005_2
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+          inputResources:
+            - name: repo_pipe
+          inputSteps:
+            - name:  S_Bash_Util_0005
+
+        execution:
+          onExecute:
+            - restore_run_files -name jfrog_pipeline -path $step_tmp_dir
+            - get-childitem $step_tmp_dir

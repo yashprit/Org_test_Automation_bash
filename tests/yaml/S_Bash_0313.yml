@@ -1,0 +1,21 @@
+pipelines:
+  - name: pipelines_S_Bash_0313
+    steps:
+      - name: S_Bash_0313
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_gitlab
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_s_gitlab_id"  ]
+            - |
+              [ ! -z "$int_s_gitlab_url"  ]
+            - |
+              [ ! -z "$int_s_gitlab_masterName"  ]
+            - |
+              [ ! -z "$int_s_gitlab_token"  ]
+            - |
+              [ ! -z "$int_s_gitlab_name"  ]

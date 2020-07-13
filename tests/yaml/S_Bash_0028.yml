@@ -1,0 +1,16 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0028
+        type: Bash
+        configuration:
+          environmentVariables:
+            key: value
+            test: auto
+        execution:
+          onExecute:
+            - echo "Hi"
+            - |
+              [ $key == "value" ]
+            - |
+              [ $test == "auto" ]

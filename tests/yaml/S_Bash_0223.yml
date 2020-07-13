@@ -1,0 +1,47 @@
+resources:
+   - name: S_Bash_0223_vmCluster
+     type: VmCluster
+     configuration:
+       sshKey: sshkeys
+       targets:
+         - 1.2.3.4
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0223
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0223_vmCluster
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_targets_0"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_sshKey_name"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_integrationName"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_operation"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_targets_len"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_sshKey_privateKey"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_isTrigger"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_resourcePath"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_sshKey_masterName"  ]
+            - |
+              [ ! -z "$es_S_Bash_0223_vmCluster_resourceId"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_sshKey_id"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_sshKey_publicKey"  ]
+            - |
+              [ ! -z "$res_S_Bash_0223_vmCluster_integrationAlias"  ]
+
+                             

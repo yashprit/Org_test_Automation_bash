@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0448
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              auto:
+                language: node
+                versions:
+                  - 10.16.3
+        execution:
+          onExecute:
+            - |
+              [[ "$(node --version)" == *"$step_image_tag"* ]]
+          integrations:
+            - name: i_azureKey
+        execution:
+          onExecute:
+            - echo "executing step..."

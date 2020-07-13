@@ -1,0 +1,21 @@
+pipelines:
+  - name: pipelines_S_Bash_0245
+    steps:
+      - name: S_Bash_0245
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_aws
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_aws_masterName" ]
+            - |
+              [ ! -z "$int_i_aws_accessKeyId" ]
+            - |
+              [ ! -z "$int_i_aws_name" ]
+            - |
+              [ ! -z "$int_i_aws_id" ]
+            - |
+              [ ! -z "$int_i_aws_secretAccessKey" ]

@@ -1,0 +1,21 @@
+resources:
+  - name: S_Bash_0189_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: dist_test
+      name: myRel
+      version: v1.0
+      isSigned: false
+               
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0189
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0189_ReleaseBundle
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..." 

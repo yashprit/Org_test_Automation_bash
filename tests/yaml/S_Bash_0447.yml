@@ -1,0 +1,12 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0447
+    steps:
+      - name: S_Bash_0447
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_aws
+        execution:
+          onExecute:
+            - echo "executing step..."

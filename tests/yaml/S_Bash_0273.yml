@@ -1,0 +1,23 @@
+pipelines:
+  - name: pipelines_S_Bash_0273
+    steps:
+      - name: S_Bash_0273
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_distribution
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_distribution_url" ]
+            - |
+              [ ! -z "$int_i_distribution_masterName" ]
+            - |
+              [ ! -z "$int_i_distribution_apikey" ]
+            - |
+              [ ! -z "$int_i_distribution_id" ]
+            - |
+              [ ! -z "$int_i_distribution_name" ]
+            - |
+              [ ! -z "$int_i_distribution_user" ]

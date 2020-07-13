@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0063
+        type: Bash
+        execution:
+          onExecute:
+            - java -- version
+          onSuccess:
+            - echo "onSuccess"

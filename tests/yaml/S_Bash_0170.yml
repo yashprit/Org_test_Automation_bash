@@ -1,0 +1,49 @@
+resources:
+  - name: S_Bash_0170_IncomingWebhook
+    type: IncomingWebhook
+    configuration:
+      webhookName: i_incomingWebhookBasicAuth
+
+pipelines:
+  - name: pipelines_S_Bash_0170
+    steps:
+      - name: S_Bash_0170
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0170_IncomingWebhook
+        execution:
+          onExecute:
+            - echo "executing step..."
+            # if auth type is basic
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_username"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_integrationName"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_authType"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_id"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_operation"  ]
+            #if auth type is basic
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_password"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_resourceId"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_resourcePath"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_integrationAlias"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_isTrigger"  ]
+            #if auth type is HMAC
+            # - |
+            #   [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_secret"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_name"  ]
+            #if auth type is token
+            # - |
+            #   [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_authorization"  ]
+            - |
+              [ ! -z "$res_S_Bash_0170_IncomingWebhook_webhookName_masterName"  ]

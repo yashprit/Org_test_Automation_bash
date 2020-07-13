@@ -1,0 +1,12 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0472
+    steps:
+      - name: S_Bash_0472
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_bitbucketServer
+        execution:
+          onExecute:
+            - echo "executing step..."

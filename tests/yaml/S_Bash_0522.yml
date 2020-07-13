@@ -1,0 +1,23 @@
+resources:
+   - name: S_Bash_0522_vmCluster
+     type: VmCluster
+     configuration:
+       sshKey: sshkeys
+       targets:
+         - 192.168.33.11
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0522
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0522_vmCluster
+        execution:
+          onExecute:
+            - echo "executing step..."
+         #   - |
+         #     [ ! -z "$res_S_Bash_0522_vmCluster_sshKey_name"  ]
+         #   - |
+         #     [ ! -z "$res_S_Bash_0522_vmCluster_integrationName"  ] 

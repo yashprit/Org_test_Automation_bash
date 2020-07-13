@@ -1,0 +1,16 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0051
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image: # should be present if type is image
+              custom:
+                name: drydock/u16nodalls
+                tag: master
+                registry: i_dockerRegistry
+        execution:
+          onExecute:
+            - echo "hi"

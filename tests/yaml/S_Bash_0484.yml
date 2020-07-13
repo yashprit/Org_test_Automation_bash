@@ -1,0 +1,114 @@
+resources:
+  - name: S_Bash_0484_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_bitbucketServer
+      path: PIP/test_automation
+
+pipelines:
+  - name: pipelines_S_Bash_0484
+    steps:
+      - name: S_Bash_0484
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0484_GitRepo
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_lastAuthorEmail" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitProvider_token" ]
+            
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_isGitTag" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_commitUrl" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_shaData" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitProvider_id" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_integrationName" ]
+            
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_operation" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitRepoFullName" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitProvider_name" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitProvider_url" ]
+            
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitRepoSourceDefaultBranch" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_isTrigger" ]
+            
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_resourceId" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitProvider_masterName" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_commitSha" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_isPullRequest" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_path" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_isPrivateRepository" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_isPrerelease" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitRepoRepositorySshUrl" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_isRelease" ]
+            
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_committerLogin" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_integrationAlias" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_branchName" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_resourcePath" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_compareUrl" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_repositoryProvider" ]
+            
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_sysPrivateDeployKey" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_sysPublicDeployKey" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_lastAuthorLogin" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_beforeCommitSha" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitRepoRepositoryHttpsUrl" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_isPullRequestClose" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_gitRepoRepositoryUrl" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_masterName" ]
+            - |
+              [ ! -z "$res_S_Bash_0484_GitRepo_commitMessage" ]
+            #- |
+            #  [ ! -z "$res_S_Bash_0484_GitRepo_gitTagMessage" ]
+            #- |
+            #  [ ! -z "$res_S_Bash_0484_GitRepo_pullRequestBaseBranch" ]
+            # - |
+            #   [ ! -z "$res_S_Bash_0484_GitRepo_releaseName" ]
+            # - |
+            #  [ ! -z "$res_S_Bash_0484_GitRepo_gitTagName" ]
+            #- |
+            #  [ ! -z "$res_S_Bash_0484_GitRepo_pullRequestNumber" ]
+            #- |
+            #  [ ! -z "$res_S_Bash_0484_GitRepo_releaseBody" ]
+            #- |
+            #  [ ! -z "$res_S_Bash_0484_GitRepo_baseCommitRef" ]
+            #- |
+            #  [ ! -z "$res_S_Bash_0484_GitRepo_releasedAt" ]

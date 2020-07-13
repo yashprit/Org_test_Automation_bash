@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0379
+    steps:
+      - name: S_Bash_0379
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_sshKey
+        execution:
+          onExecute:
+            - echo "executing step..."

@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0274
+    steps:
+      - name: S_Bash_0274
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_distribution 
+        execution:
+          onExecute:
+            - echo "executing step..."

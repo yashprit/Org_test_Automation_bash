@@ -1,0 +1,19 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: api_pipeline
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              custom:
+                name: drydock/u16nodall
+                tag: master
+              auto:
+                language: java
+                versions:
+                  - "11"
+        execution:
+          onExecute:
+            - echo "executing step..." 

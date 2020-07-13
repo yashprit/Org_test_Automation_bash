@@ -1,0 +1,23 @@
+pipelines:
+  - name: pipelines_S_Bash_0330
+    steps:
+      - name: S_Bash_0330
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_jira
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_jira_masterName" ]
+            - |
+              [ ! -z "$int_i_jira_username" ]
+            - |
+              [ ! -z "$int_i_jira_name" ]
+            - |
+              [ ! -z "$int_i_jira_url" ]
+            - |
+              [ ! -z "$int_i_jira_id" ]
+            - |
+              [ ! -z "$int_i_jira_token" ]

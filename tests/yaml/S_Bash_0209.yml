@@ -1,0 +1,49 @@
+resources:
+  - name: S_Bash_0209_RemoteFile
+    type: RemoteFile
+    configuration:
+      source: s_artifactory
+      fileLocation: example-repo-local/setup/test.sh
+      #fileName: test.sh # optional
+      #fileDateTime: 19/12/19
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0209
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_Bash_0209_RemoteFile
+        execution:
+          onExecute:
+            - jfrog rt dl example-repo-local/setup/test.sh
+            - echo "executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_source_url" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_resourceId" ]
+           # - |
+           #   [ ! -z "$res_S_Bash_0209_RemoteFile_fileDateTime" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_fileLocation" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_integrationAlias" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_isTrigger" ]
+           # - |
+           #   [ ! -z "$res_S_Bash_0209_RemoteFile_fileName" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_source_name" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_resourcePath" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_operation" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_source_id" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_source_masterName" ]
+            - |
+              [ ! -z "$res_S_Bash_0209_RemoteFile_integrationName" ]    

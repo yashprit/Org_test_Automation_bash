@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0415
+    steps:
+      - name: S_Bash_0415
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_googleCloud
+        execution:
+          onExecute:
+            - echo "executing step..."

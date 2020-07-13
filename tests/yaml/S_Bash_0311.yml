@@ -1,0 +1,12 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0311
+    steps:
+      - name: S_Bash_0311
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_gitlab
+        execution:
+          onExecute:
+             - echo "executing step..."

@@ -1,0 +1,13 @@
+pipelines:
+  - name: pipelines_S_Bash_0234
+    steps:
+      - name: S_Bash_0234
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - touch foo
+            - jfrog rt u foo example-repo-local/foo
+            - jfrog rt del example-repo-local/foo

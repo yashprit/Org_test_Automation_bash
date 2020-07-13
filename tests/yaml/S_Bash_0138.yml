@@ -1,0 +1,24 @@
+resources:
+   - name: S_Bash_0138_GitRepo
+     type: GitRepo
+     configuration:
+       gitProvider: s_gitHub
+       path: jfbetapipeorg/Org_test_Automation
+       branches:
+         include: master
+       buildOn:  # optional
+        # releaseCreate: <Boolean>
+         tagCreate: true
+
+pipelines:
+  - name: pipelines_S_Bash_0138
+    steps:
+      - name: S_Bash_0138
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0138_GitRepo
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."

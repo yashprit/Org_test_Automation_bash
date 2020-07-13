@@ -1,0 +1,19 @@
+pipelines:
+  - name: pipelines_S_Bash_0363
+    steps:
+      - name: S_Bash_0363
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_pemKey
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_pemKey_masterName" ]
+            - |
+              [ ! -z "$int_i_pemKey_key" ]
+            - |
+              [ ! -z "$int_i_pemKey_id" ]
+            - |
+              [ ! -z "$int_i_pemKey_name" ]

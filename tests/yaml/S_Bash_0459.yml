@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipelines_S_Bash_0459
+    steps:
+      - name: S_Bash_0459
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_outgoingWebhookBasicAuth
+          onExecute:
+            - echo "executing step..."

@@ -1,0 +1,24 @@
+resources:
+   - name: S_Bash_0477_GitRepo
+     type: GitRepo
+     configuration:
+       gitProvider: s_gitlab
+       path: jfbeta/test_automation
+       branches:
+         include: master
+       buildOn:  # optional
+        # releaseCreate: <Boolean>
+         tagCreate: true
+
+pipelines:
+  - name: pipelines_S_Bash_0477
+    steps:
+      - name: S_Bash_0477
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0477_GitRepo
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."

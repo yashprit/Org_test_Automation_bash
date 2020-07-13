@@ -1,0 +1,33 @@
+pipelines:
+  - name: pipelines_S_Bash_0285
+    steps:
+      - name: S_Bash_0285_TokenAuth
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_outgoingWebhookTokenAuth
+        execution:
+          onExecute:
+            - echo "executing step..."
+
+      - name: S_Bash_0285_BasicAuth
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_outgoingWebhookBasicAuth
+          inputSteps:
+            - name: S_Bash_0285_TokenAuth
+        execution:
+          onExecute:
+            - echo "executing step..."
+
+      - name: S_Bash_0285_Hmac
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_outgoingWebhookHmac
+          inputSteps:
+            - name: S_Bash_0285_BasicAuth
+        execution:
+          onExecute:
+            - echo "executing step..."

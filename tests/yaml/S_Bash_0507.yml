@@ -1,0 +1,21 @@
+resources:
+  - name: S_Bash_0507_Image
+    type: Image
+    configuration:
+      registry: i_artifactoryRegistry
+      sourceRepository: test-automation-docker-local
+      imageName: ${artifactory_registry_url}/test-automation-docker-local/jfreq
+      imageTag: latest
+
+pipelines:
+
+  - name: S_Bash_0507_pipelines
+    steps:
+      - name: S_Bash_0507
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0507_Image
+        execution:
+          onExecute:
+            - printenv

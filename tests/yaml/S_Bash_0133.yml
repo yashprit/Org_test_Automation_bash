@@ -1,0 +1,49 @@
+resources:
+
+  - name: S_Bash_0133_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "example-repo-local/setup/test.sh"
+      recursive: false
+
+pipelines:
+
+  - name: pipelines_S_Bash_0133
+    steps:
+      - name: S_Bash_0133
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0133_FileSpec
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_sourceArtifactory_user" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_sourceArtifactory_apikey" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_operation" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_sourceArtifactory_url" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_integrationName" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_recursive" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_sourceArtifactory_id" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_pattern" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_resourcePath" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_sourceArtifactory_name" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_isTrigger" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_integrationAlias" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_resourceId" ]
+            - |
+              [ ! -z "$res_S_Bash_0133_FileSpec_sourceArtifactory_masterName" ]

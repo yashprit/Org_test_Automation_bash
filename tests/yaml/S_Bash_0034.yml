@@ -1,0 +1,13 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0034
+        type: Bash
+        configuration:
+          runtime:            
+            type: host
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ $step_runtime == "host" ]
