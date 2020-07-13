@@ -1,0 +1,22 @@
+resources:
+  - name: S_Bash_0505_Image
+    type: Image
+    configuration:
+      registry: s_artifactory
+      sourceRepository: docker-local
+      imageName: ubuntu
+      imageTag: latest
+      autoPull: true
+
+pipelines:
+  - name: pipelines_S_Bash_0505
+    steps:
+      - name: S_Bash_0505
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0505_Image
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."

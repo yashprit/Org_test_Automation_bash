@@ -1,0 +1,21 @@
+pipelines:
+  - name: pipeline_automation
+    configuration:
+      runtime:
+        type: image
+        image:
+          custom:
+            name: drydock/u16javall
+            tag: master
+
+    steps:
+      - name: S_Bash_0038
+        type: Bash
+        configuration:
+          runtime:
+            type: host
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ $step_runtime == "host" ]

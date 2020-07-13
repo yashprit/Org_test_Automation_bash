@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0328
+    steps:
+      - name: S_Bash_0328
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_jira
+        execution:
+          onExecute:
+            - echo "executing step..."

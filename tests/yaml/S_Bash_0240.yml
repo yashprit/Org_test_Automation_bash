@@ -1,0 +1,13 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0240
+    steps:
+      - name: S_Bash_0240
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_aws
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - aws s3 ls

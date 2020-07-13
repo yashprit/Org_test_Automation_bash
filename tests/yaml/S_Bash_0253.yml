@@ -1,0 +1,24 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0253
+    steps:
+      - name: S_Bash_0253
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_azureKey
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_azureKey_name" ]
+            - |
+              [ ! -z "$int_i_azureKey_password" ]
+            - |
+              [ ! -z "$int_i_azureKey_appId" ]
+            - |
+              [ ! -z "$int_i_azureKey_masterName" ]
+            - |
+              [ ! -z "$int_i_azureKey_id" ]
+            - |
+              [ ! -z "$int_i_azureKey_tenant" ]

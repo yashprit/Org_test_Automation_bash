@@ -1,0 +1,12 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: api_pipeline
+        type: Bash
+        configuration:
+          integrations:
+            - name: my_integrations
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - echo "hi"

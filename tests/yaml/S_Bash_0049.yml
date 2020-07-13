@@ -1,0 +1,20 @@
+pipelines:
+  - name: S_Bash_0049
+    steps:
+      - name: S_Bash_0049
+        type: Bash
+        configuration:
+          runtime:       
+            type: image
+            image:
+              custom:
+                name: shippabledocker/jfreq
+                tag: latest
+                registry: i_dockerRegistry
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ "$step_image_name" == "shippabledocker/jfreq" ]
+            - |
+              [ "$step_image_tag" == "latest" ]

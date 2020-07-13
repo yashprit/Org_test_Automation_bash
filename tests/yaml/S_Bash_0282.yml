@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0282
+    steps:
+      - name: S_Bash_0282
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_dockerRegistry
+        execution:
+          onExecute:
+            - echo "executing step..."

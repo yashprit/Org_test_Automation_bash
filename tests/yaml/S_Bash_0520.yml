@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0520
+    steps:
+      - name: S_Bash_520
+        type: Bash
+        configuration:
+          Integrations:
+            - name: 
+        execution:
+          onExecute:
+            - echo "executing step..."

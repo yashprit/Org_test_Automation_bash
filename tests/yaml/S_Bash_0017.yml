@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: api_pipeline
+        type: Bash
+        configuration:
+          nodePool: byon
+          affinityGroup: bldGroup@$ 
+        execution:
+          onExecute:
+            - echo "hi"
+
+      - name: api_pipelineauto
+        type: Bash
+        configuration:
+          nodePool: byon
+          affinityGroup: bldGroup@$
+          inputSteps:
+            - name: api_pipeline
+        execution:
+          onExecute:
+            - echo "hi"

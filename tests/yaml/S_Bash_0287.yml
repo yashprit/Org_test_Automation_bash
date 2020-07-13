@@ -1,0 +1,53 @@
+pipelines:
+  - name: pipelines_S_Bash_0287
+    steps:
+      - name: S_Bash_0287
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_outgoingWebhookBasicAuth
+            - name: i_outgoingWebhookTokenAuth
+            - name: i_outgoingWebhookHmac
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_outgoingWebhookHmac_authType" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookHmac_masterName" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookHmac_secret" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookHmac_webhookURL" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookHmac_id" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookHmac_name" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookBasicAuth_id" ]
+
+            - |
+              [ ! -z "$int_i_outgoingWebhookBasicAuth_username" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookBasicAuth_password" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookBasicAuth_authType" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookBasicAuth_masterName" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookBasicAuth_name" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookBasicAuth_webhookURL" ]
+
+            - |
+              [ ! -z "$int_i_outgoingWebhookTokenAuth_name" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookTokenAuth_id" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookTokenAuth_masterName" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookTokenAuth_webhookURL" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookTokenAuth_authorization" ]
+            - |
+              [ ! -z "$int_i_outgoingWebhookTokenAuth_authType" ]

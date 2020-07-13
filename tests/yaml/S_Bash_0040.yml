@@ -1,0 +1,17 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0040
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              auto:
+                language: node
+                versions:
+                  - 12.14.0
+        execution:
+          onExecute:
+            - |
+              [[ "$(node --version)" == *"$step_image_tag"* ]]

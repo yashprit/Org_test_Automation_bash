@@ -1,0 +1,12 @@
+pipelines:
+  - name: pipelines_S_Bash_0314
+    steps:
+      - name: S_Bash_0314
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_googleCloud
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - gcloud container images list

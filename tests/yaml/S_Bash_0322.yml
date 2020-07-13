@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipelines_S_Bash_0322
+    steps:
+      - name: S_Bash_0322_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_IncomingWebhookTokenAuth
+        execution:
+          onExecute:
+            - echo "executing step..."
+
+      - name: S_Bash_0322_2
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_IncomingWebhookBasicAuth
+          inputSteps:
+            - name: S_Bash_0322_1
+        execution:
+          onExecute:
+            - echo "executing step..."

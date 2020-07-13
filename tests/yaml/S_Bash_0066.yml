@@ -1,0 +1,9 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0066
+        type: Bash
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - export run_number=foo

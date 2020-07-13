@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0298
+    steps:
+      - name: S_Bash_0298
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_generic
+        execution:
+          onExecute:
+            - echo "executing step..."

@@ -1,0 +1,22 @@
+resources:
+  - name: S_Bash_0210_RemoteFile
+    type: RemoteFile
+    configuration:
+      source: s_artifactory
+      fileLocation: example-repo-local/setup/test.sh
+     # fileName: test.sh # optional
+     # fileDateTime: 01/01/2018
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0210
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_Bash_0210_RemoteFile
+        execution:
+          onExecute:
+            - echo "executing step..."

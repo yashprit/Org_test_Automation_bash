@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0358
+    steps:
+      - name: S_Bash_0358
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_newRelic
+        execution:
+          onExecute:
+            - echo "executing step..."

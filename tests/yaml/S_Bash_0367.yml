@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0367
+    steps:
+      - name: S_Bash_0367
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_slack
+        execution:
+          onExecute:
+            - echo "executing step..."

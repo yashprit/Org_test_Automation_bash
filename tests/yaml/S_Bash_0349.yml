@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0349
+    steps:
+      - name: S_Bash_0349
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_kubernetes
+        execution:
+          onExecute:
+            - echo "executing step..."

@@ -1,0 +1,28 @@
+resources:
+  - name: s_bash_0406
+    type: RemoteFile
+    configuration:
+      source: s_artifactory
+      fileLocation: example-repo-local/setup/test.sh
+      fileName: test.sh 
+      fileDateTime: 19/12/19
+
+pipelines:
+
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0406
+        type: Bash
+        configuration:
+          environmentVariables:
+            env1: value1
+            env2: value2
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: s_bash_0406
+        execution:
+          onStart:
+            - echo "Preparing for work..."
+          onExecute:
+            - jfrog rt dl example-repo-local/setup/test.sh

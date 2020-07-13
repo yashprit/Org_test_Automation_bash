@@ -1,0 +1,18 @@
+pipelines:
+  - name: pipelines_S_Bash_0319
+    steps:
+      - name: S_Bash_0319
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_googleCloud
+        execution:
+          onExecute:
+            - |
+              [ ! -z "$int_i_googleCloud_masterName" ]
+            - |
+              [ ! -z "$int_i_googleCloud_id" ]
+            - |
+              [ ! -z "$int_i_googleCloud_name" ]
+            - |
+              [ ! -z "$int_i_googleCloud_jsonKey" ]

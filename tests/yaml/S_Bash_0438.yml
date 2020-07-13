@@ -1,0 +1,21 @@
+resources:
+
+  - name: S_Bash_0438_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: test
+      buildNumber: 1@3
+
+pipelines:
+
+  - name: pipelines_S_Bash_0438
+    steps:
+      - name: S_Bash_0438
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0438_FileSpec
+        execution:
+          onExecute:
+            - echo "executing step..."

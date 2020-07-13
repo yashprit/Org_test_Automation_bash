@@ -1,0 +1,20 @@
+resources:
+  - name: repo_pipe
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: pipeline_S_Bash_Util_0001
+    steps:
+      - name: S_Bash_Util_0001
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo_pipe
+
+        execution:
+          onExecute:
+            - echo "image resource path is $res_myImage_resourcePath"
+            - add_run_variables testvariable="asdffdjksfj.       k455457457"

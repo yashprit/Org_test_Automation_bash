@@ -1,0 +1,21 @@
+resources:
+
+  - name: S_Bash_0396_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "test-local/setup/"
+      recursive: false
+
+pipelines:
+
+  - name: pipelines_S_Bash_0396
+    steps:
+      - name: S_Bash_0396
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0396_FileSpec
+        execution:
+          onExecute:
+            - echo "executing step..."

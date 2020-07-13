@@ -1,0 +1,17 @@
+pipelines:
+  - name: pipelines_S_Bash_0297
+    steps:
+      - name: S_Bash_0297
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_generic
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_generic_name"  ]
+            - |
+              [ ! -z "$int_i_generic_id"  ]
+            - |
+              [ ! -z "$int_i_generic_masterName"  ]

@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0013_ag1
+        type: Bash
+        configuration:
+          nodePool: u16
+          affinityGroup: together
+        execution:
+          onExecute:
+            - echo "hi"
+
+      - name: S_Bash_0013_ag
+        type: Bash
+        configuration:
+          nodePool: u16
+          affinityGroup: together
+          inputSteps:
+            - name: S_Bash_0013_ag1
+        execution:
+          onExecute:
+            - echo "hi"

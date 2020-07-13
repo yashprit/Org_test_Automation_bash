@@ -1,0 +1,18 @@
+resources:
+  - name: S_Bash_0496_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_bitbucketServer
+      path: PIP/automation
+
+pipelines:
+  - name: pipelines_S_Bash_0496
+    steps:
+      - name: S_Bash_0496
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0496_GitRepo
+        execution:
+          onExecute:
+            - echo "executing step..."

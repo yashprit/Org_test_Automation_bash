@@ -1,0 +1,24 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0428
+        type: Bash
+        configuration:
+          
+          runtime:   
+            type: image
+            image: 
+              custom:
+                name: shipbeta00/ubuntu
+                tag: master
+                registry: i_dockerRegistry
+                autoPull: true
+        execution:
+          onExecute:
+            - printenv
+            - echo "executing step..."
+            - |
+              [ "$step_image_name" == "shipbeta00/ubuntu" ]
+            - |
+              [ "$step_image_tag" == "master" ]
+

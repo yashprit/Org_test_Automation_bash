@@ -1,0 +1,22 @@
+resources:
+
+  - name: S_Bash_0130_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "example-repo-local/setup/test.sh"
+      recursive: false
+
+pipelines:
+
+  - name: pipelines_S_Bash_0130
+    steps:
+      - name: S_Bash_0130
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0130_FileSpec
+              trigger: false
+        execution:
+          onExecute:
+            - echo "executing step..."

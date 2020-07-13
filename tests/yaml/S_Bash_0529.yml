@@ -1,0 +1,13 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0529
+        type: Bash
+        execution:
+          onExecute:
+            - echo testvariable="{{test}}"
+            - echo variable123={{ something }}
+            - echo foo="bar"
+            - echo "{{test}}" 
+            - echo $testvariable="{{gitBranch}}"
+            - echo "{{gitBranch}}"

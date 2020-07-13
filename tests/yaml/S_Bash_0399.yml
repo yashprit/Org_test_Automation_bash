@@ -1,0 +1,21 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0399
+        type: Bash
+        configuration:    
+          runtime:   
+            type: image
+            image: 
+              custom:
+                name: shipbeta00/ubuntu
+                tag: master
+                registry: i_DockerRegistry
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ "$step_image_name" == "shippabledocker/jfreq" ]
+            - |
+              [ "$step_image_tag" == "latest" ]
+

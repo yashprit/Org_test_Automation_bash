@@ -1,0 +1,27 @@
+pipelines:
+  - name: pipelines_S_Bash_0345
+    steps:
+      - name: S_Bash_0345
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_jenkins
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_jenkins_url" ]
+            - |
+              [ ! -z "$int_i_jenkins_apiToken" ]
+            - |
+              [ ! -z "$int_i_jenkins_id" ]
+            - |
+              [ ! -z "$int_i_jenkins_name" ]
+            - |
+              [ ! -z "$int_i_jenkins_username" ]
+            - |
+              [ ! -z "$int_i_jenkins_hookPassword" ]
+            - |
+              [ ! -z "$int_i_jenkins_masterName" ]
+            - |
+              [ ! -z "$int_i_jenkins_hookUsername" ]

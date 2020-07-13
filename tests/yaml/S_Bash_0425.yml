@@ -1,0 +1,17 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0425
+        type: Bash
+        configuration:
+           Integrations: # optional
+            - name: s_gcpkeys
+          type: image
+            image: # should be present if type is image
+              custom:
+                name: gcr.io/ship-rc/ubuntu
+                tag: latest
+                autoPull: false
+        execution:
+          onExecute:
+            - echo "hi"

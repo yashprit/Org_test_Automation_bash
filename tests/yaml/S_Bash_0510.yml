@@ -1,0 +1,22 @@
+resources:
+
+  - name: S_Bash_0510_Image
+    type: Image
+    configuration:
+      registry: i_dockerRegistry
+      imageName: shipbeta00/ubuntu
+      imageTag: master
+      autoPull: true
+
+pipelines:
+
+  - name: pipelines_S_Bash_0510
+    steps:
+      - name: S_Bash_0510
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0510_Image
+        execution:
+          onExecute:
+            - echo "executing step..."

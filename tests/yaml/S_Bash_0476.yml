@@ -1,0 +1,23 @@
+resources:
+   - name: S_Bash_0476_GitRepo
+     type: GitRepo
+     configuration:
+       gitProvider: s_bitbucketServer
+       path: PIP/automation
+       branches:
+         include: master
+       buildOn:  # optional
+         tagCreate: true
+
+pipelines:
+  - name: pipelines_S_Bash_0476
+    steps:
+      - name: S_Bash_0476
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0476_GitRepo
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."

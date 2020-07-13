@@ -1,0 +1,27 @@
+pipelines:
+
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0308
+        type: Bash
+        configuration:
+          environmentVariables:
+            env1: value1
+            env2: value2
+          integrations:
+            - name: s_githubEnterprise
+        execution:
+          onStart:
+             - echo "Preparing for work..."
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_s_githubEnterprise_id" ]
+            - |
+              [ ! -z "$int_s_githubEnterprise_url" ]
+            - |
+              [ ! -z "$int_s_githubEnterprise_masterName" ]
+            - |
+              [ ! -z "$int_s_githubEnterprise_token" ]
+            - |
+              [ ! -z "$int_s_githubEnterprise_name" ]

@@ -1,0 +1,48 @@
+resources:
+  - name: S_Bash_0504_Image
+    type: Image
+    configuration:
+      registry: i_gcpkeys
+      imageName: ubuntu
+      imageTag: latest
+
+pipelines:
+  - name: pipelines_S_Bash_0504
+    steps:
+      - name: S_Bash_0504
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0504_Image
+        execution:
+          onExecute:
+            - echo "Executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_isTrigger" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_registry_id" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_imageName" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_resourceId" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_registry_name" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_operation" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_registry_masterName" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_integrationName" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_registry_jsonKey" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_imageTag" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_integrationAlias" ]
+            - |
+              [ ! -z "$res_S_Bash_0504_Image_resourcePath" ]
+   
+   
+ 
+  
+  

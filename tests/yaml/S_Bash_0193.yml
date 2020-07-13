@@ -1,0 +1,49 @@
+resources:
+  - name: S_Bash_0193_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: dist_test
+      name: myRel
+      version: v1.0
+      isSigned: false
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0193
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0193_ReleaseBundle
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_isSigned"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_sourceDistribution_masterName"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_resourcePath"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_sourceDistribution_apikey"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_name"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_operation"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_sourceDistribution_user"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_integrationAlias"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_isTrigger"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_sourceDistribution_name"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_sourceDistribution_id"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_sourceDistribution_url"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_integrationName"  ]
+            - |
+              [ ! -z "$res_S_Bash_0193_ReleaseBundle_version"  ]  

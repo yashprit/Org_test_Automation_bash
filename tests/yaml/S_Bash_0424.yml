@@ -1,0 +1,21 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0424
+        type: Bash
+        configuration:
+          runtime:   
+            type: image
+            image: 
+              custom:          
+                name: ubuntu
+                tag: latest 
+                region: us-east-1	
+                registry: i_aws
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ "$step_image_name" == "ubuntu" ]
+            - |
+              [ "$step_image_tag" == "latest" ]

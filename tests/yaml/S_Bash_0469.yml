@@ -1,0 +1,19 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0469
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              auto:
+                language: cpp
+                versions:
+                  - "8.3.1"
+        execution:
+          onExecute:
+            - clang --version
+            - gcc --version
+            - |
+              [[ "$(gcc --version)" == *"8.3.1"* ]]

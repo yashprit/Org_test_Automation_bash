@@ -1,0 +1,52 @@
+resources:
+  - name: S_Bash_0119_OutgoingWebhook
+    type: OutgoingWebhook
+    configuration:
+      webhookName: i_testUserOutgoingWebhook
+      method: GET #<GET|PUT|POST|DELETE|PATCH> #default POST
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0119
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0119_OutgoingWebhook
+          integrations:
+            - name: testAuthOutgoingWebhook  
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_name" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_username" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_password" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_masterName" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_authorization" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_secret" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_webhookURL" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_integrationName" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_isTrigger" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_resourceId" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_id" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_resourcePath" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_method" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_webhookName_authType" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_integrationAlias" ]
+            - |
+              [ ! -z "$res_S_Bash_0119_OutgoingWebhook_operation" ]    

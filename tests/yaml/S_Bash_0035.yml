@@ -1,0 +1,15 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0035
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+        execution:
+          onExecute:
+            - |
+              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-u16node:10.18.0" ]]
+            - node --version
+            - |
+              [[ "$(node --version)" == *"10.18.0"* ]]

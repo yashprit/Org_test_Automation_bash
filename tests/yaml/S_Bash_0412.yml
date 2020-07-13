@@ -1,0 +1,12 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0412
+    steps:
+      - name: S_Bash_0412
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_digitalocean
+        execution:
+          onExecute:
+            - echo "executing step..."

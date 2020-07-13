@@ -1,0 +1,21 @@
+pipelines:
+  - name: pipelines_S_Bash_0303
+    steps:
+      - name: S_Bash_0303
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_gitHub
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ "$int_s_gitHub_url"  ]
+            - |
+              [ "$int_s_gitHub_masterName"  ]
+            - |
+              [ "$int_s_gitHub_name" ]
+            - |
+              [ ! -z "$int_s_gitHub_token"  ]
+            - |
+              [ ! -z "$int_s_gitHub_id"  ]

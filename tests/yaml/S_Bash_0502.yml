@@ -1,0 +1,21 @@
+resources:
+  - name: S_Bash_0502_Image
+    type: Image
+    configuration:
+      registry: i_gcpkeys
+      imageName: gcr.io/ship-rc/ubuntu
+      imageTag: latest
+      autoPull: true
+
+pipelines:
+  - name: pipelines_S_Bash_0502
+    steps:
+      - name: S_Bash_0502
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0502_Image
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."

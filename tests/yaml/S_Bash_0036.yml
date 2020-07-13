@@ -1,0 +1,16 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: api_pipeline
+        type: Bash
+        configuration:
+          runtime:
+            type: host
+            image:
+              custom:
+                name: drydock/u16nodall
+                tag: master 
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - echo "Hi"

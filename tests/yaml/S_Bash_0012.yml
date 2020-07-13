@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: api_pipeline
+        type: Bash
+        configuration:
+          nodePool: automation_node_invalid 
+        execution:
+          onExecute:
+            - echo "executing step..."

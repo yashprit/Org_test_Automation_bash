@@ -1,0 +1,22 @@
+resources:
+
+  - name: S_Bash_0440_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "example-repo-local/setup/"
+      recursive: false
+      sortOrder: invalid
+
+pipelines:
+
+  - name: pipelines_S_Bash_0440
+    steps:
+      - name: S_Bash_0440
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0440_FileSpec
+        execution:
+          onExecute:
+            - echo "executing step..."

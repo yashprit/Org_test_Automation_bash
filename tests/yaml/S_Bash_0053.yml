@@ -1,0 +1,14 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0050
+        type: Bash
+        configuration:
+          type: host
+            image: # should be present if type is image
+              custom:
+                name: drydock/u16nodall
+                tag: master
+        execution:
+          onExecute:
+            - echo "hi"

@@ -1,0 +1,19 @@
+pipelines:
+  - name: pipelines_S_Bash_0039
+    steps:
+      - name: S_Bash_0039
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image: # should be present if type is image
+              auto:
+                language: node
+                versions:
+                  - 10.18.0
+              custom:
+                name: ubuntu
+                tag: latest  
+        execution:
+          onExecute:
+            - echo "executing step..."

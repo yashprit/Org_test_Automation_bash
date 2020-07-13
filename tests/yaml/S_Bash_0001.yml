@@ -1,0 +1,21 @@
+resources:
+  - name: S_Bash_0001_HelmChart
+    type: HelmChart
+    configuration:
+      sourceArtifactory: s_artifactory
+      repository: helm-remote
+      chart: consul
+      version: 1.0.0
+
+pipelines:
+  - name: pipelines_auto
+    steps:
+      - name: S_Bash_0001
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0001_HelmChart
+              trigger: true
+        execution:
+          onExecute:
+            - echo "executing step..."

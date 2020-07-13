@@ -1,0 +1,12 @@
+pipelines:
+
+  - name: pipelines_S_Bash_0471
+    steps:
+      - name: S_Bash_0471
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_airBrake
+        execution:
+          onExecute:
+            - echo "executing step..."

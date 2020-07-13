@@ -1,0 +1,33 @@
+pipelines:
+  - name: pipelines_S_Bash_0375
+    steps:
+      - name: S_Bash_0375
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_smtp
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_smtp_emailSender"  ]
+            - |
+              [ ! -z "$int_i_smtp_emailAuthUser"  ]
+            - |
+              [ ! -z "$int_i_smtp_hostname"  ]
+            - |
+              [ ! -z "$int_i_smtp_id"  ]
+            - |
+              [ ! -z "$int_i_smtp_masterName"  ]
+            - |
+              [ ! -z "$int_i_smtp_secure"  ]
+            - |
+              [ ! -z "$int_i_smtp_emailAuthPassword"  ]
+            - |
+              [ ! -z "$int_i_smtp_proxy"  ]
+            - |
+              [ ! -z "$int_i_smtp_port"  ]
+            - |
+              [ ! -z "$int_i_smtp_name"  ]
+            - |
+              [ ! -z "$int_i_smtp_host"  ]

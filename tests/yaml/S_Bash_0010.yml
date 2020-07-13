@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0010
+        type: Bash
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ $step_node_pool_name == "u16dynamic"  ]

@@ -1,0 +1,8 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name:
+        type: Bash
+        execution:
+          onExecute:
+            - echo "executing step..."
