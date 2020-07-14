@@ -6,15 +6,15 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_digitalocean
+            - name: BSI_DigitalOcean
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_digitalocean_id"  ]
+              [ ! -z "$int_BSI_DigitalOcean_id"  ]
             - |
-              [ ! -z "$int_i_digitalocean_token"  ]
+              [ ! -z "$int_BSI_DigitalOcean_token"  ]
             - |
-              [ ! -z "$int_i_digitalocean_masterName"  ]
+              [ ! -z "$int_BSI_DigitalOcean_masterName"  ]
             - |
-              [ ! -z "$int_i_digitalocean_name"  ]    
+              [ ! -z "$int_BSI_DigitalOcean_name"  ]    

@@ -11,7 +11,7 @@ pipelines:
               custom:
                 name: shipbeta00/ubuntu
                 tag: master
-                registry: i_dockerRegistry
+                registry: BSG_DockerRegistry
                 autoPull: true
         execution:
           onExecute:

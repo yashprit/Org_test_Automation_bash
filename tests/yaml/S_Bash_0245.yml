@@ -5,17 +5,17 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_aws
+            - name: BSI_AWS
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_aws_masterName" ]
+              [ ! -z "$int_BSI_AWS_masterName" ]
             - |
-              [ ! -z "$int_i_aws_accessKeyId" ]
+              [ ! -z "$int_BSI_AWS_accessKeyId" ]
             - |
-              [ ! -z "$int_i_aws_name" ]
+              [ ! -z "$int_BSI_AWS_name" ]
             - |
-              [ ! -z "$int_i_aws_id" ]
+              [ ! -z "$int_BSI_AWS_id" ]
             - |
-              [ ! -z "$int_i_aws_secretAccessKey" ]
+              [ ! -z "$int_BSI_AWS_secretAccessKey" ]

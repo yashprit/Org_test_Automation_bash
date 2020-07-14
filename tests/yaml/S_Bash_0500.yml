@@ -2,7 +2,7 @@ resources:
   - name: S_Bash_0500_Image
     type: Image
     configuration:
-      registry: i_aws
+      registry: BSR_AWS
       imageName: 754160106182.dkr.ecr.us-east-1.amazonaws.com/jfbeta
       imageTag: latest
       region: us-east-1

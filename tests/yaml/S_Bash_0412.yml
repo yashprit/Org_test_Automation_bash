@@ -6,7 +6,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_digitalocean
+            - name: BSI_DigitalOcean
         execution:
           onExecute:
             - echo "executing step..."

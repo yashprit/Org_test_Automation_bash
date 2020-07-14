@@ -5,17 +5,17 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_newRelic
+            - name: BSI_newRelic
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_newRelic_masterName"  ]
+              [ ! -z "$int_BSI_newRelic_masterName"  ]
             - |
-              [ ! -z "$int_i_newRelic_url"  ]
+              [ ! -z "$int_BSI_newRelic_url"  ]
             - |
-              [ ! -z "$int_i_newRelic_name"  ]
+              [ ! -z "$int_BSI_newRelic_name"  ]
             - |
-              [ ! -z "$int_i_newRelic_token"  ]
+              [ ! -z "$int_BSI_newRelic_token"  ]
             - |
-              [ ! -z "$int_i_newRelic_id"  ]
+              [ ! -z "$int_BSI_newRelic_id"  ]

@@ -1,0 +1,36 @@
+resources:
+  - name: S_Bash_Util_Writeoutput_Repo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+      
+  - name: S_Bash_Util_Writeoutput_Image
+    type: Image
+    configuration:
+       registry: BSU_DockerRegistry
+       imageName: shipbeta00/ubuntu
+       imageTag: master
+     
+            
+      
+pipelines:
+  - name: S_Bash_UtilityFunctionWriteOutput_pipeline
+    steps:
+      - name: S_Bash_UtilityFunctionWriteOutput
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_gitHub
+          inputResources:
+            - name: S_Bash_Util_Writeoutput_Repo  
+          outputResources:
+            - name: S_Bash_Util_Writeoutput_Image
+            
+        execution:
+          onExecute: 
+            - pushd $res_S_Bash_Util_Writeoutput_Repo_resourcePath  
+            - write_output S_Bash_Util_Writeoutput_Image "imageTag=master"  
+            - popd
+
+

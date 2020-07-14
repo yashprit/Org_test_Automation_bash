@@ -5,49 +5,49 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_outgoingWebhookBasicAuth
-            - name: i_outgoingWebhookTokenAuth
-            - name: i_outgoingWebhookHmac
+            - name: BSI_OW_BasicAuth
+            - name: BSI_OW_TokenAuth
+            - name: BSI_OW_hmac
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_outgoingWebhookHmac_authType" ]
+              [ ! -z "$int_BSI_OW_hmac_authType" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookHmac_masterName" ]
+              [ ! -z "$int_BSI_OW_hmac_masterName" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookHmac_secret" ]
+              [ ! -z "$int_BSI_OW_hmac_secret" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookHmac_webhookURL" ]
+              [ ! -z "$int_BSI_OW_hmac_webhookURL" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookHmac_id" ]
+              [ ! -z "$int_BSI_OW_hmac_id" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookHmac_name" ]
+              [ ! -z "$int_BSI_OW_hmac_name" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookBasicAuth_id" ]
+              [ ! -z "$int_BSI_OW_BasicAuth_id" ]
 
             - |
-              [ ! -z "$int_i_outgoingWebhookBasicAuth_username" ]
+              [ ! -z "$int_BSI_OW_BasicAuth_username" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookBasicAuth_password" ]
+              [ ! -z "$int_BSI_OW_BasicAuth_password" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookBasicAuth_authType" ]
+              [ ! -z "$int_BSI_OW_BasicAuth_authType" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookBasicAuth_masterName" ]
+              [ ! -z "$int_BSI_OW_BasicAuth_masterName" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookBasicAuth_name" ]
+              [ ! -z "$int_BSI_OW_BasicAuth_name" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookBasicAuth_webhookURL" ]
+              [ ! -z "$int_BSI_OW_BasicAuth_webhookURL" ]
 
             - |
-              [ ! -z "$int_i_outgoingWebhookTokenAuth_name" ]
+              [ ! -z "$int_BSI_OW_TokenAuth_name" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookTokenAuth_id" ]
+              [ ! -z "$int_BSI_OW_TokenAuth_id" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookTokenAuth_masterName" ]
+              [ ! -z "$int_BSI_OW_TokenAuth_masterName" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookTokenAuth_webhookURL" ]
+              [ ! -z "$int_BSI_OW_TokenAuth_webhookURL" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookTokenAuth_authorization" ]
+              [ ! -z "$int_BSI_OW_TokenAuth_authorization" ]
             - |
-              [ ! -z "$int_i_outgoingWebhookTokenAuth_authType" ]
+              [ ! -z "$int_BSI_OW_TokenAuth_authType" ]

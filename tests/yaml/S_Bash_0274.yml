@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_distribution 
+            - name: BSI_Distribution 
         execution:
           onExecute:
             - echo "executing step..."

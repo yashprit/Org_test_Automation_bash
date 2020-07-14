@@ -6,19 +6,19 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_azureKey
+            - name: BSI_AzureKey
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_azureKey_name" ]
+              [ ! -z "$int_BSI_AzureKey_name" ]
             - |
-              [ ! -z "$int_i_azureKey_password" ]
+              [ ! -z "$int_BSI_AzureKey_password" ]
             - |
-              [ ! -z "$int_i_azureKey_appId" ]
+              [ ! -z "$int_BSI_AzureKey_appId" ]
             - |
-              [ ! -z "$int_i_azureKey_masterName" ]
+              [ ! -z "$int_BSI_AzureKey_masterName" ]
             - |
-              [ ! -z "$int_i_azureKey_id" ]
+              [ ! -z "$int_BSI_AzureKey_id" ]
             - |
-              [ ! -z "$int_i_azureKey_tenant" ]
+              [ ! -z "$int_BSI_AzureKey_tenant" ]

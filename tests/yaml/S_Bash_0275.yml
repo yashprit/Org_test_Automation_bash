@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_dockerRegistry
+            - name: BSI_DockerRegistry
         execution:
           onExecute:
             - echo "executing step..."

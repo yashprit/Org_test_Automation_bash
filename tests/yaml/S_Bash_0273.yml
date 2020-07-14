@@ -5,19 +5,19 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_distribution
+            - name: BSI_Distribution
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_distribution_url" ]
+              [ ! -z "$int_BSI_Distribution_url" ]
             - |
-              [ ! -z "$int_i_distribution_masterName" ]
+              [ ! -z "$int_BSI_Distribution_masterName" ]
             - |
-              [ ! -z "$int_i_distribution_apikey" ]
+              [ ! -z "$int_BSI_Distribution_apikey" ]
             - |
-              [ ! -z "$int_i_distribution_id" ]
+              [ ! -z "$int_BSI_Distribution_id" ]
             - |
-              [ ! -z "$int_i_distribution_name" ]
+              [ ! -z "$int_BSI_Distribution_name" ]
             - |
-              [ ! -z "$int_i_distribution_user" ]
+              [ ! -z "$int_BSI_Distribution_user" ]

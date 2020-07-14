@@ -11,7 +11,7 @@ pipelines:
                 name: ubuntu
                 tag: latest 
                 region: us-east-1	
-                registry: i_aws
+                registry: BSG_AWS
         execution:
           onExecute:
             - echo "executing step..."

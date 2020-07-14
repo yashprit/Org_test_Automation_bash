@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_generic
+            - name: BSI_Generic
         execution:
           onExecute:
             - echo "executing step..."

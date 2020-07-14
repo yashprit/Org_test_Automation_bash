@@ -5,23 +5,23 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_jenkins
+            - name: BSI_Jenkins
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_jenkins_url" ]
+              [ ! -z "$int_BSI_Jenkins_url" ]
             - |
-              [ ! -z "$int_i_jenkins_apiToken" ]
+              [ ! -z "$int_BSI_Jenkins_apiToken" ]
             - |
-              [ ! -z "$int_i_jenkins_id" ]
+              [ ! -z "$int_BSI_Jenkins_id" ]
             - |
-              [ ! -z "$int_i_jenkins_name" ]
+              [ ! -z "$int_BSI_Jenkins_name" ]
             - |
-              [ ! -z "$int_i_jenkins_username" ]
+              [ ! -z "$int_BSI_Jenkins_username" ]
             - |
-              [ ! -z "$int_i_jenkins_hookPassword" ]
+              [ ! -z "$int_BSI_Jenkins_hookPassword" ]
             - |
-              [ ! -z "$int_i_jenkins_masterName" ]
+              [ ! -z "$int_BSI_Jenkins_masterName" ]
             - |
-              [ ! -z "$int_i_jenkins_hookUsername" ]
+              [ ! -z "$int_BSI_Jenkins_hookUsername" ]

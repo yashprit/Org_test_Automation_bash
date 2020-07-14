@@ -5,15 +5,15 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_slack
+            - name: BSI_Slack
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_slack_masterName" ]
+              [ ! -z "$int_BSI_Slack_masterName" ]
             - |
-              [ ! -z "$int_i_slack_url" ]
+              [ ! -z "$int_BSI_Slack_url" ]
             - |
-              [ ! -z "$int_i_slack_id" ]
+              [ ! -z "$int_BSI_Slack_id" ]
             - |
-              [ ! -z "$int_i_slack_name" ]
+              [ ! -z "$int_BSI_Slack_name" ]

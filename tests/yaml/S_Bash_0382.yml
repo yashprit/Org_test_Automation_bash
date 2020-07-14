@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_sshKey
+            - name: BSI_SSHKEY
         execution:
           onExecute:
             - echo "executing step..."

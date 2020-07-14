@@ -10,7 +10,7 @@ pipelines:
               custom:
                 name: drydock/u16nodalls
                 tag: master
-                registry: i_dockerRegistry
+                registry: BSG_DockerRegistry
         execution:
           onExecute:
             - echo "hi"

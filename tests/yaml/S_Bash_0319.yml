@@ -5,14 +5,14 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_googleCloud
+            - name: BSI_GoogleCloud
         execution:
           onExecute:
             - |
-              [ ! -z "$int_i_googleCloud_masterName" ]
+              [ ! -z "$int_BSI_GoogleCloud_masterName" ]
             - |
-              [ ! -z "$int_i_googleCloud_id" ]
+              [ ! -z "$int_BSI_GoogleCloud_id" ]
             - |
-              [ ! -z "$int_i_googleCloud_name" ]
+              [ ! -z "$int_BSI_GoogleCloud_name" ]
             - |
-              [ ! -z "$int_i_googleCloud_jsonKey" ]
+              [ ! -z "$int_BSI_GoogleCloud_jsonKey" ]

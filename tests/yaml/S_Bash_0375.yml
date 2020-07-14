@@ -5,29 +5,29 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_smtp
+            - name: BSI_SMTP
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_smtp_emailSender"  ]
+              [ ! -z "$int_BSI_SMTP_emailSender"  ]
             - |
-              [ ! -z "$int_i_smtp_emailAuthUser"  ]
+              [ ! -z "$int_BSI_SMTP_emailAuthUser"  ]
             - |
-              [ ! -z "$int_i_smtp_hostname"  ]
+              [ ! -z "$int_BSI_SMTP_hostname"  ]
             - |
-              [ ! -z "$int_i_smtp_id"  ]
+              [ ! -z "$int_BSI_SMTP_id"  ]
             - |
-              [ ! -z "$int_i_smtp_masterName"  ]
+              [ ! -z "$int_BSI_SMTP_masterName"  ]
             - |
-              [ ! -z "$int_i_smtp_secure"  ]
+              [ ! -z "$int_BSI_SMTP_secure"  ]
             - |
-              [ ! -z "$int_i_smtp_emailAuthPassword"  ]
+              [ ! -z "$int_BSI_SMTP_emailAuthPassword"  ]
             - |
-              [ ! -z "$int_i_smtp_proxy"  ]
+              [ ! -z "$int_BSI_SMTP_proxy"  ]
             - |
-              [ ! -z "$int_i_smtp_port"  ]
+              [ ! -z "$int_BSI_SMTP_port"  ]
             - |
-              [ ! -z "$int_i_smtp_name"  ]
+              [ ! -z "$int_BSI_SMTP_name"  ]
             - |
-              [ ! -z "$int_i_smtp_host"  ]
+              [ ! -z "$int_BSI_SMTP_host"  ]

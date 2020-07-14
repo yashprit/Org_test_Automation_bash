@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_kubernetes
+            - name: BSI_kubernetes
         execution:
           onExecute:
             - echo "executing step..."

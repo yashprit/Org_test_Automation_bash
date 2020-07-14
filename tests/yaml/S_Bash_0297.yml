@@ -5,13 +5,13 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_generic
+            - name: BSI_Generic
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_generic_name"  ]
+              [ ! -z "$int_BSI_Generic_name"  ]
             - |
-              [ ! -z "$int_i_generic_id"  ]
+              [ ! -z "$int_BSI_Generic_id"  ]
             - |
-              [ ! -z "$int_i_generic_masterName"  ]
+              [ ! -z "$int_BSI_Generic_masterName"  ]
