@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_outgoingWebhookTokenAuth
+            - name: BSI_OW_TokenAuth
         execution:
           onExecute:
             - echo "executing step..."
@@ -14,7 +14,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_outgoingWebhookBasicAuth
+            - name: BSI_OW_BasicAuth
           inputSteps:
             - name: S_Bash_0285_TokenAuth
         execution:
@@ -25,7 +25,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_outgoingWebhookHmac
+            - name: BSI_OW_hmac
           inputSteps:
             - name: S_Bash_0285_BasicAuth
         execution:

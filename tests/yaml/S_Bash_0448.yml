@@ -16,7 +16,7 @@ pipelines:
             - |
               [[ "$(node --version)" == *"$step_image_tag"* ]]
           integrations:
-            - name: i_azureKey
+            - name: BSI_AzureKey
         execution:
           onExecute:
             - echo "executing step..."

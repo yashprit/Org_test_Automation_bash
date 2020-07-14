@@ -5,18 +5,18 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_kubernetes
+            - name: BSI_kubernetes
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_kubernetes_masterName"  ]
+              [ ! -z "$int_BSI_kubernetes_masterName"  ]
             - |
-              [ ! -z "$int_i_kubernetes_id"  ]
+              [ ! -z "$int_BSI_kubernetes_id"  ]
             - |
               [ ! -z "$KUBECONFIG"  ]
             - |
-              [ ! -z "$int_i_kubernetes_kubeconfig"  ]
+              [ ! -z "$int_BSI_kubernetes_kubeconfig"  ]
             - |
-              [ ! -z "$int_i_kubernetes_name"  ]
+              [ ! -z "$int_BSI_kubernetes_name"  ]
             

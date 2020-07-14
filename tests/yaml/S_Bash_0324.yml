@@ -5,34 +5,34 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_IncomingWebhookTokenAuth
-            - name: i_IncomingWebhookBasicAuth
+            - name: BSI_IW_TokenAuth
+            - name: BSI_IW_BasicAuth
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_IncomingWebhookTokenAuth_name"  ]
+              [ ! -z "$int_BSI_IW_TokenAuth_name"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookTokenAuth_id"  ]
+              [ ! -z "$int_BSI_IW_TokenAuth_id"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookTokenAuth_masterName"  ]
+              [ ! -z "$int_BSI_IW_TokenAuth_masterName"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookTokenAuth_authType"  ]
+              [ ! -z "$int_BSI_IW_TokenAuth_authType"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookTokenAuth_authorization"  ]
+              [ ! -z "$int_BSI_IW_TokenAuth_authorization"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_secret"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_secret"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_authType"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_authType"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_masterName"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_masterName"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_username"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_username"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_name"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_name"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_password"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_password"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_id"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_id"  ]
             - |
-              [ ! -z "$int_i_IncomingWebhookBasicAuth_authorization"  ]
+              [ ! -z "$int_BSI_IW_BasicAuth_authorization"  ]

@@ -6,17 +6,17 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_airBrake
+            - name: S_Bash_023_airBrake
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_airBrake_url" ]
+              [ ! -z "$int_BSI_AirBrake_url" ]
             - |
-              [ ! -z "$int_i_airBrake_masterName" ]
+              [ ! -z "$int_BSI_AirBrake_masterName" ]
             - |
-              [ ! -z "$int_i_airBrake_id" ]
+              [ ! -z "$int_BSI_AirBrake_id" ]
             - |
-              [ ! -z "$int_i_airBrake_name" ]
+              [ ! -z "$int_BSI_AirBrake_name" ]
             - |
-              [ ! -z "$int_i_airBrake_token" ]
+              [ ! -z "$int_BSI_AirBrake_token" ]

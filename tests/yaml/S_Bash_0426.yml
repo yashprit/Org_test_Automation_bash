@@ -10,7 +10,7 @@ pipelines:
               custom:
                 name: gcr.io/ship-rc/ubuntu
                 tag: latest 
-                registry: i_gcpkeys
+                registry: BSG_GCPkeys
         execution:
           onExecute:
             - echo "executing step..."

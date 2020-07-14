@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_googleCloud
+            - name: BSI_GoogleCloud
         execution:
           onExecute:
             - echo "executing step..."

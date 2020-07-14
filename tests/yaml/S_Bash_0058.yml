@@ -3,7 +3,7 @@ resources:
   - name: S_Bash_0058_Image
     type: Image
     configuration:
-      registry: i_dockerRegistry
+      registry: BSG_DockerRegistry
       imageName: shipbeta00/ubuntu
       imageTag: master
       autoPull: true

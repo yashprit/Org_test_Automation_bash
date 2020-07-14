@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_jenkins
+            - name: BSI_Jenkins
         execution:
           onExecute:
             - echo "executing step..."

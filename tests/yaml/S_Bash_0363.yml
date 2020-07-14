@@ -5,15 +5,15 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_pemKey
+            - name: BSI_Pemkey
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_pemKey_masterName" ]
+              [ ! -z "$int_BSI_Pemkey_masterName" ]
             - |
-              [ ! -z "$int_i_pemKey_key" ]
+              [ ! -z "$int_BSI_Pemkey_key" ]
             - |
-              [ ! -z "$int_i_pemKey_id" ]
+              [ ! -z "$int_BSI_Pemkey_id" ]
             - |
-              [ ! -z "$int_i_pemKey_name" ]
+              [ ! -z "$int_BSI_Pemkey_name" ]

@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_smtp
+            - name: BSI_SMTP
         execution:
           onExecute:
             - echo "executing step..."

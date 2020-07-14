@@ -6,7 +6,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_aws
+            - name: BSI_AWS
         execution:
           onExecute:
             - echo "executing step..."

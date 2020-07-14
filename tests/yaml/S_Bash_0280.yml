@@ -5,21 +5,21 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_dockerRegistry
+            - name: BSI_DockerRegistry
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_dockerRegistry_masterName" ]
+              [ ! -z "$int_BSI_DockerRegistry_masterName" ]
             - |
-              [ ! -z "$int_i_dockerRegistry_username" ]
+              [ ! -z "$int_BSI_DockerRegistry_username" ]
             - |
-              [ ! -z "$int_i_dockerRegistry_name" ]
+              [ ! -z "$int_BSI_DockerRegistry_name" ]
             - |
-              [ ! -z "$int_i_dockerRegistry_password" ]
+              [ ! -z "$int_BSI_DockerRegistry_password" ]
             - |
-              [ ! -z "$int_i_dockerRegistry_id" ]
+              [ ! -z "$int_BSI_DockerRegistry_id" ]
             - |
-              [ ! -z "$int_i_dockerRegistry_url" ]
+              [ ! -z "$int_BSI_DockerRegistry_url" ]
             - |
-              [ ! -z "$int_i_dockerRegistry_email" ]
+              [ ! -z "$int_BSI_DockerRegistry_email" ]

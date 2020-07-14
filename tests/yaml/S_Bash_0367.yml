@@ -5,7 +5,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_slack
+            - name: BSI_Slack
         execution:
           onExecute:
             - echo "executing step..."

@@ -6,21 +6,21 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_fileServer
+            - name: BSI_FileServer
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_fileServer_name"  ]
+              [ ! -z "$int_BSI_FileServer_name"  ]
             - |
-              [ ! -z "$int_i_fileServer_masterName"  ]
+              [ ! -z "$int_BSI_FileServer_masterName"  ]
             - |
-              [ ! -z "$int_i_fileServer_username"  ]
+              [ ! -z "$int_BSI_FileServer_username"  ]
             - |
-              [ ! -z "$int_i_fileServer_protocol"  ]
+              [ ! -z "$int_BSI_FileServer_protocol"  ]
             - |
-              [ ! -z "$int_i_fileServer_id"  ]
+              [ ! -z "$int_BSI_FileServer_id"  ]
             - |
-              [ ! -z "$int_i_fileServer_password"  ] 
+              [ ! -z "$int_BSI_FileServer_password"  ] 
             - |
-              [ ! -z "$int_i_fileServer_url"  ]
+              [ ! -z "$int_BSI_FileServer_url"  ]

@@ -5,17 +5,17 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_sshKey
+            - name: BSI_SSHKEY
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_sshKey_masterName" ]
+              [ ! -z "$int_BSI_SSHKEY_masterName" ]
             - |
-              [ ! -z "$int_i_sshKey_privateKey" ]
+              [ ! -z "$int_BSI_SSHKEY_privateKey" ]
             - |
-              [ ! -z "$int_i_sshKey_publicKey" ]
+              [ ! -z "$int_BSI_SSHKEY_publicKey" ]
             - |
-              [ ! -z "$int_i_sshKey_id" ]
+              [ ! -z "$int_BSI_SSHKEY_id" ]
             - |
-              [ ! -z "$int_i_sshKey_name" ]
+              [ ! -z "$int_BSI_SSHKEY_name" ]

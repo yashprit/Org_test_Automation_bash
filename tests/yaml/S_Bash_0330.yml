@@ -5,19 +5,19 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: i_jira
+            - name: BSI_Jira
         execution:
           onExecute:
             - echo "executing step..."
             - |
-              [ ! -z "$int_i_jira_masterName" ]
+              [ ! -z "$int_BSI_Jira_masterName" ]
             - |
-              [ ! -z "$int_i_jira_username" ]
+              [ ! -z "$int_BSI_Jira_username" ]
             - |
-              [ ! -z "$int_i_jira_name" ]
+              [ ! -z "$int_BSI_Jira_name" ]
             - |
-              [ ! -z "$int_i_jira_url" ]
+              [ ! -z "$int_BSI_Jira_url" ]
             - |
-              [ ! -z "$int_i_jira_id" ]
+              [ ! -z "$int_BSI_Jira_id" ]
             - |
-              [ ! -z "$int_i_jira_token" ]
+              [ ! -z "$int_BSI_Jira_token" ]
