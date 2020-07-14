@@ -8,7 +8,7 @@ resources:
      # fileDateTime: 01/01/2018
 
 pipelines:
-  - name: pipelines_auto
+  - name: S_Bash_0210
     steps:
       - name: S_Bash_0210
         type: Bash

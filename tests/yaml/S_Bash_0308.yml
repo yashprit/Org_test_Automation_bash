@@ -1,6 +1,6 @@
 pipelines:
 
-  - name: pipelines_auto
+  - name: S_Bash_0308
     steps:
       - name: S_Bash_0308
         type: Bash

@@ -7,7 +7,7 @@ resources:
          - 192.168.33.11
 
 pipelines:
-  - name: pipelines_auto
+  - name: S_Bash_0228
     steps:
       - name: S_Bash_0228
         type: Bash

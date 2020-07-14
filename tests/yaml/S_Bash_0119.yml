@@ -6,7 +6,7 @@ resources:
       method: GET #<GET|PUT|POST|DELETE|PATCH> #default POST
 
 pipelines:
-  - name: pipelines_auto
+  - name: S_Bash_0119
     steps:
       - name: S_Bash_0119
         type: Bash
