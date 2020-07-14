@@ -8,7 +8,7 @@ resources:
       isSigned: false
                
 pipelines:
-  - name: pipelines_auto
+  - name: S_Bash_0190
     steps:
       - name: S_Bash_0190
         type: Bash

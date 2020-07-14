@@ -1,5 +1,5 @@
 pipelines:
-  - name: pipelines_S_Bash_0039
+  - name: S_Bash_0039
     steps:
       - name: S_Bash_0039
         type: Bash

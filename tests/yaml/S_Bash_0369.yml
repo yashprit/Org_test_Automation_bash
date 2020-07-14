@@ -1,5 +1,5 @@
 pipelines:
-  - name: pipelines_auto
+  - name: S_Bash_0369
     steps:
       - name: S_Bash_0369
         type: Bash

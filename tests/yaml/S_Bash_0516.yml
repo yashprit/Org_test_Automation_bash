@@ -1,6 +1,6 @@
   
 pipelines:
-  - name: pipeline_automation
+  - name: S_Bash_0516
     steps:
       - name: S_Bash_0516
         type: Bash

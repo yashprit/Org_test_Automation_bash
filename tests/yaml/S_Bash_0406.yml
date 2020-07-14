@@ -9,7 +9,7 @@ resources:
 
 pipelines:
 
-  - name: pipelines_auto
+  - name: S_Bash_0406
     steps:
       - name: S_Bash_0406
         type: Bash

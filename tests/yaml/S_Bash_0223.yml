@@ -7,7 +7,7 @@ resources:
          - 1.2.3.4
 
 pipelines:
-  - name: pipelines_auto
+  - name: S_Bash_0223
     steps:
       - name: S_Bash_0223
         type: Bash
