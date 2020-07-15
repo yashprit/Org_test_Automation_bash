@@ -97,9 +97,9 @@ pipelines:
           integrations:
             - name: s_gitHub
           inputResources:
-            - name: S_Bash_UtilityFunction_step_2
+            - name: S_Bash_UtilityFunction_repo
           inputSteps:
-            - name: utilityFunction2          
+            - name: S_Bash_UtilityFunction_step_2   
 
         execution:
           onExecute:
