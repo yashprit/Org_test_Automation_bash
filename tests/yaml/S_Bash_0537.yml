@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0537
+        type: Bash
+        configuration:
+          nodePool: u18dynamic
+          runtime:
+            type: image
+            image:
+              auto:
+                language: java
+                versions:
+                  - "14"
+        execution:
+          onExecute:
+            - |
+              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-u18java:14" ]]
+            - java -version
+            - var=$(java -version 2>&1 >/dev/null |  awk '{print $3}' | head -1)
+            - |
+              [[ $var == *"14.0.1"* ]]

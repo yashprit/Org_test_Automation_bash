@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0534
+        type: Bash
+        configuration:
+          nodePool: u18dynamic
+          runtime:
+            type: image
+            image:
+              auto:
+                language: cpp
+                versions:
+                  - 10.0.0
+        execution:
+          onExecute:
+            - |
+              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-u18cpp:10.0.0" ]]
+            - clang --version
+            - gcc --version
+            - |
+              [[ "$(clang --version)" == *"$step_image_tag"* ]]
