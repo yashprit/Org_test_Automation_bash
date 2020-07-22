@@ -1,7 +1,7 @@
 pipelines:
   - name: S_Bash_0014
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0014
         type: Bash
         configuration:
           affinityGroup: bldGroup 
@@ -9,7 +9,7 @@ pipelines:
           onExecute:
             - echo "hi"
 
-      - name: api_pipelineauto
+      - name: S_Bash_0014_1
         type: Bash
         configuration:
           affinityGroup: bldGroup

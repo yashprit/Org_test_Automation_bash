@@ -1,5 +1,5 @@
 pipelines:
   - name: S_Bash_0008
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0008
         type: Bash

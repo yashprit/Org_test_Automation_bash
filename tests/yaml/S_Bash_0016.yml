@@ -1,7 +1,7 @@
 pipelines:
   - name: S_Bash_0016
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0016
         type: Bash
         configuration:
           nodePool: automation_node_default
@@ -10,12 +10,12 @@ pipelines:
           onExecute:
             - echo "hi"
 
-      - name: api_pipelineauto
+      - name: S_Bash_0016_1
         type: Bash
         configuration:
           affinityGroup: bldGroup
           inputSteps:
-            - name: api_pipeline
+            - name: S_Bash_0016
         execution:
           onExecute:
             - echo "hi"

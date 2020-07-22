@@ -1,7 +1,7 @@
 pipelines:
   - name: S_Bash_0445
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0445
         type: Bash
         configuration:
           Runtime:

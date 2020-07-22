@@ -1,7 +1,7 @@
 pipelines:
   - name: S_Bash_0017
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0017
         type: Bash
         configuration:
           nodePool: byon
@@ -10,13 +10,13 @@ pipelines:
           onExecute:
             - echo "hi"
 
-      - name: api_pipelineauto
+      - name: S_Bash_0017_1
         type: Bash
         configuration:
           nodePool: byon
           affinityGroup: bldGroup@$
           inputSteps:
-            - name: api_pipeline
+            - name: S_Bash_0017
         execution:
           onExecute:
             - echo "hi"

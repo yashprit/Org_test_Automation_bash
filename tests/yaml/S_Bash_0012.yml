@@ -1,7 +1,7 @@
 pipelines:
   - name: S_Bash_0012
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0012
         type: Bash
         configuration:
           nodePool: automation_node_invalid 

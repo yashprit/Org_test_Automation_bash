@@ -1,11 +1,11 @@
 pipelines:
   - name: S_Bash_0065
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0065
         type: Bash
         configuration:
           integrations:
-            - name: my_integrations
+            - name: my_integrations_invalid
         execution:
           onExecute:
             - echo "executing step..."

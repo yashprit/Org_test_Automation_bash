@@ -1,11 +1,11 @@
 pipelines:
   - name: S_Bash_0057
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0057
         type: Bash
         configuration:
           outputResources:
-            - name: myOutputResource
+            - name: myOutputResourceInvalid
         execution:
           onExecute:
             - echo "executing step..."

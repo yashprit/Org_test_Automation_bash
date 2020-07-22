@@ -1,17 +1,17 @@
 pipelines:
   - name: S_Bash_0031
     steps:
-      - name: api_pipeline
+      - name: S_Bash_0031
         type: Bash
         execution:
           onExecute:
             - echo "hi"
 
-      - name: api_pipelineautomation
+      - name: S_Bash_0031_1
         type: Bash
         configuration:
           inputSteps:
-            - name: myStep1
+            - name: S_Bash_0031
         execution:
           onExecute:
             - echo "hi"
