@@ -19,4 +19,4 @@ pipelines:
             - java -version
             - var=$(java -version 2>&1 >/dev/null |  awk '{print $3}' | head -1)
             - |
-              [[ $var == *"1.8.0_242"* ]]
+              [[ $var == *"1.8.0"* ]]
