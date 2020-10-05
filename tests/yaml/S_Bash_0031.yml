@@ -11,7 +11,7 @@ pipelines:
         type: Bash
         configuration:
           inputSteps:
-            - name: S_Bash_0031
+            - name: S_Bash_0031_1234567
         execution:
           onExecute:
             - echo "hi"
