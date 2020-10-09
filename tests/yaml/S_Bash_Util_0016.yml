@@ -1,0 +1,50 @@
+resources:
+  - name: repo_pipe
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: pipeline_S_Bash_Util_0016
+    steps:
+
+      - name: S_Bash_Util_0016
+        type: Matrix
+        configuration:
+          inputResources:
+            - name: repo_pipe
+        stepMode: Bash
+        stepletMultipliers:
+          environmentVariables:
+            - foo_val: foo
+              bar_val: bar
+            - foo_val: foofoo
+              bar_val: barbar
+        execution:
+          onStart:
+            - mkdir -p files
+            - filename="${foo_val}_${bar_val}.txt"
+            - echo "foo_bar" > ./files/$filename
+          onExecute:
+            - add_run_files ./files state
+            - set_step_var "foo" ${foo_val}
+            - set_step_var "bar" ${bar_val}
+
+      - name: S_Bash_Util_0016_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0016
+        execution:
+          onStart:
+            - restore_run_files state ./files
+          onExecute:
+            - cat ./files/foo_bar.txt
+            - if [ $(cat ./files/foo_bar.txt) != "foo_bar" ]; then exit 1; fi
+            - cat ./files/foofoo_barbar.txt
+            - if [ $(cat ./files/foofoo_barbar.txt) != "foo_bar" ]; then exit 1; fi
+            - get_step_var "S_Bash_Util_0016" "foo"
+            - if [ $(get_step_var "S_Bash_Util_0016" "foo" | tr -d '\n') != "foofoofoo" ]; then exit 1; fi
+            - get_step_var "S_Bash_Util_0016" "bar"
+            - if [ $(get_step_var "S_Bash_Util_0016" "bar" | tr -d '\n') != "barbarbar" ]; then exit 1; fi

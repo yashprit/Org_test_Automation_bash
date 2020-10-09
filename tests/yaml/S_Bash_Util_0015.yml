@@ -1,0 +1,58 @@
+resources:
+  - name: repo_pipe
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: pipeline_S_Bash_Util_0015
+    steps:
+
+      - name: S_Bash_Util_0015
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo_pipe
+        execution:
+          onExecute:
+            - echo "Start.."
+
+      - name: S_Bash_Util_0015_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0015
+        execution:
+          onStart:
+            - mkdir -p files
+            - echo "foo" > ./files/foo.txt
+          onExecute:
+            - add_run_files ./files state
+
+      - name: S_Bash_Util_0015_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0015
+        execution:
+          onStart:
+            - mkdir -p files
+            - echo "bar" > ./files/bar.txt
+          onExecute:
+            - add_run_files ./files state
+
+      - name: S_Bash_Util_0015_4
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0015_2
+            - name: S_Bash_Util_0015_3
+        execution:
+          onStart:
+            - restore_run_files state ./files
+          onExecute:
+            - cat ./files/foo.txt
+            - if [ $(cat ./files/foo.txt) != "foo" ]; then exit 1; fi
+            - cat ./files/bar.txt
+            - if [ $(cat ./files/bar.txt) != "bar" ]; then exit 1; fi

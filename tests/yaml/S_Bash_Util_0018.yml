@@ -1,0 +1,31 @@
+resources:
+  - name: repo_pipe
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: pipeline_S_Bash_Util_0018
+    steps:
+
+      - name: S_Bash_Util_0018
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo_pipe
+        execution:
+          onExecute:
+            - dd if=/dev/zero of=output.dat  bs=1000M  count=1
+            - add_run_files output.dat my_state
+
+      - name: S_Bash_Util_0018_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0018
+        execution:
+          onExecute:
+            - restore_run_files my_state output.dat
+            - x=$(ls -al | grep output.dat | wc -l)
+            - if [ $x -ne 1 ]; then exit 1; fi
