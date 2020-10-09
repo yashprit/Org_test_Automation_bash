@@ -1,0 +1,50 @@
+resources:
+  - name: repo_pipe
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: pipeline_S_Bash_Util_0014
+    steps:
+
+      - name: S_Bash_Util_0014
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo_pipe
+        execution:
+          onExecute:
+            - echo "Start.."
+
+      - name: S_Bash_Util_0014_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0014
+        execution:
+          onExecute:
+            - add_run_variables var1="foo"
+
+      - name: S_Bash_Util_0014_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0014
+        execution:
+          onExecute:
+            - add_run_variables var2="bar"
+
+      - name: S_Bash_Util_0014_4
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_0014_2
+            - name: S_Bash_Util_0014_3
+        execution:
+          onExecute:
+            - echo "var1 - ${var1}"
+            - echo "var2 - ${var2}"
+            - if [ "$var1" != "foo" ]; then exit 1; fi
+            - if [ "$var2" != "bar" ]; then exit 1; fi
