@@ -1,0 +1,12 @@
+pipelines:
+  - name: pipelines_S_Bash_FileSpec_Upload
+    steps:
+      - name: S_Bash_FileSpec_Upload
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - touch s_foo
+            - jfrog rt u s_foo example-repo-local/s_foo
