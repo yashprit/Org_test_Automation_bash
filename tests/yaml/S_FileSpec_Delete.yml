@@ -1,7 +1,7 @@
 pipelines:
   - name: pipelines_S_Bash_FileSpec_Delete
     steps:
-      - name: S_Bash_FileSpec_Delete
+      - name: S_FileSpec_Delete
         type: Bash
         configuration:
           integrations:
