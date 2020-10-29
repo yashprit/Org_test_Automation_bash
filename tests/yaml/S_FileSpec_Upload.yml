@@ -1,7 +1,7 @@
 pipelines:
   - name: pipelines_S_Bash_FileSpec_Upload
     steps:
-      - name: S_Bash_FileSpec_Upload
+      - name: S_FileSpec_Upload
         type: Bash
         configuration:
           integrations:
