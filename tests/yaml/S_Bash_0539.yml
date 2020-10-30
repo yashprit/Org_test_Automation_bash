@@ -1,0 +1,20 @@
+resources:
+  - name: S_Bash_0539_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      aql: '{"items.find":{"name":{"$match":"s_foo*"}}}'
+      target: "/testing/"
+pipelines:
+  - name: pipelines_S_Bash_0539
+    steps:
+      - name: S_Bash_0539
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0539_FileSpec
+        execution:
+          onExecute:
+            - echo "executing step"
+            - if [ -f "/testing/s_foo" ]; then echo "found the file"; fi
+            - if [ ! -f "/testing/s_foo" ]; then echo "error finding the file"; exit 1; fi
