@@ -1,0 +1,23 @@
+pipelines:
+  - name: pipeline_S_Bash_0541
+    steps:
+      - name: S_Bash_0541
+        type: Bash
+        configuration:
+          nodePool: u16dynamic
+          runtime:
+            type: image
+            image:
+              auto:
+                language: go
+                versions:
+                  - 1.15.2
+        execution:
+          onExecute:
+            - |
+              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-u16go:1.15.2" ]]
+            - source /root/.gvm/scripts/gvm
+            - gvm list
+            - gvm use 1.15
+            - |
+              [[ "$(go version)" == *"$step_image_tag"* ]]
