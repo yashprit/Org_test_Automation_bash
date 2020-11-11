@@ -5,9 +5,9 @@ pipelines:
         type: Bash
         execution:
           onExecute:
-            - echo testvariable="{{test}}"
-            - echo variable123={{ something }}
+            - echo testvariable="{{.test}}"
+            - echo variable123={{ .something }}
             - echo foo="bar"
-            - echo "{{test}}" 
+            - echo "{{.test}}" 
             - echo $testvariable="{{gitBranch}}"
             - echo "{{gitBranch}}"
