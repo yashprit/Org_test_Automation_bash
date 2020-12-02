@@ -1,0 +1,21 @@
+resources:
+  - name: S_Bash_0546_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "*/s_foo*"
+      limit: 1
+      sortBy:
+        - "*/pip\"eIn\"fo.json"
+      target: "/testing/"
+pipelines:
+  - name: pipelines_S_Bash_0546
+    steps:
+      - name: S_Bash_0546
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0546_FileSpec
+        execution:
+          onExecute:
+            - echo "executing step"
