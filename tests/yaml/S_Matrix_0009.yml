@@ -1,0 +1,12 @@
+pipelines:
+  - name: Pipelines_S_Matrix_0009
+    steps:
+      - name: S_Matrix_0009
+        type: Matrix
+        stepMode: Bash
+        configuration:
+        stepletMultipliers:
+
+        execution:
+          onExecute:
+            - echo "Hello world"

@@ -1,0 +1,29 @@
+resources:
+  - name: script_repo1
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: jfbetapipeorg/Org_test_Automation
+
+pipelines:
+  - name: Pipelines_matrix
+    steps:
+      - name: S_Matrix_0023
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          inputResources:
+            - name: script_repo1
+        stepletMultipliers:
+          environmentVariables:
+            - env1: one
+        execution:
+          onExecute:
+            - cd $res_script_repo1_resourcePath
+            - python -m py_compile tests/core/sampleExecutionFile/calc.py
+            - pip install --upgrade pip
+            - hash -d pip
+            - pip install pytest
+            - cd $res_script_repo1_resourcePath
+            - py.test --verbose --junit-xml test-reports/results.xml tests/core/sampleExecutionFile/test_calc.py
+            - save_tests $res_script_repo1_resourcePath/test-reports/results.xml

@@ -1,0 +1,17 @@
+pipelines:
+  - name: S_Matrix_MN_003
+    steps:
+
+      - name: S_Matrix_MN_003_001
+        type: Matrix
+        stepMode: Bash
+        configuration:
+         multiNode: "some_invalid_value"
+        stepletMultipliers:
+          environmentVariables:
+            - foo: "foo"
+            - foo: "bar"
+            - foo: "baz"
+        execution:
+          onExecute:
+            - echo $foo

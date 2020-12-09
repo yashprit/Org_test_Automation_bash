@@ -1,0 +1,31 @@
+pipelines:
+  - name: Pipelines_S_Matrix_0018
+    steps:
+      - name: S_Matrix_0018
+        type: Matrix
+        stepMode: Bash
+        stepletMultipliers:
+          runtimes:
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - 10.21.0
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - 8.17.0
+        execution:
+          onExecute:
+            - |
+              if [[ "$step_image_tag" == "10.21.0" ]]; then 
+                echo "this steplet is running on runtime node-10.21.0 "
+              elif [[ "$step_image_tag" == "8.17.0" ]]; then
+                echo "this steplet is running on runtime node-8.17.0"
+              else 
+                echo "invalid" 
+                exit -1
+              fi

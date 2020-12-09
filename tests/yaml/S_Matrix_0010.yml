@@ -1,0 +1,9 @@
+pipelines:
+  - name: Matrix_pipeline
+    steps:
+      - name: S_Matrix_0010
+        type: Matrix
+        execution:
+          onExecute:
+            - echo "I am on Matrix step"
+            - set_step_var Matrix value1

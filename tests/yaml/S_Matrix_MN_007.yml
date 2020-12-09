@@ -1,0 +1,74 @@
+pipelines:
+  - name: S_Matrix_MN_007
+    steps:
+
+      - name: S_Matrix_MN_007_001
+        type: Bash
+        execution:
+          onStart:
+            - echo "Step is running"
+
+      - name: S_Matrix_MN_007_002
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          inputSteps:
+            - name: S_Matrix_MN_007_001
+          multiNode: true
+        stepletMultipliers:
+          environmentVariables:
+            - foo: "foo"
+            - foo: "bar"
+            - foo: "baz"
+        execution:
+          onStart:
+            - mkdir -p files
+            - echo "${foo}" >> ./files/${foo}.txt
+            - set_step_var "foo" "${foo}"
+          onExecute:
+            - echo "Executing matrix steplet - ${steplet_id} on node id - ${step_node_id}"
+
+      - name: S_Matrix_MN_007_003
+        type: PostMatrix
+        configuration:
+          inputSteps:
+            - name: S_Matrix_MN_007_002
+        execution:
+          onStart:
+            - mkdir -p state_files
+            - cp -r -p ./S_Matrix_MN_007_002/files/* ./state_files/
+            - echo "File from post-matrix step" >> ./state_files/post-matrix.txt
+            - add_run_files ./state_files matrix_step_state
+          onExecute:
+            - echo "Executing post-matrix step"
+
+      - name: S_Matrix_MN_007_004
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Matrix_MN_007_003
+        execution:
+          onStart:
+            - restore_run_files matrix_step_state ./files
+          onExecute:
+            - cat ./files/foo.txt
+            - if [ "$(cat ./files/foo.txt)" != "foo" ]; then exit 1; fi
+
+            - cat ./files/bar.txt
+            - if [ "$(cat ./files/bar.txt)" != "bar" ]; then exit 1; fi
+
+            - cat ./files/baz.txt
+            - if [ "$(cat ./files/baz.txt)" != "baz" ]; then exit 1; fi
+
+            - cat ./files/post-matrix.txt
+            - if [ "$(cat ./files/post-matrix.txt)" != "File from post-matrix step" ]; then exit 1; fi
+
+            - get_step_var "S_Matrix_MN_007_002" "foo"
+            - step_vars=$(get_step_var "S_Matrix_MN_007_002" "foo" | tr -d '\n')
+            - step_vars_combination_1="foobarbaz"
+            - step_vars_combination_2="foobazbar"
+            - step_vars_combination_3="barfoobaz"
+            - step_vars_combination_4="barbazfoo"
+            - step_vars_combination_5="bazfoobar"
+            - step_vars_combination_6="bazbarfoo"
+            - if [[ "$step_vars" != "$step_vars_combination_1" && "$step_vars" != "$step_vars_combination_2" && "$step_vars" != "$step_vars_combination_3" && "$step_vars" != "$step_vars_combination_4" && "$step_vars" != "$step_vars_combination_5" && "$step_vars" != "$step_vars_combination_6" ]]; then exit 1; fi

@@ -1,0 +1,27 @@
+pipelines:
+  - name: Matrix_pipeline
+    steps:
+      - name: S_Matrix_0013
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Executing Pre-Matrix step"
+            - set_step_var preMatrixStep value
+            - add_run_variables step_id_preMatrix=$steplet_id
+
+      - name: S_Matrix_0013_1
+        type: Matrix
+        configuration:
+          inputSteps:
+            - name: S_Matrix_0013
+        execution:
+          onExecute:
+            - printenv
+            - echo "Executing Matrix step"
+            - key="S_Matrix_0013_"$step_id_preMatrix"_preMatrixStep"
+            - echo "$key"
+            - res=`printenv | grep "$key"`
+            - echo "$res"
+            - | 
+              [ ! -z "$res" ]
+            

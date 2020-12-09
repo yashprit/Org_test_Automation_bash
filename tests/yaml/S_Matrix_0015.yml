@@ -1,0 +1,21 @@
+pipelines:
+  - name: Pipelines_S_Matrix_0015
+    steps:
+      - name: S_Matrix_0015
+        type: Matrix
+        stepMode: Bash
+        stepletMultipliers:
+          environmentVariables:
+            - env1: one
+            - env2: two
+        execution:
+          onExecute:
+            - |
+              if [ ! -z "$env1" ]; then 
+                echo "env1 is present in this steplet"
+              elif [ ! -z "$env2" ]; then
+                echo "env2 is present in this steplet"
+              else 
+                echo "invalid" 
+                exit -1
+              fi

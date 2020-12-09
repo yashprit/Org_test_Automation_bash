@@ -1,0 +1,39 @@
+pipelines:
+  - name: S_Matrix_0036
+    steps:
+      - name: set_up
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Preparing the code base"
+            - npm install
+            - echo "Installed npm"
+      - name: S_Matrix_0036
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          inputSteps:
+            - name: set_up
+        stepletMultipliers:
+          environmentVariables:
+            - animal: dog
+              bird: sparrow
+            - animal: cat
+              bird: crow
+          runtimes:
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - 12
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - 8.17.0    
+        execution:
+          onExecute:
+            - echo "Executing matrix step on ${steplet_id}"
+            - echo "Variation animal = ${animal}, bird = ${bird}"

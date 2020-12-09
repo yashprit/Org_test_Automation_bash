@@ -1,0 +1,22 @@
+pipelines:
+  - name: Matrix_pipeline
+    steps:
+      - name: S_Matrix_0012
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Executing matrix step"
+            - set_step_var my_Step value1
+
+
+      - name: S_Matrix_0012_1
+        type: Matrix
+        configuration:
+          inputSteps:
+            - name: S_Matrix_0012
+        execution:
+          onExecute:
+            - echo "Executing Matrix step"
+            - text=$( get_step_var S_Matrix_0012 my_Step )
+            - |
+              [[ "$text" == "value1" ]]

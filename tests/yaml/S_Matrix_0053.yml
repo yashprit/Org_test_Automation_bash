@@ -1,0 +1,29 @@
+pipelines:
+  - name: S_Matrix_0053
+    steps:
+      - name: S_Matrix_0053
+        type: Matrix
+        stepMode: Bash 
+        stepletMultipliers:
+          environmentVariables:             # Sets of environment variables for steplets
+            - animal:    dog                # - Set 1
+              mineral:   copper
+              vegetable: carrot
+          runtimes:                         # Runtimes for steplets
+            - type: image
+              image:
+                custom:
+                  name: shippabledocker/jfreq # Right Image name
+                  tag: latest
+                  registry: i_dockerRegistry
+            - type: image
+              image:
+                custom:
+                  name: shippabledocker/jfreqqq # Wrong Image name
+                  tag: latest
+                  registry: i_dockerRegistry
+       
+        execution:
+          onExecute:
+            - echo "I am executing matrix steplet ${steplet_id}"
+            - echo "Envs animal= $animal , mineral = $mineral "

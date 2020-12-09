@@ -1,0 +1,27 @@
+pipelines:
+  - name: Pipelines_S_Matrix_0020
+    steps:
+      - name: S_Matrix_0020
+        type: Matrix
+        stepMode: Bash
+        stepletMultipliers:
+          environmentVariables:
+            - env1: one
+            - env2: two
+          runtimes:
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - 10.21.0
+
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - 8.17.0
+        execution:
+          onExecute:
+            - echo "Hello world"

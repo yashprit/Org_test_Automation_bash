@@ -1,0 +1,36 @@
+pipelines:
+  - name: S_Matrix_MN_006
+    steps:
+
+      - name: S_Matrix_MN_006_001
+        type: Matrix
+        stepMode: Bash
+        configuration:
+         multiNode: true
+        stepletMultipliers:
+          environmentVariables:
+            - foo: "foo"
+              fail: false
+            - foo: "bar"
+              fail: true
+            - foo: "baz"
+              fail: false
+          fastFail: true
+          allowFailures:
+            - environmentVariables:
+                foo: "bar"
+                fail: true
+        execution:
+          onExecute:
+            - echo "foo - ${foo}"
+            - echo "fail - ${fail}"
+            - if [ "$fail" == true ]; then exit 1; fi
+
+      - name: S_Matrix_MN_006_002
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Matrix_MN_006_001
+        execution:
+          onExecute:
+            - echo "Step 2 is running"

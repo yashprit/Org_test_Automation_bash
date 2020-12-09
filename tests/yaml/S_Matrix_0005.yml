@@ -1,0 +1,25 @@
+pipelines:
+  - name: Matrix_pipeline
+    steps:
+      - name: S_Matrix_0005
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Executing PreMatrix step...."
+      
+      - name: S_Matrix_0005_2
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Executing PreMatrix step...."
+            
+      - name: S_Matrix_0005_1
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          inputSteps:
+            - name: S_Matrix_0005  
+            - name: S_Matrix_0005_2
+        execution:
+          onExecute:
+            - echo "Hello world"

@@ -1,0 +1,23 @@
+pipelines:
+  - name: Matrix_pipeline
+    steps:
+      - name: S_Matrix_0022
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Hello World"
+            - echo "Fan out working" > PreMatrix_1.txt
+
+      - name: Matrix_step
+        type: Matrix
+        configuration:
+          inputSteps:
+            - name: S_Matrix_0022
+        execution:
+          onExecute:
+            - echo "Executing matrix step"
+
+            - tem=$( ls -l ./S_Matrix_0022| sed -n '2p' )
+            - x=$( echo $tem | awk -F " " '{print $NF}' )
+            - |
+              [[ "$x" == "PreMatrix_1.txt" ]]

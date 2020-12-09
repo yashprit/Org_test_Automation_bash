@@ -1,0 +1,24 @@
+pipelines:
+  - name: Pipelines_S_Matrix_0014
+    steps:
+      - name: S_Matrix_0014
+        type: Matrix
+        stepMode: Bash
+        stepletMultipliers:
+          environmentVariables:
+            - env1: one
+            - env2: two
+        execution:
+          onExecute:
+            - test=$step_name
+            - |
+              if [ ! -z "$env1" ] || [ ! -z "$env2" ]; then
+                if [[ "$test" == "S_Matrix_0014" ]]; then
+                  echo "success"
+                else
+                  exit -1
+                fi
+              else 
+                echo "invalid"
+                exit -1
+              fi
