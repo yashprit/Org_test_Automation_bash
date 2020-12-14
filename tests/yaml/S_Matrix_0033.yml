@@ -1,19 +1,9 @@
 pipelines:
   - name: S_Matrix_0033
     steps:
-      - name: set_up
-        type: PreMatrix
-        execution:
-          onExecute:
-            - echo "Preparing the code base"
-            - npm install
-            - echo "Installed npm"
       - name: S_Matrix_0033
         type: Matrix
         stepMode: Bash
-        configuration:
-          inputSteps:
-            - name: set_up
         stepletMultipliers:
           environmentVariables:
             - animal: dog

@@ -15,13 +15,13 @@ pipelines:
                 custom:
                   name: shippabledocker/jfreq 
                   tag: latest               # Right Image tag
-                  registry: i_dockerRegistry
+                  registry: BSN_DockerRegistry
             - type: image
               image:
                 custom:
                   name: shippabledocker/jfreq 
                   tag: notlatest               # Wrong Image tag
-                  registry: i_dockerRegistry
+                  registry: BSN_DockerRegistry
        
         execution:
           onExecute:
