@@ -1,0 +1,20 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0555
+        type: Bash
+        configuration:
+          nodePool: u20dynamic
+          runtime:
+            type: image
+            image:
+              auto:
+                language: java
+                versions:
+                  - "11"
+        execution:
+          onExecute:
+            - |
+              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-u20java:11" ]]
+            - |
+              [[ "$(java --version)" == *"$step_image_tag"* ]]

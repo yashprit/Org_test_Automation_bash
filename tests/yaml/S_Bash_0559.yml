@@ -1,0 +1,20 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0559
+        type: Bash
+        configuration:
+          nodePool: u20dynamic
+          runtime:
+            type: image
+            image:
+              auto:
+                language: node
+                versions:
+                  - 10.21.0
+        execution:
+          onExecute:
+            - |
+              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-u20node:10.21.0" ]]
+            - |
+              [[ "$(node --version)" == *"$step_image_tag"* ]]
