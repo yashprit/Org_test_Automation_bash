@@ -1,0 +1,23 @@
+pipelines:
+  - name: pipeline_automation
+    steps:
+      - name: S_Bash_0548
+        type: Bash
+        configuration:
+          nodePool: c8dynamic
+          runtime:
+            type: image
+            image:
+              auto:
+                language: go
+                versions:
+                  - 1.11.13
+        execution:
+          onExecute:
+            - |
+              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-c8go:1.11.13" ]]
+            - source /root/.gvm/scripts/gvm
+            - gvm list
+            - gvm use 1.11
+            - |
+              [[ "$(go version)" == *"$step_image_tag"* ]]
