@@ -1,0 +1,18 @@
+resources:
+  - name: S_PreMatrix_0016_resource
+    type: PropertyBag
+    configuration:
+      runNumber: 0
+
+pipelines:
+  - name: pipeline_S_PreMatrix_0016
+    steps:
+      - name: S_PreMatrix_0016
+        type: PreMatrix
+        configuration:
+          inputResources:
+            - name: S_PreMatrix_0016_resource
+              newVersionOnly: true
+        execution:
+          onExecute:
+            - echo "test"

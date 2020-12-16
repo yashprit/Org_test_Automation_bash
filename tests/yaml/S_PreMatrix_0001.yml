@@ -1,0 +1,8 @@
+pipelines:
+  - name: PreMatrix_pipeline
+    steps:
+      - name: PreMatrix_step
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Executing PreMatrix step...."

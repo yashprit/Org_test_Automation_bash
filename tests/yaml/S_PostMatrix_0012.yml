@@ -1,0 +1,42 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:
+      - name: S_PostMatrix_0012
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Hello World"
+            - echo "Fan out working" > PreMatrix_1.txt
+            
+      - name: matrix_step1
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          inputSteps:
+            - name: S_PostMatrix_0012
+        stepletMultipliers:
+          environmentVariables:
+            - key1: value1
+        execution:
+          onExecute:
+            - echo "Executing matrix step"
+            - echo "Fan out working" > PreMatrix_2.txt
+
+      - name: PostMatrix_step
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: matrix_step1
+        execution:
+          onExecute:
+            - echo "Executing fanin step"
+            - txt=$( ls -l ./matrix_step1 | sed -n '2p' )
+            - y=$( echo $txt | awk -F " " '{print $NF}' )
+            - |
+              [[ "$y" == "PreMatrix_2.txt" ]]
+            
+            - tem=$( ls -l ./matrix_step1/S_PostMatrix_0012| sed -n '2p' )
+            - x=$( echo $tem | awk -F " " '{print $NF}' )
+            - |
+              [[ "$x" == "PreMatrix_1.txt" ]]
+            

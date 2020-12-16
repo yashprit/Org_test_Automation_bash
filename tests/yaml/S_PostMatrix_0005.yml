@@ -1,0 +1,24 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:
+      - name: PreMatrix_step
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Hello World"
+            
+      - name: PreMatrix_step2
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Hello World"      
+            
+      - name: PostMatrix_step
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: PreMatrix_step
+            - name: PreMatrix_step2
+        execution:
+          onExecute:
+            - echo "Executing fanin step"

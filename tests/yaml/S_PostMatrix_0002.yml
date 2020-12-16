@@ -1,0 +1,26 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:
+      - name: PostMatrix_step
+        type: PostMatrix
+        execution:
+          onExecute:
+            - echo "Hello World"
+            
+      - name: PostMatrix_step2
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: PostMatrix_step
+        execution:
+          onExecute:
+            - echo "Hello World"  
+            
+      - name: PostMatrix_step3
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: PostMatrix_step2
+        execution:
+          onExecute:
+            - echo "Hello World"       

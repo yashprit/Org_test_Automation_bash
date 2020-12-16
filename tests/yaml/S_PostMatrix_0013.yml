@@ -1,0 +1,47 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:
+      - name: S_PostMatrix_0013
+        type: Bash
+        execution:
+          onStart:
+            - echo "Lets start"
+            
+      - name: PreMatrix_step1
+        type: PreMatrix
+        configuration:
+          inputSteps: 
+            - name: S_PostMatrix_0013
+        execution:
+          onExecute:
+            - echo "Hello World"
+            - echo "Fan out working" > PreMatrix_1.txt
+            
+      - name: PreMatrix_step2
+        type: PreMatrix
+        configuration:
+          inputSteps: 
+            - name: S_PostMatrix_0013
+        execution:
+          onExecute:
+            - echo "Hello World"
+            - echo "Fan out working" > PreMatrix_2.txt     
+
+      - name: PostMatrix_step
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: PreMatrix_step2
+            - name: PreMatrix_step1
+        execution:
+          onExecute:
+            - echo "Executing fanin step"
+            - tem=$( ls -l ./PreMatrix_step1| sed -n '2p' )
+            - x=$( echo $tem | awk -F " " '{print $NF}' )
+            - |
+              [[ "$x" == "PreMatrix_1.txt" ]]
+         
+            - tem=$( ls -l ./PreMatrix_step2| sed -n '2p' )
+            - x=$( echo $tem | awk -F " " '{print $NF}' )
+            - |
+              [[ "$x" == "PreMatrix_2.txt" ]]   

@@ -1,0 +1,27 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:
+      - name: S_PostMatrix_0010
+        type: Matrix
+        stepMode: Bash
+        stepletMultipliers:
+          environmentVariables:
+            - key1: value1
+        execution:
+          onExecute:
+            - echo "Executing matrix step"
+            - set_step_var test_key "automation"
+            - add_run_variables id=$steplet_id
+            - export_run_variables 
+
+      - name: PostMatrix_step
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: S_PostMatrix_0010
+        execution:
+          onExecute:
+            - echo "Executing fanin step"
+            - res=$(printenv | grep test_key | sed -n '1p')
+            - |
+              [[ "$res" == S_PostMatrix_0010_"$id"_test_key=automation ]]

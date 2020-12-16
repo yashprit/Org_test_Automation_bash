@@ -1,0 +1,17 @@
+pipelines:
+  - name: PreMatrix_pipeline
+    steps:
+      - name: PostMatrix_step
+        type: PostMatrix
+        execution:
+          onExecute:
+            - echo "Executing PostMatrix step"
+      
+      - name: PreMatrix_step2
+        type: PreMatrix
+        configuration:
+          inputSteps: 
+            - name: PostMatrix_step
+        execution:
+          onExecute:
+            - echo "Executing PreMatrix step...."

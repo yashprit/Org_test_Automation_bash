@@ -1,0 +1,25 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:           
+      - name: S_PostMatrix_0008
+        type: Matrix
+        stepMode: Bash
+        stepletMultipliers:
+          environmentVariables:
+            - key1: value1
+        execution:
+          onExecute:
+            - echo "Executing matrix step"
+            - set_step_var my_Step value1
+
+      - name: PostMatrix_step
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: S_PostMatrix_0008
+        execution:
+          onExecute:
+            - echo "Executing fanin step"
+            - text=$( get_step_var S_PostMatrix_0008 my_Step )
+            - |
+              [[ "$text" == "value1" ]]

@@ -1,0 +1,10 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:
+      - name: S_PostMatrix_0019
+        type: PostMatrix
+        execution:
+          onExecute:
+            - echo "Hello World"
+            - |
+              [ ! -z "$step_configuration_environmentVariables_0_key" ]             

@@ -1,0 +1,44 @@
+pipelines:
+  - name: PostMatrix_pipeline
+    steps:
+      - name: PreMatrix_step
+        type: PreMatrix
+        execution:
+          onExecute:
+            - echo "Hello World"
+            
+      - name: matrix_step1
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          inputSteps:
+            - name: PreMatrix_step
+        stepletMultipliers:
+          environmentVariables:
+            - key1: value1
+        execution:
+          onExecute:
+            - echo "Executing matrix step"
+
+      - name: matrix_step2
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          inputSteps:
+            - name: PreMatrix_step
+        stepletMultipliers:
+          environmentVariables:
+            - key1: value2
+        execution:
+          onExecute:
+            - echo "Executing matrix step"
+
+      - name: PostMatrix_step
+        type: PostMatrix
+        configuration:
+          inputSteps: 
+            - name: matrix_step1
+            - name: matrix_step2
+        execution:
+          onExecute:
+            - echo "Executing fanin step"
