@@ -4,7 +4,7 @@ pipelines:
       - name: S_Bash_0551
         type: Bash
         configuration:
-          nodePool: c7dynamic
+          nodePool: c8dynamic
           runtime:
             type: image
             image:
