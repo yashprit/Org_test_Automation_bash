@@ -11,6 +11,8 @@ pipelines:
       - name: S_Bash_UtilityFunction
         type: Bash
         configuration:
+          runtime:
+            type: host
           integrations:
             - name: s_gitHub
           inputResources:
@@ -73,6 +75,8 @@ pipelines:
       - name: S_Bash_UtilityFunction_step_2
         type: Bash
         configuration:
+          runtime:
+            type: host
           integrations:
             - name: s_gitHub
           inputSteps:
@@ -94,6 +98,8 @@ pipelines:
       - name: S_Bash_UtilityFunction_step_3
         type: Bash
         configuration:
+          runtime:
+            type: host
           integrations:
             - name: s_gitHub
           inputResources:

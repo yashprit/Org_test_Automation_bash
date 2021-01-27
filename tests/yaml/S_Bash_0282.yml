@@ -6,6 +6,8 @@ pipelines:
         configuration:
           integrations:
             - name: BSI_DockerRegistry
+          runtime:
+            type: host
         execution:
           onExecute:
             - echo "executing step..."

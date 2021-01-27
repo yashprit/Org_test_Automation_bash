@@ -11,6 +11,8 @@ pipelines:
       - name: S_Bash_0136
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0136_GitRepo
         execution:

@@ -11,6 +11,8 @@ pipelines:
       - name: S_Bash_0167
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0167_IncomingWebhook
               trigger: false

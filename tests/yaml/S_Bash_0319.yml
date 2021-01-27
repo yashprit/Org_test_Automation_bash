@@ -6,6 +6,8 @@ pipelines:
         configuration:
           integrations:
             - name: BSI_GoogleCloud
+          runtime:
+            type: host
         execution:
           onExecute:
             - |

@@ -4,6 +4,8 @@ pipelines:
       - name: S_FileSpec_Upload
         type: Bash
         configuration:
+          runtime:
+            type: host
           integrations:
             - name: s_artifactory
         execution:

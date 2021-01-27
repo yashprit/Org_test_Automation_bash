@@ -12,6 +12,8 @@ pipelines:
       - name: S_Bash_Util_0016
         type: Matrix
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: repo_pipe
         stepMode: Bash
@@ -34,6 +36,8 @@ pipelines:
       - name: S_Bash_Util_0016_2
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputSteps:
             - name: S_Bash_Util_0016
         execution:

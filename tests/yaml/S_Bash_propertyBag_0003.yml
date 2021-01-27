@@ -10,6 +10,8 @@ pipelines:
       - name: S_Bash_propertyBag_0003
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0003_propertyBag
         execution:

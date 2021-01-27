@@ -11,6 +11,8 @@ pipelines:
       - name: S_Bash_Util_0007
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: repo_pipe
 

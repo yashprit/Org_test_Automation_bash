@@ -14,6 +14,8 @@ pipelines:
       - name: S_Bash_0508
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0508_FileSpec
         execution:

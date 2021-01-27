@@ -16,6 +16,8 @@ pipelines:
       - name: S_Bash_0138
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0138_GitRepo
               trigger: true

@@ -12,6 +12,8 @@ pipelines:
       - name: S_Bash_Util_0015
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: repo_pipe
         execution:
@@ -21,6 +23,8 @@ pipelines:
       - name: S_Bash_Util_0015_2
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputSteps:
             - name: S_Bash_Util_0015
         execution:
@@ -33,6 +37,8 @@ pipelines:
       - name: S_Bash_Util_0015_3
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputSteps:
             - name: S_Bash_Util_0015
         execution:
@@ -45,6 +51,8 @@ pipelines:
       - name: S_Bash_Util_0015_4
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputSteps:
             - name: S_Bash_Util_0015_2
             - name: S_Bash_Util_0015_3

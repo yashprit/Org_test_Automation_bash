@@ -10,6 +10,8 @@ pipelines:
       - name: S_Bash_0170
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0170_IncomingWebhook
         execution:

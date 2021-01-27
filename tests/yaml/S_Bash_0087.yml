@@ -13,6 +13,8 @@ pipelines:
       - name: S_Bash_0087
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0087_BuildInfo
               trigger: true

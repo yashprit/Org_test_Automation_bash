@@ -14,6 +14,8 @@ pipelines:
       - name: S_Bash_0130
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0130_FileSpec
               trigger: false

@@ -6,6 +6,8 @@ pipelines:
         configuration:
           integrations:
             - name: s_gitHub
+          runtime:
+            type: host
         execution:
           onExecute:
             - echo "executing step..."

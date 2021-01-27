@@ -12,6 +12,8 @@ pipelines:
       - name: S_Bash_0503
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0503_Image
               trigger: false

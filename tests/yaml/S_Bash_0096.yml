@@ -13,6 +13,8 @@ pipelines:
       - name: S_Bash_0096
         type: Bash
         configuration:
+          runtime:
+            type: host
           outputResources:
             - name: S_Bash_0096_BuildInfo
         execution:

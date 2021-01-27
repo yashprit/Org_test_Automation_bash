@@ -14,6 +14,8 @@ pipelines:
       - name: S_Bash_0159
         type: Bash
         configuration:
+          runtime:
+            type: host
           outputResources:
             - name: S_Bash_0159_Image
         execution:

@@ -13,6 +13,8 @@ pipelines:
       - name: S_Bash_0437
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0437_FileSpec
         execution:

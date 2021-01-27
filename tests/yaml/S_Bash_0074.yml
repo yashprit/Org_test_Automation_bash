@@ -22,6 +22,8 @@ pipelines:
       - name: S_Bash_0074
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0074_Aql
               trigger: false

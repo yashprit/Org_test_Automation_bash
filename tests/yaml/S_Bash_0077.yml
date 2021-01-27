@@ -22,6 +22,8 @@ pipelines:
       - name: S_Bash_0077
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0077_Aql
         execution:

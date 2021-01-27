@@ -14,6 +14,8 @@ pipelines:
       - name: S_Bash_0396
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0396_FileSpec
         execution:

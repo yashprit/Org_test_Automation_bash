@@ -22,6 +22,8 @@ pipelines:
       - name: S_Bash_0080
         type: Bash
         configuration:
+          runtime:
+            type: host
           outputResources:
             - name: S_Bash_0080_Aql
         execution:

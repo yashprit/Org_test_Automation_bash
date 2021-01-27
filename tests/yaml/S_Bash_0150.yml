@@ -14,6 +14,8 @@ pipelines:
       - name: S_Bash_0150
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: S_Bash_0150_Image
         execution:
