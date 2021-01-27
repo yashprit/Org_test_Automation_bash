@@ -6,6 +6,8 @@ pipelines:
         configuration:
           integrations:
             - name: s_artifactory
+          runtime:
+            type: host
         execution:
           onExecute:
             - touch foo
