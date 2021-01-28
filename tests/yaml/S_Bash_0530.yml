@@ -3,6 +3,9 @@ pipelines:
     steps:
       - name: S_Bash_0530
         type: Bash
+        configuration:
+          runtime:
+            type: host
         execution:
           onExecute:
             - echo testvariable="{{.test}}"

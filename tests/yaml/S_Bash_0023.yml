@@ -4,6 +4,9 @@ pipelines:
       - name: S_Bash_0023
         type: Bash
         configuration:
+          runtime:
+            type: host
+        
           timeoutSeconds: 5
         execution:
           onExecute:

@@ -3,4 +3,7 @@ pipelines:
     steps:
       - name: S_Bash_0007
         type: Bash
+        configuration:
+          runtime:
+            type: host
         execution:

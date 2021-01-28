@@ -4,6 +4,8 @@ pipelines:
       - name: S_Bash_0028
         type: Bash
         configuration:
+          runtime:
+            type: host
           environmentVariables:
             key: value
             test: auto

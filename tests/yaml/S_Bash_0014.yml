@@ -4,6 +4,8 @@ pipelines:
       - name: S_Bash_0014
         type: Bash
         configuration:
+          runtime:
+            type: host
           affinityGroup: bldGroup 
         execution:
           onExecute:
@@ -12,6 +14,8 @@ pipelines:
       - name: S_Bash_0014_1
         type: Bash
         configuration:
+          runtime:
+            type: host
           affinityGroup: bldGroup
         execution:
           onExecute:
