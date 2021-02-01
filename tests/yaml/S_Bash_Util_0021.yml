@@ -1,0 +1,17 @@
+resources:
+  - name: S_Bash_Util_0021_output
+    type: PropertyBag
+    configuration:
+      testItem: testValue
+
+pipelines:
+  - name: S_Bash_Util_0021
+    steps:
+      - name: S_Bash_Util_0021
+        type: Bash
+        configuration:
+          outputResources:
+            - name: S_Bash_Util_0021_output
+        execution:
+          onExecute:
+            - write_output S_Bash_Util_0021_output "test= value"
