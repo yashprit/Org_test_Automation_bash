@@ -12,6 +12,8 @@ pipelines:
       - name: S_Bash_Util_0018
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputResources:
             - name: repo_pipe
         execution:
@@ -22,6 +24,8 @@ pipelines:
       - name: S_Bash_Util_0018_2
         type: Bash
         configuration:
+          runtime:
+            type: host
           inputSteps:
             - name: S_Bash_Util_0018
         execution:
