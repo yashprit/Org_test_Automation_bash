@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipelines_S_Bash_0575
+    steps:
+      - name: S_Bash_0575
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_pagerduty
+        execution:
+          onExecute:
+            - echo "executing step..."
