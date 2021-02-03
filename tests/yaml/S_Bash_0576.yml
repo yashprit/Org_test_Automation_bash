@@ -1,0 +1,19 @@
+pipelines:
+  - name: pipelines_S_Bash_0576
+    steps:
+      - name: S_Bash_0576
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_pagerduty
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - |
+              [ ! -z "$int_i_pagerduty_masterName"  ]
+            - |
+              [ ! -z "$int_i_pagerduty_id"  ]
+            - |
+              [ ! -z "$int_i_pagerduty_url"  ]
+            - |
+              [ ! -z "$int_i_pagerduty_token"  ]
