@@ -4,10 +4,10 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
-      pattern: "example-repo-local/setup/test.sh"
+      pattern: "example-repo-local/setup/*"
       recursive: false
       excludePatterns: 
-        - "#arti*"
+        - "*.ps1"
 
 pipelines:
 
