@@ -21,3 +21,4 @@ pipelines:
         execution:
           onExecute:
             - echo "executing step..."
+            - ls
