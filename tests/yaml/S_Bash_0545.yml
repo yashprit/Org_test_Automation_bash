@@ -6,7 +6,7 @@ resources:
       pattern: "*/s_foo*"
       limit: 1
       exclusions:
-        - "*/pipeInfo.json"
+        - "example-repo-local/pipeInfo.json"
       target: "/testing/"
 pipelines:
   - name: pipelines_S_Bash_0545
@@ -20,4 +20,5 @@ pipelines:
           onExecute:
             - echo "executing step"
             - if [ -f "/testing/s_foo" ]; then echo "found the file"; fi
+            - if [ -f "/testing/pipeInfo.json" ]; then echo "wrong file found"; exit 1; fi
             - if [ ! -f "/testing/s_foo" ]; then echo "error finding the file"; exit 1; fi
