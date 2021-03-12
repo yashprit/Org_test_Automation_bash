@@ -1,0 +1,17 @@
+pipelines:
+  - name: S_Matrix_MN_010
+    steps:
+      - name: S_Matrix_MN_010
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          multiNode: true
+        stepletMultipliers:
+          environmentVariables:
+            - test: "one"
+            - test: "two"
+            - test: "three"
+        execution:
+          onExecute:
+            - "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?><testsuite name=\"myTestSuite\" tests=\"5\" errors=\"2\" failures=\"1\" skip=\"1\"><testcase classname=\"test.One\" name=\"test\" time=\"1\"></testcase><testcase classname=\"test.Two\" name=\"test\" time=\"2\"><error message=\"test.Error\" type=\"ErrorType\">myError</error></testcase><testcase classname=\"test.Three\" name=\"test\" time=\"0\"><skipped/></testcase><testcase classname=\"test.Four\" name=\"test\" time=\"3\"><failure type=\"exceptions.AssertionError\" message=\"True is not false\">My failure message</failure></testcase><testcase classname=\"test.Five\" name=\"test\" time=\"1\"><error message=\"test.Error\" type=\"ErrorType\">mySecondError</error></testcase></testsuite>' > test.xml"
+            - save_tests test.xml
