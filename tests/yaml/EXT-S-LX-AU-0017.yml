@@ -1,0 +1,31 @@
+pipelines:
+  - name: pipeline_EXT_S_LX_AU_0017
+    steps:
+      - name: EXT_S_LX_AU_0017_1
+        type: UploadArtifact
+        configuration:
+          targetPath: test-automation-generic-local/EXT_S_LX_AU_0017/
+          includeDirs: true
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - mkdir ${step_tmp_dir}/ArtifactUpload
+            - cd ${step_tmp_dir}/ArtifactUpload
+            - mkdir -p EXT_S_LX_AU_0017/empty
+            - echo "${run_id}" > EXT_S_LX_AU_0017/EXT_S_LX_AU_0017_file.txt
+            - cd ..
+
+      - name: EXT_S_LX_AU_0017_2
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputSteps:
+            - name: EXT_S_LX_AU_0017_1
+        execution:
+          onExecute:
+            - jfrog rt download --include-dirs test-automation-generic-local/EXT_S_LX_AU_0017/* ./
+            - ls -alR
+            - if [ ! -d EXT_S_LX_AU_0017/empty ]; then return 1; fi
+            - if [ ! -f EXT_S_LX_AU_0017/EXT_S_LX_AU_0017_file.txt ]; then return 1; fi

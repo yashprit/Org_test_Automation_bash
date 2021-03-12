@@ -1,0 +1,44 @@
+resources:
+  - name: EXT_S_LX_AU_0012_fileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "test-automation-generic-local/EXT_S_LX_AU_0012_fileSpec.txt"
+
+pipelines:
+  - name: pipeline_EXT_S_LX_AU_0012
+    steps:
+      - name: EXT_S_LX_AU_0012_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: EXT_S_LX_AU_0012_fileSpec
+        execution:
+          onExecute:
+            - echo "${run_id}" > EXT_S_LX_AU_0012_fileSpec.txt
+            - jfrog rt upload EXT_S_LX_AU_0012_fileSpec.txt test-automation-generic-local
+
+      - name: EXT_S_LX_AU_0012_2
+        type: UploadArtifact
+        configuration:
+          targetPath: test-automation-generic-local/EXT_S_LX_AU_0012.txt
+          deb: "dist/test\\\/test/arch"
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: EXT_S_LX_AU_0012_fileSpec
+
+      - name: EXT_S_LX_AU_0012_3
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputSteps:
+            - name: EXT_S_LX_AU_0012_2
+        execution:
+          onExecute:
+            - jfrog rt download --props="deb.distribution=dist;deb.component=test/test;deb.architecture=arch" test-automation-generic-local/EXT_S_LX_AU_0012.txt EXT_S_LX_AU_0012.txt
+            - contents=$(cat EXT_S_LX_AU_0012.txt)
+            - if [ "$contents" != "$run_id" ]; then return 1; fi
