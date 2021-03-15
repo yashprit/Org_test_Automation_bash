@@ -1,0 +1,13 @@
+pipelines:
+  - name: S_B_Generic_0007
+    steps:
+      - name: S_B_Generic_0007_1
+        type: test/PrintEnvVar
+        configuration:
+          environmentVariables:
+            step_env_var:
+              default: value1
+              values:
+                - value1
+                - value2
+          envVarName:  step_env_var

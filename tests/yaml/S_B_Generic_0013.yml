@@ -1,0 +1,13 @@
+pipelines:
+  - name: S_B_Generic_0013
+    steps:
+      - name: S_B_Generic_0013_1
+        type: Bash
+        configuration:
+          environmentVariables:
+            step_env_var:
+              default: value1
+              values: value1,value2
+        execution:
+          onExecute:
+            - echo $step_env_var
