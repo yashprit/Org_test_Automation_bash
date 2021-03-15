@@ -1,0 +1,9 @@
+pipelines:
+  - name: pipelines_S_Bash_0583
+    steps:
+      - name: S_Bash_0583
+        type: Bash
+        execution:
+          onExecute:
+            - echo "$step_url"
+            - if [[ "$step_url" != *"/ui/pipelines/myPipelines/${project_name}/${pipeline_name}/${run_number}/${step_name}"* ]]; then exit 1; fi

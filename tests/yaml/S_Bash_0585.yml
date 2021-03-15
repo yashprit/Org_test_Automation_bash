@@ -1,0 +1,8 @@
+pipelines:
+  - name: pipelines_S_Bash_0585
+    steps:
+      - name: S_Bash_0585
+        type: Bash
+        execution:
+          onExecute:
+            - if [ "$JFROG_CLI_BUILD_PROJECT" != "$project_key" ]; then exit 1; fi

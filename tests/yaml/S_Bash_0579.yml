@@ -1,0 +1,34 @@
+pipelines:
+  - name: pipelines_S_Bash_0579
+    steps:
+      - name: S_Bash_0579_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed -r 's#.*//([^/]*)/.*#\1#')
+            - add_run_variables imageName="${artifactory_registry_url}/test-automation-docker-local/s_bash_0579"
+            - add_run_variables imageTag="${run_id}"
+            - echo "FROM releases-docker.jfrog.io/jfrog/pipelines-u18node:12.18.2" > Dockerfile
+            - docker build --rm=true -t $imageName:$imageTag .
+            - $jfrog_cli_path rt docker-push $imageName:$imageTag test-automation-docker-local
+            - docker rmi $imageName:$imageTag
+
+      - name: S_Bash_0579_2
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              custom:
+                name: ${imageName}
+                tag: ${run_id}
+                registry: s_artifactory
+                sourceRepository: test-automation-docker-local
+          inputSteps:
+            - name: S_Bash_0579_1
+        execution:
+          onExecute:
+            - if [[ "$(docker images -q $imageName:$imageTag 2> /dev/null)" == "" ]]; then exit 1; fi

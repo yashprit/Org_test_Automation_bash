@@ -1,0 +1,42 @@
+resources:
+
+  - name: S_Bash_0578_Image
+    type: Image
+    configuration:
+      registry: s_artifactory
+      sourceRepository: test-automation-docker-local
+      imageName: ${artifactory_registry_url}/test-automation-docker-local/s_bash_0578
+      imageTag: ${run_id}
+      autoPull: true
+
+pipelines:
+  - name: pipelines_S_Bash_0578
+    steps:
+      - name: S_Bash_0578_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_Bash_0578_Image
+        execution:
+          onExecute:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed -r 's#.*//([^/]*)/.*#\1#')
+            - add_run_variables artifactory_registry_url="$artifactory_registry_url"
+            - echo "FROM releases-docker.jfrog.io/jfrog/pipelines-u18node:12.18.2" > Dockerfile
+            - imageName=$(find_resource_variable S_Bash_0578_Image imageName)
+            - imageTag=$(find_resource_variable S_Bash_0578_Image imageTag)
+            - docker build --rm=true -t $imageName:$imageTag .
+            - $jfrog_cli_path rt docker-push $imageName:$imageTag $res_S_Bash_0578_Image_sourceRepository
+            - docker rmi $imageName:$imageTag
+
+      - name: S_Bash_0578_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0578_Image
+        execution:
+          onExecute:
+            - imageName=$(find_resource_variable S_Bash_0578_Image imageName)
+            - imageTag=$(find_resource_variable S_Bash_0578_Image imageTag)
+            - if [[ "$(docker images -q $imageName:$imageTag 2> /dev/null)" == "" ]]; then exit 1; fi
