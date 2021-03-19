@@ -1,0 +1,19 @@
+pipelines:
+  - name: S_B_Jen_0043
+    steps:
+      - name: S_B_Jen_0043_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "executing step.."
+            - cat doesnotexist.txt
+            
+      - name: S_B_Jen_0043_2
+        type: Jenkins
+        configuration:
+          inputSteps:
+            - name: S_B_Jen_0043_1
+          jenkinsJobName: testPipeline
+          integrations:
+            - name: S_B_Jenkins
+

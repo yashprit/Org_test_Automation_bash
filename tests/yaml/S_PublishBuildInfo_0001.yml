@@ -1,0 +1,32 @@
+resources:
+  - name: S_PublishBuildInfo_0001_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_PublishBuildInfo_0001_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PublishBuildInfo_0001
+    steps:
+      - name: S_PublishBuildInfo_0001_inputStep
+        type: Bash
+        execution:
+          onExecute:
+            - echo "test"
+      - name: S_PublishBuildInfo_0001
+        type: PublishBuildInfo
+        configuration:
+          inputResources:
+            - name: S_PublishBuildInfo_0001_input
+              newVersionOnly: true
+          outputResources:
+            - name: S_PublishBuildInfo_0001_output
+          inputSteps:
+            - name: S_PublishBuildInfo_0001_inputStep

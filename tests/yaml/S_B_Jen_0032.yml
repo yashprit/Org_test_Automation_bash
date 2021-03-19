@@ -1,0 +1,25 @@
+resources:
+  - name: S_B_Jen_0032_pb
+    type: PropertyBag
+    configuration:
+      key: value
+      foo: bar
+pipelines:
+  - name: S_B_Jen_0032
+    steps:
+      - name: S_B_Jen_0032_1
+        type: Bash 
+        configuration:
+          outputResources:
+            - name: S_B_Jen_0032_pb
+        execution:
+          onStart:
+            - echo "executing onStart"
+      - name: S_B_Jen_0032_2
+        type: Jenkins
+        configuration:
+          inputResources:
+            - name: S_B_Jen_0032_pb
+          jenkinsJobName: testPipelineOR
+          integrations:
+            - name: S_B_Jenkins

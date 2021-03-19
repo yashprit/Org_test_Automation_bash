@@ -1,0 +1,13 @@
+pipelines:
+  - name: S_B_Jen_0002_pipelines
+    steps:
+      - name: S_B_Jen_0002                 
+        type: Jenkins
+        configuration:
+          jenkinsJobName: auto_job  
+          jenkinsBranchName: test 
+          buildParameters:
+            key1: value1
+            key2: value2            
+          integrations:
+            - name: S_B_jenkins   

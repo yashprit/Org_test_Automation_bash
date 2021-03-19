@@ -1,0 +1,12 @@
+pipelines:
+  - name: S_B_Jen_0048
+    steps:
+      - name: S_B_Jen_0048_1
+        type: Jenkins
+        configuration:
+          jenkinsJobName: testPipeline   
+          buildParameters:
+            run1: 'test1frombash'
+          integrations:
+            - name: S_B_Jenkins 
+

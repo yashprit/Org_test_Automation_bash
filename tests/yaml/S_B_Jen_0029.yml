@@ -1,0 +1,25 @@
+pipelines:
+  - name: S_B_Jen_0029
+    steps:
+      - name: S_B_Jen_0029_1
+        type: Jenkins
+        configuration:
+          jenkinsJobName: testPipeline  
+          integrations:
+            - name: jenkins
+      - name: S_B_Jen_0029_2
+        type: Jenkins
+        configuration:
+          inputSteps:
+            - name: S_B_Jen_0029_1
+          jenkinsJobName: testPipeline  
+          integrations:
+            - name: jenkins
+      - name: S_B_Jen_0029_3
+        type: Jenkins
+        configuration:
+          inputSteps:
+            - name: S_B_Jen_0029_1
+          jenkinsJobName: testPipelineUpdated  
+          integrations:
+            - name: jenkins

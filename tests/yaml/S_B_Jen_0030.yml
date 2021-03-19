@@ -1,0 +1,17 @@
+pipelines:
+  - name: S_B_Jen_0030
+    steps:
+      - name: S_B_Jen_0030_1
+        type: Jenkins
+        configuration:
+          jenkinsJobName: testPipeline
+          integrations:
+            - name: S_B_Jenkins
+      - name: S_B_Jen_0030_2
+        type: Bash 
+        configuration:
+          inputSteps:
+            - name: S_B_Jen_0030_1
+        execution:
+          onExecute:
+            - echo "executing step.."

@@ -1,0 +1,33 @@
+resources:
+  - name: S_PublishBuildInfo_0004_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_PublishBuildInfo_0004_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PublishBuildInfo_0004
+    steps:
+      - name: S_PublishBuildInfo_0004_inputStep
+        type: Bash
+        execution:
+          onExecute:
+            - echo "test"
+      - name: S_PublishBuildInfo_0004
+        type: PublishBuildInfo
+        configuration:
+          integrations:
+            - name: s_gitHub
+          inputResources:
+            - name: S_PublishBuildInfo_0004_input
+          outputResources:
+            - name: S_PublishBuildInfo_0004_output
+          inputSteps:
+            - name: S_PublishBuildInfo_0004_inputStep

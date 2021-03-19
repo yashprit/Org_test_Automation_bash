@@ -1,0 +1,10 @@
+pipelines:
+  - name: S_B_Jen_0040_pipelines
+    steps:
+            
+      - name: S_B_Jen_0040
+        type: Jenkins
+        configuration:
+          jenkinsJobName: auto_job
+          integrations:
+            - name: S_B_jenkins

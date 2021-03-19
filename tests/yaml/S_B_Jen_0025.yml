@@ -1,0 +1,24 @@
+pipelines:
+  - name: pipelines_S_B_Jen_0025
+    steps:
+      - name: S_B_Jen_0025_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_testJenkins         
+        execution:
+          onExecute:
+            - echo "hello world"
+
+      - name: S_B_Jen_0025_2
+        type: Jenkins
+        configuration:
+          jenkinsJobName: var_output_job    # Jenkins job/pipeline name. required
+          priority: 1
+          buildParameters:
+            key1: 1
+            key2: 2
+          integrations:
+            - name: i_testJenkins
+          inputSteps:
+            - name : S_B_Jen_0025_1

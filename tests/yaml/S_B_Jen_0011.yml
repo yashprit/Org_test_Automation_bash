@@ -1,0 +1,12 @@
+pipelines:
+  - name: pipelines_S_B_Jen_0011
+    steps:
+      - name: S_B_Jen_0011
+        type: Jenkins
+        configuration:
+          jenkinsJobName: jenkinsstep1    # Jenkins job/pipeline name. required
+          jenkinsBranchName: master # optional. For jenkins multibranch
+          priority: 1
+          buildParameters:
+          integrations:
+            - name: i_testJenkins   # required Jenkins integration

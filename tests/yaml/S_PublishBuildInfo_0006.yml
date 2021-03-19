@@ -1,0 +1,40 @@
+resources:
+  - name: S_PublishBuildInfo_0006_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PublishBuildInfo_0006
+    steps:
+      - name: S_PublishBuildInfo_0006_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PublishBuildInfo_0006.txt
+            - $jfrog_cli_path rt upload S_PublishBuildInfo_0006.txt test-automation-generic-local
+            - add_run_files /tmp/jfrog/. jfrog
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_PublishBuildInfo_0006_2
+        type: PublishBuildInfo
+        configuration:
+          outputResources:
+            - name: S_PublishBuildInfo_0006_output
+          inputSteps:
+            - name: S_PublishBuildInfo_0006_1
+      - name: S_PublishBuildInfo_0006_3
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PublishBuildInfo_0006_output
+        execution:
+          onExecute:
+            - jfrog rt download --fail-no-op --insecure-tls=${no_verify_ssl} --limit=1 --flat "${project_key}-build-info/${buildName}/${buildNumber}-*.json" "buildInfo.json"
+            - jfrog rt delete --insecure-tls=${no_verify_ssl} "${project_key}-build-info/${buildName}/${buildNumber}-*.json"

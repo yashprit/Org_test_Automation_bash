@@ -1,0 +1,10 @@
+pipelines:
+  - name: S_B_Jen_0027_pipelines
+
+    steps:
+    - name: S_B_Jen_0027
+      type: Jenkins
+      configuration:
+        jenkinsJobName: invalid_job
+        integrations:
+          - name: i_testJenkins

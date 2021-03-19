@@ -1,0 +1,9 @@
+pipelines:
+  - name: S_B_Jen_0042
+    steps:
+      - name: S_B_Jen_0042_1
+        type: Jenkins
+        configuration:
+          jenkinsJobName: failPipeline  
+          integrations:
+            - name: S_B_Jenkins
