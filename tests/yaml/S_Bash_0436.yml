@@ -4,9 +4,9 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
-      pattern: "example-repo-local/random/*"
+      pattern: "test-automation-generic-local/fileSpecBash/random/*"
       recursive: false
-      excludePatterns: 
+      excludePatterns:
         - "*.ps1"
 
 pipelines:

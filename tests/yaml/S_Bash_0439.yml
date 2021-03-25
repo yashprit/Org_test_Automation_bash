@@ -4,9 +4,9 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
-      pattern: "example-repo-local"
+      pattern: "test-automation-generic-local/fileSpecBash"
       recursive: false
-      sortBy: 
+      sortBy:
         - invalid
 
 pipelines:

@@ -4,7 +4,7 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
-      pattern: "example-repo-local/s_foo"
+      pattern: "test-automation-generic-local/fileSpecBash/s_foo"
       recursive: false
       props: "213e23edq3e2d"
 

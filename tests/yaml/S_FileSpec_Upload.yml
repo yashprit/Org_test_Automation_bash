@@ -10,5 +10,5 @@ pipelines:
           onExecute:
             - touch s_foo
             - touch pipeInfo.json
-            - jfrog rt u s_foo example-repo-local/s_foo
-            - jfrog rt u pipeInfo.json example-repo-local/pipeInfo.json
+            - jfrog rt u s_foo test-automation-generic-local/fileSpecBash/s_foo
+            - jfrog rt u pipeInfo.json test-automation-generic-local/fileSpecBash/pipeInfo.json

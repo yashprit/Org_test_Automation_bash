@@ -4,7 +4,7 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
-      pattern: "example-repo-local/setup/"
+      pattern: "test-automation-generic-local/fileSpecBash/setup/"
       recursive: false
       sortOrder: invalid
 

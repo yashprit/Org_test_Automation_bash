@@ -8,5 +8,5 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
-            - jfrog rt del --quiet=true example-repo-local/s_foo
-            - jfrog rt del --quiet=true example-repo-local/pipeInfo
+            - jfrog rt del --quiet=true test-automation-generic-local/fileSpecBash/s_foo
+            - jfrog rt del --quiet=true test-automation-generic-local/fileSpecBash/pipeInfo

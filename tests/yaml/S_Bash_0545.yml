@@ -6,7 +6,7 @@ resources:
       pattern: "*/s_foo*"
       limit: 1
       exclusions:
-        - "example-repo-local/pipeInfo.json"
+        - "test-automation-generic-local/fileSpecBash/pipeInfo.json"
       target: "/testing/"
 pipelines:
   - name: pipelines_S_Bash_0545
