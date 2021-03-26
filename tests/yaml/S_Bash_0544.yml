@@ -7,7 +7,7 @@ resources:
       limit: 1
       excludePatterns:
         - "test-automation-generic-local/fileSpecBash/pipeInfo.json"
-      target: "/testing/"
+
 pipelines:
   - name: pipelines_S_Bash_0544
     steps:
