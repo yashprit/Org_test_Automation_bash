@@ -3,7 +3,7 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
-      pattern: "*/s_foo*"
+      pattern: "test-automation-generic-local/fileSpecBash/s_foo"
       limit: 1
       exclusions:
         - "test-automation-generic-local/fileSpecBash/pipeInfo.json"
@@ -19,6 +19,8 @@ pipelines:
         execution:
           onExecute:
             - echo "executing step"
-            - if [ -f "/testing/s_foo" ]; then echo "found the file"; fi
-            - if [ -f "/testing/pipeInfo.json" ]; then echo "wrong file found"; exit 1; fi
-            - if [ ! -f "/testing/s_foo" ]; then echo "error finding the file"; exit 1; fi
+            - pushd $res_S_Bash_0545_FileSpec_resourcePath
+            - if [ -f "./fileSpecBash/s_foo" ]; then echo "found the file"; fi
+            - if [ -f "./fileSpecBash/pipeInfo.json" ]; then echo "wrong file found"; exit 1; fi
+            - if [ ! -f "./fileSpecBash/s_foo" ]; then echo "error finding the file"; exit 1; fi
+            - popd

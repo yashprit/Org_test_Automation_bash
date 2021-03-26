@@ -3,8 +3,8 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
-      aql: '{"items.find":{"name":{"$match":"s_foo*"}}}'
-      target: "/testing/"
+      aql: '{"items.find":{"name":{"$match":"s_foo"}}}'
+
 pipelines:
   - name: pipelines_S_Bash_0539
     steps:
@@ -16,5 +16,7 @@ pipelines:
         execution:
           onExecute:
             - echo "executing step"
-            - if [ -f "/testing/s_foo" ]; then echo "found the file"; fi
-            - if [ ! -f "/testing/s_foo" ]; then echo "error finding the file"; exit 1; fi
+            - pushd $res_S_Bash_0539_FileSpec_resourcePath
+            - if [ -f "./fileSpecBash/s_foo" ]; then echo "found the file"; fi
+            - if [ ! -f "./fileSpecBash/s_foo" ]; then echo "error finding the file"; exit 1; fi
+            - popd
