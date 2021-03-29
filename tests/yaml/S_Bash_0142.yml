@@ -1,9 +1,12 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
 resources:
   - name: S_Bash_0142_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: jfbetapipeorg/Org_test_Automation
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
 
 pipelines:
   - name: pipelines_S_Bash_0142
@@ -21,7 +24,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0142_GitRepo_lastAuthorEmail" ]
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_gitProvider_token" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_isGitTag" ]
             - |
@@ -32,7 +35,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0142_GitRepo_gitProvider_id" ]
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_integrationName" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_operation" ]
             - |
@@ -41,12 +44,12 @@ pipelines:
               [ ! -z "$res_S_Bash_0142_GitRepo_gitProvider_name" ]
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_gitProvider_url" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_gitRepoSourceDefaultBranch" ]
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_isTrigger" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_resourceId" ]
             - |
@@ -65,7 +68,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0142_GitRepo_gitRepoRepositorySshUrl" ]
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_isRelease" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_committerLogin" ]
             - |
@@ -78,7 +81,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0142_GitRepo_compareUrl" ]
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_repositoryProvider" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0142_GitRepo_sysPrivateDeployKey" ]
             - |
@@ -113,4 +116,3 @@ pipelines:
             #  [ ! -z "$res_S_Bash_0142_GitRepo_baseCommitRef" ]
             #- |
             #  [ ! -z "$res_S_Bash_0142_GitRepo_releasedAt" ]
-

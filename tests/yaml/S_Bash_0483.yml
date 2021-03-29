@@ -1,9 +1,12 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
 resources:
   - name: S_Bash_0483_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_bitbucket
-      path: jfbeta/test_automation
+      path: {{ .Values.BitbucketCloud.test_automation.path }}
 
 pipelines:
   - name: pipelines_S_Bash_0483
@@ -16,7 +19,7 @@ pipelines:
         execution:
           onExecute:
             - echo "executing step..."
-            
+
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_gitRepoRepositoryUrl" ]
             - |
@@ -24,7 +27,7 @@ pipelines:
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_gitProvider_masterName" ]
             - |
-              [ ! -z "$res_S_Bash_0483_GitRepo_gitProvider_username" ]  
+              [ ! -z "$res_S_Bash_0483_GitRepo_gitProvider_username" ]
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_lastAuthorEmail" ]
             - |
@@ -48,7 +51,7 @@ pipelines:
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_commitMessage" ]
             - |
-              [ ! -z "$res_S_Bash_0483_GitRepo_isPullRequest" ] 
+              [ ! -z "$res_S_Bash_0483_GitRepo_isPullRequest" ]
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_gitProvider_token" ]
             - |
@@ -60,7 +63,7 @@ pipelines:
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_gitRepoRepositoryHttpsUrl" ]
             - |
-              [ ! -z "$res_S_Bash_0483_GitRepo_isPullRequestClose" ]   
+              [ ! -z "$res_S_Bash_0483_GitRepo_isPullRequestClose" ]
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_integrationName" ]
             - |
@@ -90,7 +93,7 @@ pipelines:
             - |
               [ ! -z "$res_S_Bash_0483_GitRepo_gitTagMessage" ]
 
-            
+
 #             empty fields
 #             - |
 #               [ ! -z "$res_S_Bash_0483_GitRepo_gitTagName" ]
@@ -108,5 +111,3 @@ pipelines:
 #               [ ! -z "$res_S_Bash_0483_GitRepo_releasedAt" ]
 #             - |
 #               [ ! -z "$res_S_Bash_0483_GitRepo_pullRequestNumber" ]
-            
-

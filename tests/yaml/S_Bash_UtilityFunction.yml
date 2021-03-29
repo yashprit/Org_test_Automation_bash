@@ -1,10 +1,13 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
 resources:
   - name: S_Bash_UtilityFunction_repo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: jfbetapipeorg/Org_test_Automation           
-      
+      path: {{ .Values.GitHub.Org_test_Automation.path }}      
+
 pipelines:
   - name: S_Bash_UtilityFunction_pipeline
     steps:
@@ -15,42 +18,42 @@ pipelines:
             - name: s_gitHub
           inputResources:
             - name: S_Bash_UtilityFunction_repo
-            
+
         execution:
-          onExecute: 
+          onExecute:
             - printenv
             - bump_semver v3.0.0 major
             - bump_semver v3.0.0 minor
             - bump_semver v3.0.0 patch
             - bump_semver v3.0.0 beta
-            - pushd $res_S_Bash_UtilityFunction_repo_resourcePath    
+            - pushd $res_S_Bash_UtilityFunction_repo_resourcePath
             - touch keys
             - echo "name =$res_S_Bash_UtilityFunction_repo_gitProvider_name" >> keys
-            - replace_envs $PWD/keys 
+            - replace_envs $PWD/keys
             - cat keys
             - touch file.txt
             - echo "Hello frog" >> file.txt
             - touch test.txt
             - echo "Hello pipelines team" >> test.txt
             - compare_git --resource S_Bash_UtilityFunction_repo --commit-range HEAD~3..HEAD UtilityFunction.yml
-            - update_commit_status S_Bash_UtilityFunction_repo --status failure --message "My description 123" --context "stepB"            
+            - update_commit_status S_Bash_UtilityFunction_repo --status failure --message "My description 123" --context "stepB"
             - read_json $res_S_Bash_UtilityFunction_repo_resourcePath/tests/yaml/sample.json "DOCKER_USERNAME"
-            - add_cache_files $PWD/file.txt jfrog_pipe 
+            - add_cache_files $PWD/file.txt jfrog_pipe
             - add_run_variables imageTag="master"
             #- add_run_variables runVaribale="foo   123"
             - add_run_files $PWD/test.txt jfrog
             - add_pipeline_variables scm=$int_s_gitHub_masterName
             # - add_pipeline_variables pipelineVaribale="foo  bar"
-            - export_run_variables 
-            - export_pipeline_variables          
+            - export_run_variables
+            - export_pipeline_variables
             - add_pipeline_files $PWD/file.txt jfrog_pipeline
             - find_resource_variable S_Bash_UtilityFunction_repo resourcePath
             - restore_cache_files jfrog_pipe $PWD/file.txt
             - cat file.txt
-            - openssl genrsa -out key.pem 1024 
+            - openssl genrsa -out key.pem 1024
             - openssl rsa -in key.pem -text -noout
-            - openssl rsa -in key.pem -pubout -out pub.pem 
-            - openssl rsa -in pub.pem -pubin -text -noout 
+            - openssl rsa -in key.pem -pubout -out pub.pem
+            - openssl rsa -in pub.pem -pubin -text -noout
             - encrypt_string "secretValue" --key pub.pem
             - encrypted=$(encrypt_string "secretValue" --key pub.pem)
             - echo "$encrypted"
@@ -61,13 +64,13 @@ pipelines:
             - encrypt_file --output encrypted.txt crypt.txt --key pub.pem
             - cat encrypted.txt
             - decrypt_file encrypted.txt --output decrypted.txt --key key.pem
-            - cat decrypted.txt 
+            - cat decrypted.txt
             - python -m py_compile tests/core/sampleExecutionFile/calc.py
             - pip install --upgrade pip
             - hash -d pip
-            - pip install pytest           
+            - pip install pytest
             - py.test --verbose --junit-xml test-reports/results.xml tests/core/sampleExecutionFile/test_calc.py
-            - save_tests $res_S_Bash_UtilityFunction_repo_resourcePath/test-reports/results.xml             
+            - save_tests $res_S_Bash_UtilityFunction_repo_resourcePath/test-reports/results.xml
             - popd
 
       - name: S_Bash_UtilityFunction_step_2
@@ -78,7 +81,7 @@ pipelines:
           inputSteps:
             - name: S_Bash_UtilityFunction
           inputResources:
-            - name: S_Bash_UtilityFunction_repo                
+            - name: S_Bash_UtilityFunction_repo
         execution:
           onExecute:
             - printenv
@@ -99,7 +102,7 @@ pipelines:
           inputResources:
             - name: S_Bash_UtilityFunction_repo
           inputSteps:
-            - name: S_Bash_UtilityFunction_step_2   
+            - name: S_Bash_UtilityFunction_step_2
 
         execution:
           onExecute:
@@ -109,17 +112,17 @@ pipelines:
 #             - execute_command [--retry] printen
 #             - retry_command printen
             - popd
-            
+
       - name: S_Bash_UtilityFunction_step_4
         type: PowerShell
         configuration:
-          nodePool: win_2019        
+          nodePool: win_2019
           integrations:
             - name: s_gitHub
           inputResources:
             - name: S_Bash_UtilityFunction_repo
           inputSteps:
-            - name: S_Bash_UtilityFunction_step_3         
+            - name: S_Bash_UtilityFunction_step_3
 
         execution:
           onExecute:
@@ -127,5 +130,3 @@ pipelines:
             - $runVariable
             - $scm
             - $pipelineVaribale
-
-         

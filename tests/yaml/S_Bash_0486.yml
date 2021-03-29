@@ -1,9 +1,12 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
 resources:
   - name: S_Bash_0486_GitRepo
     type: GitRepo
     configuration:
       gitProvider: s_githubEnterprise
-      path: jfbeta/test_automation
+      path: {{ .Values.GitHubEnterprise.test_automation.path }}
 
 pipelines:
   - name: pipelines_S_Bash_0486
@@ -20,7 +23,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0486_GitRepo_lastAuthorEmail" ]
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_gitProvider_token" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_isGitTag" ]
             - |
@@ -31,7 +34,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0486_GitRepo_gitProvider_id" ]
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_integrationName" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_operation" ]
             - |
@@ -40,12 +43,12 @@ pipelines:
               [ ! -z "$res_S_Bash_0486_GitRepo_gitProvider_name" ]
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_gitProvider_url" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_gitRepoSourceDefaultBranch" ]
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_isTrigger" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_resourceId" ]
             - |
@@ -64,7 +67,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0486_GitRepo_gitRepoRepositorySshUrl" ]
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_isRelease" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_committerLogin" ]
             - |
@@ -77,7 +80,7 @@ pipelines:
               [ ! -z "$res_S_Bash_0486_GitRepo_compareUrl" ]
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_repositoryProvider" ]
-            
+
             - |
               [ ! -z "$res_S_Bash_0486_GitRepo_sysPrivateDeployKey" ]
             - |

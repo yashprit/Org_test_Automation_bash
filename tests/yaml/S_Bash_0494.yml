@@ -1,9 +1,12 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
 resources:
    - name: S_Bash_0494_GitRepo
      type: GitRepo
      configuration:
        gitProvider: s_githubEnterprise
-       path: jfbetapipeorg/Org_test_Automation
+       path: {{ .Values.GitHubEnterprise.Org_test_Automation.path }}
 
 pipelines:
   - name: pipelines_S_Bash_0494
