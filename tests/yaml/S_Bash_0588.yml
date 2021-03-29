@@ -1,0 +1,19 @@
+pipelines:
+  - name: pipeline_S_Bash_0588
+    steps:
+      - name: S_Bash_0588
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u18node
+                tag: 10.18.0
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog --version
+            - if [ "$(jfrog --version)" == "jfrog version 1.33.2" ]; then return 1; fi
+            - jfrog config show s_artifactory
