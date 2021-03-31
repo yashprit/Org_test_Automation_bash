@@ -1,0 +1,32 @@
+resources:
+  - name: S_Bash_0586_GitRepo
+    type: GitRepo
+    configuration:
+      path: jfbetapipeorg/Org_test_Automation_bash
+      gitProvider: s_gitHub
+      branches:
+        include: ^{{gitBranch}}$
+
+pipelines:
+  - name: pipelines_S_Bash_0586
+    configuration:
+      runtime:
+        type: image
+        image:
+          auto:
+            language: node
+            versions:
+              - "10.18.0"
+    steps:
+       - name: S_Bash_0586
+         type: Bash
+         configuration:
+           inputResources:
+              - name: S_Bash_0586_GitRepo
+         execution:
+           onExecute:
+             - echo $res_S_Bash_0586_GitRepo_resourcePath
+             - pushd $res_S_Bash_0586_GitRepo_resourcePath/tests/core/oom
+             - dd if=/dev/zero of=output.dat  bs=100M  count=1
+             - node oom.js
+             - popd
