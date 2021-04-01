@@ -1,9 +1,12 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
 resources:
    - name: S_Bash_0475_GitRepo
      type: GitRepo
      configuration:
        gitProvider: s_bitbucket
-       path: jfbeta/test_automation
+       path: {{ .Values.BitbucketCloud.test_automation.path }}
        branches:
          include: master
        buildOn:  # optional

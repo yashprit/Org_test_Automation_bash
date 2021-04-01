@@ -1,10 +1,12 @@
-resources:
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
   - name: S_Bash_Util_Notification_Repo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: jfbetapipeorg/Org_test_Automation
-          
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+
 pipelines:
   - name: S_Bash_Util_Notification_pipe
     steps:
@@ -16,11 +18,9 @@ pipelines:
             - name: BSU_slack
           inputResources:
             - name: S_Bash_Util_Notification_Repo
-            
+
         execution:
-          onExecute: 
-            - pushd $res_S_Bash_Util_Notification_Repo_resourcePath    
+          onExecute:
+            - pushd $res_S_Bash_Util_Notification_Repo_resourcePath
             - send_notification slack
             - popd
-
-

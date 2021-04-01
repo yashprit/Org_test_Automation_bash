@@ -1,0 +1,29 @@
+GitHub:
+  Org_test_Automation:
+    path: jfbetapipeorg/Org_test_Automation
+  Org_test_Automation_bash:
+    path: jfbetapipeorg/Org_test_Automation_bash
+  Org_test_Automation_PowerShell:
+    path: jfbetapipeorg/Org_test_Automation_PowerShell
+
+GitHubEnterprise:
+  Org_test_Automation:
+    path: jfbetapipeorg/Org_test_Automation
+  test_automation:
+    path: jfbeta/test_automation
+
+GitLab:
+  test_automation:
+    path: jfbeta/test_automation
+
+BitbucketCloud:
+  jfrogtesting:
+    path: jfbeta/jfrogtesting
+  test_automation:
+    path: jfbeta/test_automation
+
+BitbucketServer:
+  automation:
+    path: PIP/automation
+  test_automation:
+    path: PIP/test_automation
