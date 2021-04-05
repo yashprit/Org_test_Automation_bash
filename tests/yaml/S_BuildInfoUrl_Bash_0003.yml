@@ -1,0 +1,41 @@
+resources:
+  - name: S_BuildInfoUrl_Bash_0003_buildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: S_BuildInfoUrl_Bash_0003
+    steps:
+      - name: S_BuildInfoUrl_Bash_0003_1
+        type: Bash
+        configuration:
+          environmentVariables:
+            targetRepo: test-automation-generic-local
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_BuildInfoUrl_Bash_0003_buildInfo
+        execution:
+          onExecute:
+            - JFROG_CLI_BUILD_URL=https://www.jfrog.com
+            # Upload file and publish build info
+            - echo "Content-${run_number}" > artifact.txt
+            - jfrog rt upload artifact.txt ${targetRepo}/S_BuildInfoUrl_Bash_0001-artifact-${run_number}.txt
+            - jfrog rt build-publish
+            - write_output S_BuildInfoUrl_Bash_0003_buildInfo "buildName=$pipeline_name" "buildNumber=$run_number"
+
+      - name: S_BuildInfoUrl_Bash_0003_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_BuildInfoUrl_Bash_0003_buildInfo
+        execution:
+          onExecute:
+            # Fetch build url from Artifactory
+            - buildInfoApiUrl="$res_S_BuildInfoUrl_Bash_0003_buildInfo_sourceArtifactory_url/api/build/$res_S_BuildInfoUrl_Bash_0003_buildInfo_buildName/$res_S_BuildInfoUrl_Bash_0003_buildInfo_buildNumber"
+            - echo "BuildInfo API Url $buildInfoApiUrl"
+            - buildUrl=$(curl -u $res_S_BuildInfoUrl_Bash_0003_buildInfo_sourceArtifactory_user:$res_S_BuildInfoUrl_Bash_0003_buildInfo_sourceArtifactory_apikey $buildInfoApiUrl | jq -r .buildInfo.url)
+            - echo "Build Url $buildUrl"
+            # Compare build url with previous step url
+            - if [ "$buildUrl" != "https://www.jfrog.com" ]; then return 1; fi
