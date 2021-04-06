@@ -1,8 +1,11 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
 resources:
   - name: S_Bash_0586_GitRepo
     type: GitRepo
     configuration:
-      path: jfbetapipeorg/Org_test_Automation_bash
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
       gitProvider: s_gitHub
       branches:
         include: ^{{gitBranch}}$
