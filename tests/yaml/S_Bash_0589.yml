@@ -1,0 +1,26 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_Bash_0589_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      shallowDepth: 3
+      branches:
+        include: ^release-1.9.0$
+
+pipelines:
+  - name: pipelines_S_Bash_0589
+    steps:
+      - name: S_Bash_0589
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_0589_GitRepo
+        execution:
+          onExecute:
+            - cd $res_S_Bash_0589_GitRepo_resourcePath
+            - if [ "$(git rev-parse HEAD)" != "14e24c93ebad36a1f75d1497aef9575ecfca455b" ]; then return 1; fi
+            - if [ "$(git rev-list --count --first-parent 14e24c93ebad36a1f75d1497aef9575ecfca455b)" != 3 ]; then return 1; fi
