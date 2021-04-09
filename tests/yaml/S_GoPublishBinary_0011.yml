@@ -1,0 +1,15 @@
+pipelines:
+  - name: pipeline_S_GoPublishBinary_0011
+    steps:
+      - name: S_GoPublishBinary_0011_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "testing"
+      - name: S_GoPublishBinary_0011_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0011_1
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true

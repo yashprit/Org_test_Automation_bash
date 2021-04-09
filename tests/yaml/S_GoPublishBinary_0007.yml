@@ -1,0 +1,25 @@
+resources:
+  - name: S_GoPublishBinary_0007_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishBinary_0007
+    steps:
+      - name: S_GoPublishBinary_0007_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "testing"
+      - name: S_GoPublishBinary_0007_2
+        type: GoPublishBinary
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputSteps:
+            - name: S_GoPublishBinary_0007_1
+          outputResources:
+            - name: S_GoPublishBinary_0007_BuildInfo
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true

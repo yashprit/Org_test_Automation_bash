@@ -1,0 +1,16 @@
+resources:
+  - name: S_GoBuild_0003_PropertyBag
+    type: PropertyBag
+    configuration:
+      property: one
+
+pipelines:
+  - name: pipeline_S_GoBuild_0003
+    steps:
+      - name: S_GoBuild_0003
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoBuild_0003_PropertyBag
+          integrations:
+            - name: s_artifactory

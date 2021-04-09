@@ -1,0 +1,33 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0021_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: master
+
+  - name: S_GoPublishModule_0021_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0021
+    steps:
+      - name: S_GoPublishModule_0021
+        type: GoPublishModule
+        configuration:
+          environmentVariables:
+            force_scan: "true"
+          inputResources:
+            - name: S_GoPublishModule_0021_GitRepo
+          outputResources:
+            - name: S_GoPublishModule_0021_BuildInfo
+          version: "v0.0.${run_number}"
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+          forceXrayScan: ${force_scan}
