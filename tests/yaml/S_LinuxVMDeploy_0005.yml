@@ -1,0 +1,44 @@
+resources:
+  - name: LinuxVMDeploy_buildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: LinuxVMDeploy_buildInfo
+      buildNumber: 1
+
+  - name: myVM
+    type: VmCluster
+    configuration:
+      sshKey: s_VM_DEPLOY_SSHKEY
+      targets:
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_0}
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_1}
+
+pipelines:
+  - name: S_LinuxVMDeploy_0005
+    steps:
+      - name: S_LinuxVMDeploy_0005_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: LinuxVMDeploy_buildInfo
+        execution:
+          onExecute:
+            - echo "Build info ${run_id}" > LinuxVMDeploy_buildInfo.txt
+            - jfrog rt upload LinuxVMDeploy_buildInfo.txt test-automation-generic-local --build-name=LinuxVMDeploy_buildInfo --build-number=1
+            - jfrog rt build-publish LinuxVMDeploy_buildInfo 1
+      - name: S_LinuxVMDeploy_0005_2
+        type: jfrog_dev/LinuxVMDeploy
+        configuration:
+          integrations:
+            - name: s_VM_DEPLOY
+          vmEnvironmentVariables:
+            - "step_name=${step_name}"
+            - "run_id=${run_id}"
+          inputResources:
+            - name: myVM
+            - name: LinuxVMDeploy_buildInfo
+          deployCommand: "ls ~/${step_name}/${run_id}/LinuxVMDeploy_buildInfo.txt || exit 1"
+          sshUser: ubuntu

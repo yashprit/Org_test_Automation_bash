@@ -1,0 +1,82 @@
+resources:
+  - name: LinuxVMDeploy_buildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: LinuxVMDeploy_buildInfo
+      buildNumber: 42
+
+  - name: LinuxVMDeploy_releaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: S_LinuxVMDeploy_0006
+      version: ${run_id}
+
+  - name: myVM
+    type: VmCluster
+    configuration:
+      sshKey: s_VM_DEPLOY_SSHKEY
+      targets:
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_0}
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_1}
+
+pipelines:
+  - name: S_LinuxVMDeploy_0006
+    steps:
+      - name: S_LinuxVMDeploy_0006_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: LinuxVMDeploy_buildInfo
+        execution:
+          onExecute:
+            - echo "Build info ${run_id}" > LinuxVMDeploy_buildInfo.txt
+            - jfrog rt upload LinuxVMDeploy_buildInfo.txt test-automation-generic-local --build-name=LinuxVMDeploy_buildInfo --build-number=42
+            - jfrog rt build-publish LinuxVMDeploy_buildInfo 42
+      - name: S_LinuxVMDeploy_0006_2
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${pipeline_name}
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          sign: true
+          inputSteps:
+            - name: S_LinuxVMDeploy_0006_1
+          inputResources:
+            - name: LinuxVMDeploy_buildInfo
+          outputResources:
+            - name: LinuxVMDeploy_releaseBundle
+
+      - name: S_LinuxVMDeploy_0006_3
+        type: jfrog_dev/LinuxVMDeploy
+        configuration:
+          integrations:
+            - name: s_artifactory
+            - name: s_VM_DEPLOY
+          vmEnvironmentVariables:
+            - "step_name=${step_name}"
+            - "pipeline_name=${pipeline_name}"
+            - "run_id=${run_id}"
+          inputSteps:
+            - name: S_LinuxVMDeploy_0006_2
+          inputResources:
+            - name: myVM
+            - name: LinuxVMDeploy_releaseBundle
+          deployCommand: "ls ~/${step_name}/${run_id}/${pipeline_name}/${run_id}/test-automation-generic-local/LinuxVMDeploy_buildInfo.txt || exit 1"
+          postDeployCommand: "ls ~/${step_name}/${run_id}/${pipeline_name}/${run_id}/test-automation-generic-local/LinuxVMDeploy_buildInfo.txt || exit 1"
+          sshUser: ubuntu
+
+      # Clean up releaseBundle
+      - name: S_LinuxVMDeploy_0006_4
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_distribution
+          inputSteps:
+            - name: S_LinuxVMDeploy_0006_3
+        execution:
+          onExecute:
+            - "$jfrog_cli_path rt release-bundle-delete --quiet --dist-url=$int_s_distribution_url --user=$int_s_distribution_user --password=$int_s_distribution_apikey --delete-from-dist=true S_LinuxVMDeploy_0006 \"\" "

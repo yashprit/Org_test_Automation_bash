@@ -1,0 +1,44 @@
+resources:
+  - name: LinuxVMDeploy_fileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "test-automation-generic-local/LinuxVMDeploy_fileSpec.txt"
+
+  - name: myVM
+    type: VmCluster
+    configuration:
+      sshKey: s_VM_DEPLOY_SSHKEY
+      targets:
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_0}
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_1}
+
+pipelines:
+  - name: S_LinuxVMDeploy_0001
+    steps:
+      - name: S_LinuxVMDeploy_0001_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: LinuxVMDeploy_fileSpec
+        execution:
+          onExecute:
+            - echo "File spec ${run_id}" > LinuxVMDeploy_fileSpec.txt
+            - jfrog rt upload LinuxVMDeploy_fileSpec.txt test-automation-generic-local
+      # Check that deploy command runs and FileSpec is uploaded to default dir.
+      - name: S_LinuxVMDeploy_0001_2
+        type: jfrog_dev/LinuxVMDeploy
+        configuration:
+          integrations:
+            - name: s_VM_DEPLOY
+          vmEnvironmentVariables:
+            - "step_name=${step_name}"
+            - "run_id=${run_id}"
+          inputResources:
+            - name: myVM
+            - name: LinuxVMDeploy_fileSpec
+          deployCommand: "ls ~/${step_name}/${run_id}/LinuxVMDeploy_fileSpec.txt || exit 1"
+          postDeployCommand: "ls ~/${step_name}/${run_id}/LinuxVMDeploy_fileSpec.txt || exit 1"
+          sshUser: ubuntu
