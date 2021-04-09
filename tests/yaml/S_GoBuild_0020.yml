@@ -1,0 +1,49 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoBuild_0020_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_GoBuild_0020_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/main.go
+
+pipelines:
+  - name: pipeline_S_GoBuild_0020
+    steps:
+      - name: S_GoBuild_0020_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_GoBuild_0020_GitRepo
+          outputResources:
+            -  name: S_GoBuild_0020_FileSpec
+        execution:
+          onExecute:
+            - cd $(find_resource_variable S_GoBuild_0020_GitRepo resourcePath)/tests/Go
+            - jfrog rt upload main.go test-automation-generic-local/main.go
+
+      - name: S_GoBuild_0020_2
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoBuild_0020_GitRepo
+            - name: S_GoBuild_0020_FileSpec
+          sourceLocation: "tests/Go"
+          resolverRepo: test-automation-go-virtual
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - go get
+            - rm main.go # removing the file to be replaced using the FileSpec
+            - ls
+            - popd

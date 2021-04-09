@@ -1,0 +1,60 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishBinary_0031_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_GoPublishBinary_0031
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NAME: S_GoPublishBinary_0031_buildName
+          JFROG_CLI_BUILD_NUMBER: ${run_id}
+    steps:
+      - name: S_GoPublishBinary_0031_1
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoPublishBinary_0031_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go"
+          resolverRepo: test-automation-go-virtual
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - go get
+            - popd
+      - name: S_GoPublishBinary_0031_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0031_1
+          integrations:
+            - name: s_artifactory
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: false
+      - name: S_GoPublishBinary_0031_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0031_2
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - buildInfoName=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.name)
+            - if [ "$buildInfoName" != "null" ]; then return 1; fi
+            - restore_run_files jfrog /tmp/jfrog
+            - ls /tmp/jfrog/builds
+            - $jfrog_cli_path rt build-publish $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER --insecure-tls=$no_verify_ssl
+            - artifactName=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.modules[0].artifacts[0].name)
+            - if [ "$artifactName" != "S_GoPublishBinary_0031_1" ]; then return 1; fi
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1"

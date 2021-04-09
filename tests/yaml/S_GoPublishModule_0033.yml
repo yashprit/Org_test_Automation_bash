@@ -1,0 +1,40 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0033_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0033
+    steps:
+      - name: S_GoPublishModule_0033_1
+        type: GoPublishModule
+        configuration:
+          environmentVariables:
+            include_self: "false"
+          inputResources:
+            - name: S_GoPublishModule_0033_GitRepo
+          integrations:
+            - name: s_artifactory
+          version: "v0.33.${run_number}"
+          targetRepository: "test-automation-go-local"
+          sourceLocation: "tests/Go"
+          self: ${include_self}
+      - name: S_GoPublishModule_0033_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_GoPublishModule_0033_1
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog rt download --flat --insecure-tls=${no_verify_ssl} --limit=1 "test-automation-go-local/go.service/@v/v0.33.${run_number}.zip" "v0.33.${run_number}.zip"
+            - ls
+            - if [ -f "v0.33.${run_number}.zip" ]; then return 1; fi

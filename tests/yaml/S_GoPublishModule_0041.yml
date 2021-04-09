@@ -1,0 +1,50 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0041_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishModule_0041_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0041
+    steps:
+      - name: S_GoPublishModule_0041_1
+        type: GoPublishModule
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_GoPublishModule_0041_GitRepo
+          outputResources:
+            - name: S_GoPublishModule_0041_BuildInfo
+          version: "v0.41.${run_number}"
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: false
+          sourceLocation: "tests/Go"
+      - name: S_GoPublishModule_0041_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_GoPublishModule_0041_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - buildInfoName=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.name)
+            - if [ "$buildInfoName" != "null" ]; then return 1; fi
+            - restore_run_files jfrog /tmp/jfrog
+            - ls /tmp/jfrog/builds
+            - $jfrog_cli_path rt build-publish $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER --insecure-tls=$no_verify_ssl
+            - moduleId=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.modules[0].id)
+            - if [ "$moduleId" != "go.service" ]; then return 1; fi
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1"

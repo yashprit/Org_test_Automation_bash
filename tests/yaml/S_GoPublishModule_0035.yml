@@ -1,0 +1,43 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0035_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0035
+    steps:
+      - name: S_GoPublishModule_0035_1
+        type: GoPublishModule
+        configuration:
+          inputResources:
+            - name: S_GoPublishModule_0035_GitRepo
+          integrations:
+            - name: s_artifactory
+          version: "v0.35.${run_number}"
+          targetRepository: test-automation-go-local
+          sourceLocation: "tests/Go"
+      - name: S_GoPublishModule_0035_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_GoPublishModule_0035_1
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - if [ "${buildStepName}" != "S_GoPublishModule_0035_1" ]; then return 1; fi
+            - if [ "${S_GoPublishModule_0035_1_payloadType}" != "go" ]; then return 1; fi
+            - if [ "${S_GoPublishModule_0035_1_version}" != "v0.35.${run_number}" ]; then return 1; fi
+            - if [ "${S_GoPublishModule_0035_1_buildNumber}" != "${JFROG_CLI_BUILD_NUMBER}" ]; then return 1; fi
+            - if [ "${S_GoPublishModule_0035_1_buildName}" != "${JFROG_CLI_BUILD_NAME}" ]; then return 1; fi
+            - if [ "${S_GoPublishModule_0035_1_isPromoted}" != "false" ]; then return 1; fi
+            - restore_run_files jfrog jfrog
+            - ls jfrog
+            - if [ ! -d "jfrog/builds" ]; then return 1; fi

@@ -1,0 +1,67 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishBinary_0028_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishBinary_0028_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishBinary_0028
+    steps:
+      - name: S_GoPublishBinary_0028_1
+        type: GoBuild
+        configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NAME: S_GoPublishBinary_0028_buildName
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
+          inputResources:
+            - name: S_GoPublishBinary_0028_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go"
+          resolverRepo: test-automation-go-virtual
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - go get
+            - popd
+      - name: S_GoPublishBinary_0028_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0028_1
+        execution:
+          onExecute:
+            - echo "testing"
+      - name: S_GoPublishBinary_0028_3
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0028_2
+          outputResources:
+            - name: S_GoPublishBinary_0028_BuildInfo
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+      - name: S_GoPublishBinary_0028_4
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_GoPublishBinary_0028_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - if [ "$res_S_GoPublishBinary_0028_BuildInfo_buildName" != "S_GoPublishBinary_0028_buildName" ]; then return 1; fi
+            - if [ "$res_S_GoPublishBinary_0028_BuildInfo_buildNumber" != "${run_id}" ]; then return 1; fi
+            - jfrog rt download --fail-no-op --insecure-tls=${no_verify_ssl} --limit=1 "test-automation-go-local/S_GoPublishBinary_0028_1"
+            - jfrog rt curl -XDELETE "/api/build/${res_S_GoPublishBinary_0028_BuildInfo_buildName}?buildNumbers=${run_id}&artifacts=1"

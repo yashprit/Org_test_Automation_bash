@@ -1,0 +1,52 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0028_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishModule_0028_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/go.mod
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0028
+    steps:
+      - name: S_GoPublishModule_0028_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_GoPublishModule_0028_GitRepo
+          outputResources:
+            -  name: S_GoPublishModule_0028_FileSpec
+        execution:
+          onExecute:
+            - cd $(find_resource_variable S_GoPublishModule_0028_GitRepo resourcePath)/tests/Go
+            - jfrog rt upload go.mod test-automation-generic-local/go.mod
+
+      - name: S_GoPublishModule_0028_2
+        type: GoPublishModule
+        configuration:
+          inputResources:
+            - name: S_GoPublishModule_0028_GitRepo
+            - name: S_GoPublishModule_0028_FileSpec
+          integrations:
+            - name: s_artifactory
+          version: "v0.28.${run_number}"
+          targetRepository: test-automation-go-local
+          sourceLocation: "tests/Go"
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - rm go.mod # removing the file to be replaced using the FileSpec
+            - ls
+            - popd
