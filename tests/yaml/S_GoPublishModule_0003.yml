@@ -1,0 +1,18 @@
+resources:
+  - name: S_GoPublishModule_0003_PropertyBag
+    type: PropertyBag
+    configuration:
+      property: one
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0003
+    steps:
+      - name: S_GoPublishModule_0003
+        type: GoPublishModule
+        configuration:
+          inputResources:
+            - name: S_GoPublishModule_0003_PropertyBag
+          integrations:
+            - name: s_artifactory
+          version: "v0.0.${run_number}"
+          targetRepository: test-automation-go-local

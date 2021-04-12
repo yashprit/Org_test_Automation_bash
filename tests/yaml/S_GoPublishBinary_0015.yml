@@ -1,0 +1,15 @@
+pipelines:
+  - name: pipeline_S_GoPublishBinary_0015
+    steps:
+      - name: S_GoPublishBinary_0015_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "testing"
+      - name: S_GoPublishBinary_0015_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0015_1
+          integrations:
+            - name: s_artifactory

@@ -1,0 +1,29 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoBuild_0004_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: master
+  - name: S_GoBuild_0004_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: myFile.txt
+
+
+pipelines:
+  - name: pipeline_S_GoBuild_0004
+    steps:
+      - name: S_GoBuild_0004
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoBuild_0004_GitRepo
+            - name: S_GoBuild_0004_FileSpec
+          integrations:
+            - name: s_artifactory
