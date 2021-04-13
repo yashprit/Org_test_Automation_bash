@@ -8,7 +8,7 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
-            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed -r 's#.*//([^/]*)/.*#\1#')
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
             - add_run_variables imageName="${artifactory_registry_url}/test-automation-docker-local/s_bash_0579"
             - add_run_variables imageTag="${run_id}"
             - echo "FROM releases-docker.jfrog.io/jfrog/pipelines-u18node:12.18.2" > Dockerfile
