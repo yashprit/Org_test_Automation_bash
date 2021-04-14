@@ -1,0 +1,54 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0040_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishModule_0040_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0040
+    configuration:
+      environmentVariables:
+        readOnly:
+          myEnvironmentVariable: "test"
+    steps:
+      - name: S_GoPublishModule_0040_1
+        type: GoPublishModule
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_GoPublishModule_0040_GitRepo
+          outputResources:
+            - name: S_GoPublishModule_0040_BuildInfo
+          version: "v0.40.${run_number}"
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+          sourceLocation: "tests/Go"
+        execution:
+          onStart:
+            - add_run_variables JFROG_CLI_ENV_EXCLUDE="*myenvironmentvariable*;*password*;*secret*;*key*;*token*"
+      - name: S_GoPublishModule_0040_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_GoPublishModule_0040_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog rt curl -XGET /api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER} -o ${step_tmp_dir}/response
+            - jfrog rt curl -XDELETE /api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1
+            - cat ${step_tmp_dir}/response
+            - myVariable=$(cat ${step_tmp_dir}/response | jq -r '.buildInfo.properties["buildInfo.env.myEnvironmentVariable"]')
+            - if [ "$myVariable" != "null" ] ; then return 1; fi

@@ -1,0 +1,42 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoBuild_0030_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_GoBuild_0030
+    steps:
+      - name: S_GoBuild_0030_1
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoBuild_0030_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go"
+          repository: test-automation-go-virtual
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - go get
+            - popd
+          onSuccess:
+            - ymlPath="$(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)/.jfrog/projects/go.yaml"
+            - 'resolver=$(cat "$ymlPath" | grep "test-automation-go-virtual")'
+            - echo "$resolver"
+            - if [ -z "$resolver" ]; then echo "TEST FAILED"; add_run_variables TEST_FAILED=true; return 1; fi
+      - name: S_GoBuild_0030_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_GoBuild_0030_1
+        execution:
+          onExecute:
+            - if [ "$TEST_FAILED" == "true" ]; then return 1; fi

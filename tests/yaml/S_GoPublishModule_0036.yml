@@ -1,0 +1,49 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0036_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishModule_0036_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0036
+    steps:
+      - name: S_GoPublishModule_0036_1
+        type: GoPublishModule
+        configuration:
+          environmentVariables:
+            auto_publish: "true"
+          inputResources:
+            - name: S_GoPublishModule_0036_GitRepo
+          outputResources:
+            - name: S_GoPublishModule_0036_BuildInfo
+          integrations:
+            - name: s_artifactory
+          version: "v0.36.${run_number}"
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: ${auto_publish}
+          sourceLocation: "tests/Go"
+      - name: S_GoPublishModule_0036_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_GoPublishModule_0036_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - if [ "$res_S_GoPublishModule_0036_BuildInfo_buildName" != "$JFROG_CLI_BUILD_NAME" ]; then return 1; fi
+            - if [ "$res_S_GoPublishModule_0036_BuildInfo_buildNumber" != "$JFROG_CLI_BUILD_NUMBER" ]; then return 1; fi
+            - buildInfoName=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.name)
+            - if [ "$buildInfoName" != "$res_S_GoPublishModule_0036_BuildInfo_buildName" ]; then return 1; fi
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1"

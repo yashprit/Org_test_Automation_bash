@@ -1,0 +1,58 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0034_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishModule_0034_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/S_GoPublishModule_0034
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0034
+    steps:
+      - name: S_GoPublishModule_0034_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_GoPublishModule_0034_GitRepo
+          outputResources:
+            -  name: S_GoPublishModule_0034_FileSpec
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_GoPublishModule_0034
+            - jfrog rt upload S_GoPublishModule_0034 test-automation-generic-local/S_GoPublishModule_0034
+      - name: S_GoPublishModule_0034_2
+        type: GoPublishModule
+        configuration:
+          inputResources:
+            - name: S_GoPublishModule_0034_GitRepo
+            - name: S_GoPublishModule_0034_FileSpec
+          integrations:
+            - name: s_artifactory
+          version: "v0.34.${run_number}"
+          targetRepository: test-automation-go-local
+          sourceLocation: "tests/Go"
+          deps: ALL
+      - name: S_GoPublishModule_0034_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_GoPublishModule_0034_2
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog rt download --flat --explode --insecure-tls=${no_verify_ssl} --limit=1 "test-automation-go-local/go.service/@v/v0.34.${run_number}.zip"
+            - ls "go.service@v0.34.${run_number}"
+            - if [ ! -f "go.service@v0.34.${run_number}/S_GoPublishModule_0034" ]; then return 1; fi

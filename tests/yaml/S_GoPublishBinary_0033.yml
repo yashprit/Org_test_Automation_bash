@@ -1,0 +1,59 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishBinary_0033_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishBinary_0033_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishBinary_0033
+    steps:
+      - name: S_GoPublishBinary_0033_1
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoPublishBinary_0033_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go"
+          resolverRepo: test-automation-go-virtual
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - go get
+            - popd
+      - name: S_GoPublishBinary_0033_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0033_1
+          outputResources:
+            - name: S_GoPublishBinary_0033_BuildInfo
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+      - name: S_GoPublishBinary_0033_3
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_GoPublishBinary_0033_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog rt curl -XGET /api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER} -o ${step_tmp_dir}/response
+            - jfrog rt curl -XDELETE /api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1
+            - cat ${step_tmp_dir}/response
+            - excludedVariable=$(cat ${step_tmp_dir}/response | jq -r '.buildInfo.properties["buildInfo.env.int_s_artifactory_apikey"]')
+            - if [ "$excludedVariable" != "null" ] ; then return 1; fi
+            - excludedVariable=$(cat ${step_tmp_dir}/response | jq -r '.buildInfo.properties["buildInfo.env.builder_api_token"]')
+            - if [ "$excludedVariable" != "null" ] ; then return 1; fi

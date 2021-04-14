@@ -1,0 +1,59 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishBinary_0030_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishBinary_0030_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishBinary_0030
+    configuration:
+      environmentVariables:
+        readOnly:
+          publish_info: "true"
+    steps:
+      - name: S_GoPublishBinary_0030_1
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoPublishBinary_0030_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go"
+          resolverRepo: test-automation-go-virtual
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - go get
+            - popd
+      - name: S_GoPublishBinary_0030_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_0030_1
+          outputResources:
+            - name: S_GoPublishBinary_0030_BuildInfo
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: ${publish_info}
+      - name: S_GoPublishBinary_0030_3
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_GoPublishBinary_0030_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - buildInfoName=$(jfrog rt curl -XGET "/api/build/${res_S_GoPublishBinary_0030_BuildInfo_buildName}/${res_S_GoPublishBinary_0030_BuildInfo_buildNumber}" | jq -r .buildInfo.name)
+            - if [ "$buildInfoName" != "$res_S_GoPublishBinary_0030_BuildInfo_buildName" ]; then return 1; fi
+            - jfrog rt curl -XDELETE "/api/build/${res_S_GoPublishBinary_0030_BuildInfo_buildName}?buildNumbers=${res_S_GoPublishBinary_0030_BuildInfo_buildNumber}&artifacts=1"

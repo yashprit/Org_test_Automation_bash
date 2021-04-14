@@ -1,0 +1,27 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishModule_0030_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_GoPublishModule_0030
+    steps:
+      - name: S_GoPublishModule_0030
+        type: GoPublishModule
+        configuration:
+          environmentVariables:
+            source_location: "tests/Go"
+          inputResources:
+            - name: S_GoPublishModule_0030_GitRepo
+          integrations:
+            - name: s_artifactory
+          version: "v0.30.${run_number}"
+          targetRepository: test-automation-go-local
+          sourceLocation: "${source_location}"
