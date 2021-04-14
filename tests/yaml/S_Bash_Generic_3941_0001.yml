@@ -1,0 +1,15 @@
+pipelines:
+  - name: S_Bash_Generic_3941_0001
+    steps:
+      - name: S_Bash_Generic_3941_0001_001
+        type: Bash
+        execution:
+          onStart:
+            - echo "Starting"
+          onExecute:
+            # Testing stdout
+            - echo "Stdout content"
+            # Testing stderr
+            - echo "Stderr content" >> /dev/stderr
+          onComplete:
+            - echo "Done"

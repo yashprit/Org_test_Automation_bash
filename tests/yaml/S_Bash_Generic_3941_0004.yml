@@ -1,0 +1,14 @@
+pipelines:
+  - name: S_Bash_Generic_3941_0004
+    steps:
+      - name: S_Bash_Generic_3941_0004_001
+        type: Bash
+        execution:
+          onStart:
+            - echo "Starting"
+          onExecute:
+            - echo "Running"
+            - sleep 60
+            - echo "Still Running"
+          onComplete:
+            - echo "Done"
