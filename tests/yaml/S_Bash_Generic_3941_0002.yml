@@ -13,6 +13,6 @@ pipelines:
             # Testing stdout
             - echo "Stdout content"
             # Testing stderr
-            - echo "Stderr content" >> /dev/stderr
+            - echo "Stderr content" >&2
           onComplete:
             - echo "Done"
