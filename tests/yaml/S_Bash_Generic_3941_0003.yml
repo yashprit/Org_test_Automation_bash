@@ -1,0 +1,13 @@
+pipelines:
+  - name: S_Bash_Generic_3941_0003
+    steps:
+      - name: S_Bash_Generic_3941_0003_001
+        type: Bash
+        execution:
+          onStart:
+            - echo "Starting"
+          onExecute:
+            # Force error
+            - command_not_found
+          onComplete:
+            - echo "Done"

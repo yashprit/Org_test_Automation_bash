@@ -1,0 +1,18 @@
+pipelines:
+  - name: S_Bash_Generic_3941_0002
+    steps:
+      - name: S_Bash_Generic_3941_0002_001
+        type: Bash
+        configuration:
+          runtime:
+            type: host
+        execution:
+          onStart:
+            - echo "Starting"
+          onExecute:
+            # Testing stdout
+            - echo "Stdout content"
+            # Testing stderr
+            - echo "Stderr content" >&2
+          onComplete:
+            - echo "Done"
