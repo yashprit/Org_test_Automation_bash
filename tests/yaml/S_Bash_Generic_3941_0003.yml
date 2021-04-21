@@ -9,5 +9,7 @@ pipelines:
           onExecute:
             # Force error
             - command_not_found
+          onFailure:
+            - echo "Failed"
           onComplete:
             - echo "Done"
