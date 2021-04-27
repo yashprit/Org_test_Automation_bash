@@ -1,0 +1,8 @@
+pipelines:
+  - name: S_Bash_Mac_5679_0001
+    steps:
+      - name: S_Bash_Mac_5679_0001
+        type: Bash
+        execution:
+          onExecute:
+            - if [ "$(which docker)" != "" ] && [ "$(docker ps -q --filter name=$step_docker_container_name)" != "" ]; then return 1; fi

@@ -1,0 +1,15 @@
+pipelines:
+  - name: S_Bash_Mac_5679_0003
+    steps:
+      - name: S_Bash_Mac_5679_0003
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              custom:
+                name: drydock/u16javall
+                tag: master
+        execution:
+          onExecute:
+            - echo "test"

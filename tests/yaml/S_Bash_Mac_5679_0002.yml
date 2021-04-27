@@ -1,0 +1,19 @@
+template: true
+valuesFilePath: ../values/nodePoolValues.yml
+
+pipelines:
+  - name: S_Bash_Mac_5679_0002
+    steps:
+      - name: S_Bash_Mac_5679_0002
+        type: Bash
+        configuration:
+          nodePool: {{ .Values.MacOS_10_15.name }}
+          runtime:
+            type: image
+            image:
+              custom:
+                name: drydock/u16javall
+                tag: master
+        execution:
+          onExecute:
+            - echo "test"
