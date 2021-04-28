@@ -1,6 +1,7 @@
 template: true
 valuesFilePath: ../values/gitRepoValues.yml
 
+resources:
   - name: S_Bash_Util_Notification_Repo
     type: GitRepo
     configuration:
@@ -22,5 +23,5 @@ pipelines:
         execution:
           onExecute:
             - pushd $res_S_Bash_Util_Notification_Repo_resourcePath
-            - send_notification slack
+            - send_notification BSU_slack
             - popd
