@@ -1,0 +1,11 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0017
+    steps:
+      - name: step_S_Bash_Approval_Gates_0017
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: "nonNumericalString"
+        execution:
+          onExecute:
+            - echo "Hello World"

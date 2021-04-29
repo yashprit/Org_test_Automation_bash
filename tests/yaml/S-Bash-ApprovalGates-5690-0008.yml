@@ -1,0 +1,15 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0008
+    steps:
+      - name: step_S_Bash_Approval_Gates_0008
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: 86400
+            approvers:
+              - admin
+            notifications:
+              - integrationName: testSlack
+        execution:
+          onExecute:
+            - echo "Hello World"

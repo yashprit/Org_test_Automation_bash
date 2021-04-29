@@ -1,0 +1,15 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0002
+    steps:
+      - name: step_S_Bash_Approval_Gates_0002
+        type: Bash
+        configuration:
+          requiresApproval:
+            notifications:
+              - integrationName: testSMTP
+                recipients:
+                  - example@jfrog.com
+                  - example@email.com
+        execution:
+          onExecute:
+            - echo "Hello World"

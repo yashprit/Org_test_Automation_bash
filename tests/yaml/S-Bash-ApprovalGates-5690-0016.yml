@@ -1,0 +1,14 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0016
+    steps:
+      - name: step_S_Bash_Approval_Gates_0016
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: 86400
+            approvers:
+              - userDoesNotExist1
+              - userDoesNotExist2
+        execution:
+          onExecute:
+            - echo "Hello World"

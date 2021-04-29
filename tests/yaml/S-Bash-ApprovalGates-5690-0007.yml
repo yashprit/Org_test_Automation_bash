@@ -1,0 +1,18 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0007
+    steps:
+      - name: step_S_Bash_Approval_Gates_0007
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: 86400
+            approvers:
+              - admin
+            notifications:
+              - integrationName:
+                recipients:
+                  - example@jfrog.com
+                  - example@email.com
+        execution:
+          onExecute:
+            - echo "Hello World"
