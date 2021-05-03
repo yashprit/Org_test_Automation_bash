@@ -1,0 +1,12 @@
+pipelines:
+  - name: S_Bash_Util_0024
+    steps:
+      - name: S_Bash_Util_0024
+        type: Bash
+        configuration:
+          integrations:
+            - name: BSU_smtp
+        execution:
+          onExecute:
+            - echo "testing" > test.txt
+            - send_notification BSU_smtp --recipients ${int_BSU_smtp_emailAuthUser} --attachments test.txt

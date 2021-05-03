@@ -1,0 +1,11 @@
+pipelines:
+  - name: S_Bash_Util_0023
+    steps:
+      - name: S_Bash_Util_0023
+        type: Bash
+        configuration:
+          integrations:
+            - name: BSU_smtp
+        execution:
+          onExecute:
+            - send_notification BSU_smtp --recipients ${int_BSU_smtp_emailAuthUser}
