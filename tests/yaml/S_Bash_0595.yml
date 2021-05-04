@@ -1,0 +1,11 @@
+ pipelines:
+  - name: pipelines_S_Bash_0595
+    steps:
+      - name: S_Bash_0595
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_pagerduty
+        execution:
+          onExecute:
+            - send_notification i_pagerduty -text "hello world from bash run number $run_number"

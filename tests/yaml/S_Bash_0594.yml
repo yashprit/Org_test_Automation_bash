@@ -1,0 +1,11 @@
+ pipelines:
+  - name: pipelines_S_Bash_0594
+    steps:
+      - name: S_Bash_0594
+        type: Bash
+        configuration:
+          integrations:
+            - name: i_pagerduty
+        execution:
+          onExecute:
+            - send_notification i_pagerduty "adding some text without argument flag"
