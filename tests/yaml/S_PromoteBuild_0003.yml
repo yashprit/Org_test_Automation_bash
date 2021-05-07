@@ -1,0 +1,17 @@
+resources:
+  - name: S_PromoteBuild_0003_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PromoteBuild_0003
+    steps:
+      - name: S_PromoteBuild_0003
+        type: PromoteBuild
+        configuration:
+          targetRepository: test-automation-generic-promoted-local
+          outputResources:
+            - name: S_PromoteBuild_0003_output

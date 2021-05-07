@@ -3,9 +3,9 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      path: jfbetapipeorg/Org_test_Automation
       branches:
-        include: {{gitBranch}}
+        include: master
 
   - name: S_PromoteBuild_0019_BuildInfo
     type: BuildInfo
@@ -55,7 +55,7 @@ pipelines:
         execution:
           onExecute:
             # create an invalid signature file
-            - export head_sig_path=$(jfrog rt s artifactory-pipe-info/pipeline_S_PromoteBuild_0019@{{gitBranch}}/*/s-S_PromoteBuild_0019_2.json.sig | jq '.[0].path')
+            - export head_sig_path=$(jfrog rt s artifactory-pipe-info/pipeline_S_PromoteBuild_0019/{{gitBranch}}/*/s-S_PromoteBuild_0019_2.json.sig | jq '.[0].path')
             - execute_command "jfrog rt u $res_S_PromoteBuild_0019_GitRepo_resourcePath/tests/artifacts/invalidGPGSig $head_sig_path --quiet"
       - name: S_PromoteBuild_0019_4
         type: PromoteBuild
@@ -68,8 +68,8 @@ pipelines:
             - name: S_PromoteBuild_0019_BuildInfo
           outputResources:
             - name: S_PromoteBuild_0019_BuildInfo_promoted
-          targetRepository: test-automation-go-promoted-local
+          targetRepository: test-automation-go-local
           failOnValidate: true
         execution:
           onComplete:
-            - execute_command "jfrog rt delete artifactory-pipe-info/pipeline_S_PromoteBuild_0019@{{gitBranch}} --quiet"
+            - execute_command "jfrog rt delete artifactory-pipe-info/pipeline_S_PromoteBuild_0019/{{gitBranch}} --quiet"

@@ -1,0 +1,65 @@
+resources:
+  - name: S_PromoteBuild_0014_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+  - name: S_PromoteBuild_0014_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PromoteBuild_0014_1
+    steps:
+      - name: S_PromoteBuild_0014_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PromoteBuild_0014_1.txt
+            - jfrog rt upload S_PromoteBuild_0014_1.txt test-automation-generic-local
+
+  - name: pipeline_S_PromoteBuild_0014_2
+    steps:
+      - name: S_PromoteBuild_0014_2
+        type: Bash
+        configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NAME: S_PromoteBuild_0014_2
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_PromoteBuild_0014_input
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PromoteBuild_0014_2.txt
+            - jfrog rt upload S_PromoteBuild_0014_2.txt test-automation-generic-local
+            - jfrog rt download --limit=1 --flat "test-automation-generic-local/S_PromoteBuild_0014_1.txt" "dependency.txt"
+            - jfrog rt build-publish $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
+            - write_output S_PromoteBuild_0014_input buildName=$JFROG_CLI_BUILD_NAME buildNumber=$JFROG_CLI_BUILD_NUMBER
+      - name: S_PromoteBuild_0014_3
+        type: PromoteBuild
+        configuration:
+          targetRepository: test-automation-generic-promoted-local
+          includeDependencies: true
+          inputResources:
+            - name: S_PromoteBuild_0014_input
+          outputResources:
+            - name: S_PromoteBuild_0014_output
+      - name: S_PromoteBuild_0014_4
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PromoteBuild_0014_output
+        execution:
+          onExecute:
+            - jfrog rt download --fail-no-op --insecure-tls=${no_verify_ssl} --limit=1 --flat "test-automation-generic-promoted-local/S_PromoteBuild_0014_1.txt" "dependency.txt"
+            - jfrog rt curl -XDELETE /api/build/S_PromoteBuild_0014_2?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1

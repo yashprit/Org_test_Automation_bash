@@ -1,0 +1,37 @@
+resources:
+  - name: S_PromoteBuild_0005_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+  - name: S_PromoteBuild_0005_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PromoteBuild_0005
+    steps:
+      - name: S_PromoteBuild_0005_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_PromoteBuild_0005_input
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PromoteBuild_0005.txt
+            - jfrog rt upload S_PromoteBuild_0005.txt test-automation-generic-local
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
+            - write_output S_PromoteBuild_0005_input buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_PromoteBuild_0005_2
+        type: PromoteBuild
+        configuration:
+          inputResources:
+            - name: S_PromoteBuild_0005_input
+          outputResources:
+            - name: S_PromoteBuild_0005_output

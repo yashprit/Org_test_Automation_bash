@@ -1,0 +1,26 @@
+resources:
+  - name: S_SignReleaseBundle_0006_input
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_SignReleaseBundle_0006_output
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_SignReleaseBundle_0006
+    steps:
+      - name: S_SignReleaseBundle_0006
+        type: SignReleaseBundle
+        configuration:
+          integrations:
+            - name: s_gitHub
+          inputResources:
+            - name: S_SignReleaseBundle_0006_input
+          outputResources:
+            - name: S_SignReleaseBundle_0006_output

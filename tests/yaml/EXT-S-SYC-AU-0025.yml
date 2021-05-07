@@ -1,0 +1,19 @@
+resources:
+  - name: EXT_S_SYC_AU_0025_fileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "test-automation-generic-local/test.txt"
+pipelines:
+  - name: EXT_S_SYC_AU_0025
+    steps:
+      - name: EXT_S_SYC_AU_0025
+        type: UploadArtifact
+        configuration:
+          targetPath: "test-automation-generic-local/EXT_S_SYC_AU_0025"
+          syncDeletes:
+            - "test-automation-generic-local/EXT_S_SYC_AU_0025"
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: EXT_S_SYC_AU_0025_fileSpec

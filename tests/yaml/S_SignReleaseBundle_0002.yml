@@ -1,0 +1,29 @@
+resources:
+  - name: S_SignReleaseBundle_0002_input
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_SignReleaseBundle_0002_input2
+    type: PropertyBag
+    configuration:
+      propertyOne: '1'
+  - name: S_SignReleaseBundle_0002_output
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_SignReleaseBundle_0002
+    steps:
+      - name: S_SignReleaseBundle_0002
+        type: SignReleaseBundle
+        configuration:
+          inputResources:
+            - name: S_SignReleaseBundle_0002_input
+            - name: S_SignReleaseBundle_0002_input2
+          outputResources:
+            - name: S_SignReleaseBundle_0002_output

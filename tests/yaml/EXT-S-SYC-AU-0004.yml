@@ -1,0 +1,7 @@
+pipelines:
+  - name: EXT_S_SYC_AU_0004
+    steps:
+      - name: EXT_S_SYC_AU_0004
+        type: UploadArtifact
+        configuration:
+          targetPath: "test-automation-generic-local/EXT_S_SYC_AU_0004"

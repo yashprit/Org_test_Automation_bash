@@ -1,0 +1,51 @@
+resources:
+  - name: S_PromoteBuild_0011_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+  - name: S_PromoteBuild_0011_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PromoteBuild_0011
+    steps:
+      - name: S_PromoteBuild_0011_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_PromoteBuild_0011_input
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PromoteBuild_0011.txt
+            - jfrog rt upload S_PromoteBuild_0011.txt test-automation-generic-local
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
+            - write_output S_PromoteBuild_0011_input buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_PromoteBuild_0011_2
+        type: PromoteBuild
+        configuration:
+          targetRepository: test-automation-generic-promoted-local
+          copy: true
+          inputResources:
+            - name: S_PromoteBuild_0011_input
+          outputResources:
+            - name: S_PromoteBuild_0011_output
+      - name: S_PromoteBuild_0011_3
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PromoteBuild_0011_output
+        execution:
+          onExecute:
+            - jfrog rt download --fail-no-op --insecure-tls=${no_verify_ssl} --limit=1 --flat "test-automation-generic-promoted-local/S_PromoteBuild_0011.txt" "promoted.txt"
+            - jfrog rt download --fail-no-op --insecure-tls=${no_verify_ssl} --limit=1 --flat "test-automation-generic-local/S_PromoteBuild_0011.txt" "original.txt"
+            - jfrog rt curl -XDELETE /api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1
