@@ -1,0 +1,46 @@
+resources:
+  - name: S_PublishBuildInfo_0011_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_PublishBuildInfo_0011
+    steps:
+      - name: S_PublishBuildInfo_0011_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PublishBuildInfo_0011.txt
+            - $jfrog_cli_path rt upload S_PublishBuildInfo_0011.txt test-automation-generic-local
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+            - add_run_variables myEnvironmentVariable=${run_id}
+            - $jfrog_cli_path rt build-collect-env
+            - add_run_files /tmp/jfrog/. jfrog
+      - name: S_PublishBuildInfo_0011_2
+        type: PublishBuildInfo
+        configuration:
+          envInclude: "myEnvironmentVariable"
+          outputResources:
+            - name: S_PublishBuildInfo_0011_output
+          inputSteps:
+            - name: S_PublishBuildInfo_0011_1
+      - name: S_PublishBuildInfo_0011_3
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PublishBuildInfo_0011_output
+        execution:
+          onExecute:
+            - jfrog rt curl -XGET /api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER} -o ${step_tmp_dir}/response
+            - jfrog rt curl -XDELETE /api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1
+            - cat ${step_tmp_dir}/response
+            - myVariable=$(cat ${step_tmp_dir}/response | jq -r '.buildInfo.properties["buildInfo.env.myEnvironmentVariable"]')
+            - if [ "$myVariable" != "${run_id}" ] ; then return 1; fi
+            - variableCount=$(cat ${step_tmp_dir}/response | jq -r '.buildInfo.properties | length')
+            - if [ "$variableCount" != "1" ] ; then return 1; fi

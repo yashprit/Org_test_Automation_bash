@@ -1,0 +1,50 @@
+resources:
+  - name: S_PromoteBuild_0017_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+  - name: S_PromoteBuild_0017_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PromoteBuild_0017
+    steps:
+      - name: S_PromoteBuild_0017_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_PromoteBuild_0017_input
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PromoteBuild_0017.txt
+            - jfrog rt upload S_PromoteBuild_0017.txt test-automation-generic-local
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
+            - write_output S_PromoteBuild_0017_input buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_PromoteBuild_0017_2
+        type: PromoteBuild
+        configuration:
+          targetRepository: test-automation-generic-promoted-local
+          inputResources:
+            - name: S_PromoteBuild_0017_input
+          outputResources:
+            - name: S_PromoteBuild_0017_output
+      - name: S_PromoteBuild_0017_3
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PromoteBuild_0017_input
+            - name: S_PromoteBuild_0017_output
+        execution:
+          onExecute:
+            - if [ "$res_S_PromoteBuild_0017_output_buildName" != "$res_S_PromoteBuild_0017_input_buildName" ]; then exit 1; fi
+            - if [ "$res_S_PromoteBuild_0017_output_buildNumber" != "$res_S_PromoteBuild_0017_input_buildNumber" ]; then exit 1; fi

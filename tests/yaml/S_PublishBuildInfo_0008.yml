@@ -1,0 +1,39 @@
+resources:
+  - name: S_PublishBuildInfo_0008_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_PublishBuildInfo_0008
+    steps:
+      - name: S_PublishBuildInfo_0008_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PublishBuildInfo_0008.txt
+            - $jfrog_cli_path rt upload S_PublishBuildInfo_0008.txt test-automation-generic-local
+            - add_run_files /tmp/jfrog/. jfrog
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_PublishBuildInfo_0008_2
+        type: PublishBuildInfo
+        configuration:
+          outputResources:
+            - name: S_PublishBuildInfo_0008_output
+          inputSteps:
+            - name: S_PublishBuildInfo_0008_1
+      - name: S_PublishBuildInfo_0008_3
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PublishBuildInfo_0008_output
+        execution:
+          onExecute:
+            - if [ "$res_S_PublishBuildInfo_0008_output_buildName" != "$buildName" ]; then return 1; fi
+            - if [ "$res_S_PublishBuildInfo_0008_output_buildNumber" != "$buildNumber" ]; then return 1; fi
+            - jfrog rt curl -XDELETE /api/build/${buildName}?buildNumbers=${buildNumber}&artifacts=1

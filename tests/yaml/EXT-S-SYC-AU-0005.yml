@@ -1,0 +1,9 @@
+pipelines:
+  - name: EXT_S_SYC_AU_0005
+    steps:
+      - name: EXT_S_SYC_AU_0005
+        type: UploadArtifact
+        configuration:
+          targetPath: null
+          integrations:
+            - name: s_artifactory

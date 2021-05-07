@@ -1,0 +1,54 @@
+resources:
+  - name: S_PromoteBuild_0010_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+  - name: S_PromoteBuild_0010_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PromoteBuild_0010
+    steps:
+      - name: S_PromoteBuild_0010_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_PromoteBuild_0010_input
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_PromoteBuild_0010.txt
+            - jfrog rt upload S_PromoteBuild_0010.txt test-automation-generic-local
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
+            - write_output S_PromoteBuild_0010_input buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_PromoteBuild_0010_2
+        type: PromoteBuild
+        configuration:
+          targetRepository: test-automation-generic-promoted-local
+          status: TEST
+          comment: "My test comment for ${run_id}"
+          inputResources:
+            - name: S_PromoteBuild_0010_input
+          outputResources:
+            - name: S_PromoteBuild_0010_output
+      - name: S_PromoteBuild_0010_3
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_PromoteBuild_0010_output
+        execution:
+          onExecute:
+            - jfrog rt curl -XGET /api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER} -o ${step_tmp_dir}/response
+            - jfrog rt curl -XDELETE /api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1
+            - cat ${step_tmp_dir}/response
+            - myComment=$(cat ${step_tmp_dir}/response | jq -r '.buildInfo.statuses[0].comment')
+            - if [ $myComment != "My test comment for ${run_id}" ] ; then return 1; fi
