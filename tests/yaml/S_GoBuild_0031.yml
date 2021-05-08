@@ -25,8 +25,8 @@ pipelines:
           resolverRepo: test-automation-go-virtual
         execution:
           onStart:
-            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
-            - echo pwd
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)/HelloWorld
+            - echo $pwd
             - ls
             - go get
             - popd
