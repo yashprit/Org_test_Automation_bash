@@ -30,5 +30,5 @@ pipelines:
             - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)
             - mv tests/Go/* .
             - ls
-            - go get
+            - go get -insecure
             - popd

@@ -34,7 +34,7 @@ pipelines:
         execution:
           onStart:
             - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
-            - go get
+            - go get -insecure
             - popd
             - add_run_variables JFROG_CLI_ENV_EXCLUDE="*myenvironmentvariable*;*password*;*secret*;*key*;*token*"
       - name: S_GoPublishBinary_0034_2
