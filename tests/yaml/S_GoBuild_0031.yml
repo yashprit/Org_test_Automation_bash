@@ -26,6 +26,8 @@ pipelines:
         execution:
           onStart:
             - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - echo pwd
+            - ls
             - go get
             - popd
           onSuccess:
