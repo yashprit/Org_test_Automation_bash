@@ -1,0 +1,71 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+
+  - name: S_HelmDeploy_FileSpec_0013_generic_resource
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: >-
+        helmgeneric/
+      recursive: true
+
+  - name: S_HelmDeploy_GitRepo_0013_resource
+
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0013
+    configuration:
+      environmentVariables:
+        readOnly:
+          release_name_generic: "simplehelm-generic-${run_id}"
+          k8s_namespace: "pipe-master-pool"
+    steps:
+      - name: trigger_pipeline_S_HelmDeploy_0013
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_HelmDeploy_GitRepo_0013_resource
+              trigger: false
+        execution:
+          onExecute:
+            - request='{"key":"helmgeneric", "rclass":"local", "packageType":"generic", "description":"This repo is a test repo used by test automation", "repoLayoutRef":"simple-default"}'
+            - echo $request > request.json
+            - jfrog rt repo-delete helmgeneric || true
+            - jfrog rt repo-create request.json
+            - jfrog rt u ${res_S_HelmDeploy_GitRepo_0013_resource_resourcePath}/tests/core/helmdeploy/simplehelm-0.3.0.tgz "helmgeneric/" --explode
+          onFailure:
+            - jfrog rt repo-delete helmgeneric
+
+      - name: deploy_helm_chart_generic
+        type: HelmDeploy
+        configuration:
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputSteps:
+            - name: trigger_pipeline_S_HelmDeploy_0013
+          inputResources:
+            - name: S_HelmDeploy_FileSpec_0013_generic_resource
+          chartPath: ./simplehelm/
+          helmVersion: 3
+          releaseName: ${release_name_generic}
+          flags: "--force --wait --timeout 900s --set image.repository=trriplejay/simplehelm --set image.tag=latest"
+          valueFilePaths:
+            - values.yaml
+          lint: true
+          lintFlags: "--strict"
+          test: true
+        execution:
+          onComplete:
+            - jfrog rt repo-delete helmgeneric || true
+            - helm3 delete ${release_name_generic} --namespace ${k8s_namespace}

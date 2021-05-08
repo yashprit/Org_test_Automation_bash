@@ -1,0 +1,27 @@
+resources:
+  - name: S_HelmDeploy_PropertyBag_0001_resource
+    type: PropertyBag
+    configuration:
+      runNumber: 0
+  - name: S_HelmDeploy_HelmChart_0001_resource
+    type: HelmChart
+    configuration:
+      sourceArtifactory: s_artifactory
+      repository: simplecharts
+      chart: simplehelm
+      version: 0.0.0
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0001
+    steps:
+      - name: S_HelmDeploy_0001
+        type: HelmDeploy
+        configuration:
+          releaseName: release
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_PropertyBag_0001_resource
+              newVersionOnly: true
+            - name: S_HelmDeploy_HelmChart_0001_resource

@@ -1,0 +1,21 @@
+resources:
+  - name: S_HelmDeploy_ReleaseBundle_0037_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0037
+    steps:
+      - name: S_HelmDeploy_0037
+        type: HelmDeploy
+        configuration:
+          helmVersion: 3
+          releaseName: release
+          chartPath: ./helmCharts/
+          integrations:
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_ReleaseBundle_0037_ReleaseBundle

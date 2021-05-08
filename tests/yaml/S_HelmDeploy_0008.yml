@@ -1,0 +1,23 @@
+
+resources:
+  - name: S_HelmDeploy_HelmChart_0008_resource
+    type: HelmChart
+    configuration:
+      sourceArtifactory: s_artifactory
+      repository: simplecharts
+      chart: simplehelm
+      version: 0.0.0
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0008
+    steps:
+      - name: S_HelmDeploy_0008
+        type: HelmDeploy
+        configuration:
+          helmVersion: 3
+          releaseName: release
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_HelmChart_0008_resource
