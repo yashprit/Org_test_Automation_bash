@@ -1,0 +1,75 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_HelmDeploy_BuildInfo_0026_resource
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: helmbuild
+      buildNumber: 1
+  - name: S_HelmDeploy_GitRepo_0026_resource
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0026
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_LOG_LEVEL: DEBUG
+          RELEASE_NAME: "simplehelm-generic-${run_id}"
+          K8S_NAMESPACE: "pipe-master-pool"
+          JFROG_CLI_BUILD_NAME: helmbuild
+          JFROG_CLI_BUILD_NUMBER: ${run_id}
+    steps:
+      - name: S_HelmDeploy_0026_build_charts
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_HelmDeploy_GitRepo_0026_resource
+          outputResources:
+            - name: S_HelmDeploy_BuildInfo_0026_resource
+        execution:
+          onStart:
+            - request='{"key":"helmgeneric", "rclass":"local", "packageType":"generic", "description":"This repo is a test repo used by test automation", "repoLayoutRef":"simple-default"}'
+            - echo $request > request.json
+            - jfrog rt repo-delete helmgeneric --quiet || true
+            - jfrog rt repo-create request.json
+            - cd ${res_S_HelmDeploy_GitRepo_0026_resource_resourcePath}/tests/core/helmdeploy
+            - jfrog rt u simplehelm/ helmgeneric --flat=false --build-name=$JFROG_CLI_BUILD_NAME --build-number=$JFROG_CLI_BUILD_NUMBER
+            - jfrog rt bce $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
+            - jfrog rt bp $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
+            - write_output S_HelmDeploy_BuildInfo_0026_resource buildName=$JFROG_CLI_BUILD_NAME buildNumber=$JFROG_CLI_BUILD_NUMBER
+          onFailure:
+            - jfrog rt repo-delete helmgeneric --quiet || true
+
+      - name: S_HelmDeploy_0026_deploy
+        type: HelmDeploy
+        configuration:
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputSteps:
+            - name: S_HelmDeploy_0026_build_charts
+          inputResources:
+            - name: S_HelmDeploy_BuildInfo_0026_resource
+          chartPath: ./chartPathDoesntExist/
+          helmVersion: 3
+          releaseName: ${RELEASE_NAME}
+          flags: "--force --wait --timeout 900s --set image.repository=trriplejay/simplehelm --set image.tag=latest"
+          valueFilePaths:
+            - values.yaml
+          lint: true
+          lintFlags: "--strict"
+          test: true
+        execution:
+          onComplete:
+            - jfrog rt repo-delete helmgeneric --quiet || true
+            - helm3 delete simplehelm-generic-$run_id --namespace $K8S_NAMESPACE

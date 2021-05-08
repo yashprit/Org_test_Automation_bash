@@ -1,0 +1,106 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_HelmDeploy_ReleaseBundle_0034_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: helmbuild
+      buildNumber: 1
+
+  - name: S_HelmDeploy_ReleaseBundle_0034_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+  - name: S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: S_HelmDeploy_ReleaseBundle_0034
+    configuration:
+      environmentVariables:
+        readOnly:
+          RELEASE_NAME: "simplehelm-from-repo-${run_id}"
+          K8S_NAMESPACE: "pipe-master-pool"
+          JFROG_CLI_BUILD_NAME: helmbuild_from_repo
+          JFROG_CLI_BUILD_NUMBER: ${run_id}
+    steps:
+      - name: S_HelmDeploy_0034_create_bundle
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_HelmDeploy_ReleaseBundle_0034_GitRepo
+          outputResources:
+            - name: S_HelmDeploy_ReleaseBundle_0034_BuildInfo
+        execution:
+          onExecute:
+            - request='{"key":"simplecharts", "rclass":"local", "packageType":"helm", "description":"This repo is a test repo used by test automation", "repoLayoutRef":"simple-default"}'
+            - echo $request > request.json
+            - jfrog rt repo-delete simplecharts --quiet || true
+            - jfrog rt repo-create request.json
+            - cd ${res_S_HelmDeploy_ReleaseBundle_0034_GitRepo_resourcePath}/tests/core/helmdeploy
+            - jfrog rt u index.yaml simplecharts --build-name=$JFROG_CLI_BUILD_NAME --build-number=$JFROG_CLI_BUILD_NUMBER
+            - jfrog rt u simplehelm-0.3.0.tgz simplecharts --build-name=$JFROG_CLI_BUILD_NAME --build-number=$JFROG_CLI_BUILD_NUMBER
+            - jfrog rt bce $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
+            - jfrog rt bp $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
+            - write_output S_HelmDeploy_ReleaseBundle_0034_BuildInfo buildName=$JFROG_CLI_BUILD_NAME buildNumber=$JFROG_CLI_BUILD_NUMBER
+          onFailure:
+            - jfrog rt repo-delete simplecharts --quiet
+
+      - name: S_HelmDeploy_0034_create_release_bundle
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: helmbuild_bundle_helm_repo
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          sign: true
+          inputResources:
+            - name: S_HelmDeploy_ReleaseBundle_0034_BuildInfo
+          outputResources:
+            - name: S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle
+
+      - name: deploy_helm_chart_from_helm_repo
+        type: HelmDeploy
+        configuration:
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle
+          helmVersion: 3
+          releaseName: ${RELEASE_NAME}
+          chartPath: simplecharts
+          chartName: simplehelm
+          chartVersion: 0.3.0
+          flags: "--force --wait --timeout 900s --set image.repository=trriplejay/simplehelm --set image.tag=latest"
+          valueFilePaths:
+            - values.yaml
+          lint: true
+          lintFlags: "--strict"
+          test: true
+        execution:
+          onComplete:
+            - echo "Deleting distribution..."
+            - distributionUrl="$res_S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle_sourceDistribution_url"
+            - releaseBundleName=$(find_resource_variable S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle name)
+            - releaseBundleVersion=$(find_resource_variable S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle version)
+            - curlOptions="--silent --retry 3 -w %{http_code} -u $res_S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle_sourceDistribution_user:$res_S_HelmDeploy_ReleaseBundle_0034_ReleaseBundle_sourceDistribution_apikey"
+            - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
+            - "status=$(curl $curlOptions -XDELETE \"$distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion\")"
+            - if [ $status -gt 299 ]; then return 1; fi
+            - if [ $status -eq 204 ]; then echo "Deleted release bundle $releaseBundleName/$releaseBundleVersion successfully"; fi
+            - echo "Deleting artifactory repository..."
+            - jfrog rt repo-delete simplecharts --quiet || true
+            - echo "Deleting helm resources..."
+            - helm3 delete simplehelm-from-repo-$run_id --namespace $K8S_NAMESPACE

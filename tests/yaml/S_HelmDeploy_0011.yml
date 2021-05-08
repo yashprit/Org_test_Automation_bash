@@ -1,0 +1,31 @@
+resources:
+  - name: S_HelmDeploy_HelmChart_0011_resource
+    type: HelmChart
+    configuration:
+      sourceArtifactory: s_artifactory
+      repository: simplecharts
+      chart: simplehelm
+      version: 0.0.0
+  - name: S_HelmDeploy_FileSpec_0011_resource
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: >-
+        helmgeneric/
+      recursive: true
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0011
+    steps:
+      - name: S_HelmDeploy_0011
+        type: HelmDeploy
+        configuration:
+          chartPath: ./
+          helmVersion: 3
+          releaseName: release
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_HelmChart_0011_resource
+            - name: S_HelmDeploy_FileSpec_0011_resource

@@ -1,0 +1,24 @@
+resources:
+  - name: S_HelmDeploy_BuildInfo_0020_resource
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: helmbuild
+      buildNumber: 1
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0020
+    steps:
+      - name: S_HelmDeploy_0020
+        type: HelmDeploy
+        configuration:
+          helmVersion: 3
+          releaseName: release
+          chartPath: ./helmCharts/
+          chartName: chartName
+          chartVersion: 0.3.0
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_BuildInfo_0020_resource

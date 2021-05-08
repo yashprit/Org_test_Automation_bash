@@ -1,0 +1,23 @@
+resources:
+  - name: S_HelmDeploy_FileSpec_0001_resource
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: >-
+        helmgeneric/
+      recursive: true
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0001
+    steps:
+      - name: S_HelmDeploy_0001
+        type: HelmDeploy
+        configuration:
+          helmVersion: 3
+          releaseName: release
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_FileSpec_0001_resource
+              newVersionOnly: true

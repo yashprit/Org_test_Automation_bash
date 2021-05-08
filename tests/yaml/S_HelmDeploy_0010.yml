@@ -1,0 +1,35 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_HelmDeploy_GitRepo_0010_resource
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+  - name: S_HelmDeploy_FileSpec_0010_resource
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: >-
+        helmgeneric/
+      recursive: true
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_0010
+    steps:
+      - name: S_HelmDeploy_0010
+        type: HelmDeploy
+        configuration:
+          chartPath: ./
+          helmVersion: 3
+          releaseName: release
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_GitRepo_0010_resource
+            - name: S_HelmDeploy_FileSpec_0010_resource
