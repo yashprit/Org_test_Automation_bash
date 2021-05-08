@@ -6,7 +6,7 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
       branches:
         include: {{gitBranch}}
 
@@ -25,7 +25,7 @@ pipelines:
           resolverRepo: test-automation-go-virtual
         execution:
           onStart:
-            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)/HelloWorld
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
             - echo $pwd
             - ls
             - go get
