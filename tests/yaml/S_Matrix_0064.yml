@@ -1,0 +1,32 @@
+pipelines:
+  - name: S_Matrix_0064
+    steps:
+      - name: S_Matrix_0064
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          nodePool: S_Matrix_0064_nodePool
+        stepletMultipliers:
+          environmentVariables:
+           - animal: dog
+             bird: sparrow
+           - animal: cat
+             bird: crow 
+          runtimes:
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - "12.18.2" 
+            - type: image
+              image:
+                auto:
+                  language: node
+                  versions:
+                    - 8.17.0    
+       
+        execution:
+          onExecute:
+            - echo "Executing matrix step on ${steplet_id}"
+            - echo "Variation animal = ${animal}, bird = ${bird}"
