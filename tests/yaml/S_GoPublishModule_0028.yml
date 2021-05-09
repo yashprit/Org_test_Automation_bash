@@ -31,6 +31,8 @@ pipelines:
         execution:
           onExecute:
             - cd $(find_resource_variable S_GoPublishModule_0028_GitRepo resourcePath)/tests/Go
+            - pwd
+            - ls
             - jfrog rt upload go.mod test-automation-generic-local/go.mod
 
       - name: S_GoPublishModule_0028_2
