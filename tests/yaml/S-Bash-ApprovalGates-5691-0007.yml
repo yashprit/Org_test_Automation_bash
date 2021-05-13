@@ -1,0 +1,29 @@
+pipelines:
+  - name: PIPE_5691_0007
+    steps:
+      - name: PIPE_5691_0007_step1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "going to sleep"
+            - sleep 100
+            - echo "woke up!"
+      - name: PIPE_5691_0007_step2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: PIPE_5691_0007_step1
+        execution:
+          onExecute:
+            - echo "going to sleep"
+            - sleep 100
+            - echo "woke up!"
+      - name: PIPE_5691_0007_step3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: PIPE_5691_0007_step2
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - sleep 10

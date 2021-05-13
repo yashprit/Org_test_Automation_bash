@@ -1,0 +1,35 @@
+pipelines:
+  - name: PIPE_5691_0009
+    steps:
+      - name: PIPE_5691_0009_step1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "going to sleep"
+            - sleep 100
+            - echo "woke up!"
+      - name: PIPE_5691_0009_step2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: PIPE_5691_0009_step1
+        execution:
+          onExecute:
+            - echo "going to sleep"
+            - sleep 100
+            - echo "woke up!"
+      - name: PIPE_5691_0009_step3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: PIPE_5691_0009_step2
+          requiresApproval:
+            timeoutSeconds: 86400
+            approvers:
+              - owner
+              - benha
+              - admin
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - sleep 10
