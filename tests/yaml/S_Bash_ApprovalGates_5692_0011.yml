@@ -1,0 +1,18 @@
+pipelines:
+  - name: pipeline_S_Bash_ApprovalGates_5692_0011
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0011_1
+        type: Bash
+        execution:
+          onExecute:
+            - cat "Hello World"
+      - name: S_Bash_ApprovalGates_5692_0011_2
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: 120
+          inputSteps:
+            - name: S_Bash_ApprovalGates_5692_0011_1
+        execution:
+          onExecute:
+            - echo "Hello World"

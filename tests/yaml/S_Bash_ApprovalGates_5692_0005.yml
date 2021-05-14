@@ -1,0 +1,17 @@
+pipelines:
+  - name: pipeline_S_Bash_ApprovalGates_5692_0005
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0005
+        type: Bash
+        configuration:
+          requiresApproval:
+            approvers:
+              - approvalGateApprover
+            notifications:
+              - integrationName: Bash_ApprovalGates_slack
+                recipients:
+                  - test-channel
+            timeoutSeconds: 15
+        execution:
+          onExecute:
+            - echo "Hello World"
