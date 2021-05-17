@@ -1,0 +1,9 @@
+pipelines:
+  - name: S_Bash_Generic_5900_0002
+    steps:
+      - name: S_Bash_Generic_5900_0002_001
+        type: Bash
+        execution:
+          onExecute:
+            - sleep 90
+            - echo "Executed"
