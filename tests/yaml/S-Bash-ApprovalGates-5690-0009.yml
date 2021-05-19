@@ -1,0 +1,17 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0010
+    steps:
+      - name: step_S_Bash_Approval_Gates_0010
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: 86400
+            approvers:
+              - admin
+            notifications:
+              - integrationName: testSMTP
+                recipients:
+                  - invalidEmail
+        execution:
+          onExecute:
+            - echo "Hello World"

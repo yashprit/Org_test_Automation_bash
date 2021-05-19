@@ -1,0 +1,13 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0014
+    steps:
+      - name: step_S_Bash_Approval_Gates_0014
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: 86400
+            approvers:
+              - admin
+        execution:
+          onExecute:
+            - echo "Hello World"

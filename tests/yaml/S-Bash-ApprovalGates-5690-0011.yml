@@ -1,0 +1,14 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0011
+    steps:
+      - name: step_S_Bash_Approval_Gates_0011
+        type: Bash
+        configuration:
+          requiresApproval:
+            notifications:
+              - integrationName: intDoesNotExist
+                recipients:
+                  - email@example.com
+        execution:
+          onExecute:
+            - echo "Hello World"

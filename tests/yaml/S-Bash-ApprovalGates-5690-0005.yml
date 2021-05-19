@@ -1,0 +1,22 @@
+pipelines:
+  - name: pipeline_S_Bash_Approval_Gates_0005
+    steps:
+      - name: step_S_Bash_Approval_Gates_0005
+        type: Bash
+        configuration:
+          requiresApproval:
+            timeoutSeconds: 86400
+            approvers:
+              - admin
+            notifications:
+              - integrationName: testSMTP
+                recipients:
+                  - example@jfrog.com
+                  - example@email.com
+              - integrationName: testSlack
+                recipients:
+                  - '#channel'
+                  - '@example@email.com'
+        execution:
+          onExecute:
+            - echo "Hello World"
