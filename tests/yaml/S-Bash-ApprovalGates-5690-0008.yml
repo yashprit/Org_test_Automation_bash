@@ -9,7 +9,7 @@ pipelines:
             approvers:
               - admin
             notifications:
-              - integrationName: testSlack
+              - integrationName: BSAG_4034_SLACK
         execution:
           onExecute:
             - echo "Hello World"

@@ -9,7 +9,7 @@ pipelines:
             approvers:
               - admin
             notifications:
-              - integrationName: testSMTP
+              - integrationName: BSAG_4034_SMTP
                 recipients:
                   - invalidEmail1
                   - invalidEmail2
