@@ -26,11 +26,11 @@ pipelines:
           requiresApproval:
             timeoutSeconds: 86400
             notifications:
-              - integrationName: mySMTPCreds
+              - integrationName: BSAG_4034_SMTP
                 recipients:
                   - benha@jfrog.com
                   - example@email.com
-              - integrationName: mySlack
+              - integrationName: BSAG_4034_SLACK
                 recipients:
                   - '#channel'
                   - '@example@email.com'
