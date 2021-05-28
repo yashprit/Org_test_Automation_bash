@@ -27,7 +27,6 @@ pipelines:
             timeoutSeconds: 86400
             approvers:
               - owner
-              - benha
               - admin
             notifications:
               - integrationName: BSAG_4034_SMTP
