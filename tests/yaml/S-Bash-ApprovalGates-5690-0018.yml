@@ -14,6 +14,3 @@ pipelines:
                   - example@jfrog.com
                   - example@email.com
               - integrationName: BSAG_4034_SLACK
-                recipients:
-                  - '#channel'
-                  - '@example@email.com'

@@ -31,9 +31,6 @@ pipelines:
                   - benha@jfrog.com
                   - example@email.com
               - integrationName: BSAG_4034_SLACK
-                recipients:
-                  - '#channel'
-                  - '@example@email.com'
         execution:
           onExecute:
             - echo "executing step..."
