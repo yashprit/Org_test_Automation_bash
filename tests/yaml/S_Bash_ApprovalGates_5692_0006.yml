@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_S_Bash_ApprovalGates_5692_0006
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0006
+        type: Bash
+        configuration:
+          requiresApproval: false
+        execution:
+          onExecute:
+            - echo "Hello World"

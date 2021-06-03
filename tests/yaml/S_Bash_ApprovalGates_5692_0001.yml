@@ -1,0 +1,98 @@
+pipelines:
+  - name: pipeline_S_Bash_ApprovalGates_5692_0001
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0001
+        type: Bash
+        configuration:
+          requiresApproval:
+            approvers:
+              - approvalGateApprover
+            notifications:
+              - integrationName: Bash_ApprovalGates_slack
+                recipients:
+                  - test-channel
+            timeoutSeconds: 15
+        execution:
+          onExecute:
+            - echo "Hello World"
+
+  - name: pipeline_S_Bash_ApprovalGates_5692_0002
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0002
+        type: Bash
+        configuration:
+          requiresApproval: false
+        execution:
+          onExecute:
+            - echo "Hello World"
+
+  - name: pipeline_S_Bash_ApprovalGates_5692_0003
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0003
+        type: Bash
+        configuration:
+          requiresApproval:
+            approvers:
+              - approvalGateApprover
+            notifications:
+              - integrationName: Bash_ApprovalGates_slack
+                recipients:
+                  - test-channel
+            timeoutSeconds: 15
+        execution:
+          onExecute:
+            - echo "Hello World"
+
+  - name: pipeline_S_Bash_ApprovalGates_5692_0004
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0004
+        type: Bash
+        configuration:
+          requiresApproval: false
+        execution:
+          onExecute:
+            - echo "Hello World"
+
+  - name: pipeline_S_Bash_ApprovalGates_5692_0007
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0007
+        type: Bash
+        configuration:
+          requiresApproval:
+            approvers:
+              - approvalGateApprover
+            notifications:
+              - integrationName: Bash_ApprovalGates_slack
+                recipients:
+                  - test-channel
+            timeoutSeconds: 15
+        execution:
+          onExecute:
+            - echo "Hello World"
+
+  - name: pipeline_S_Bash_ApprovalGates_5692_0008
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0008
+        type: Bash
+        configuration:
+          requiresApproval: false
+        execution:
+          onExecute:
+            - echo "Hello World"
+
+  - name: pipeline_S_Bash_ApprovalGates_5692_0009
+    steps:
+      - name: S_Bash_ApprovalGates_5692_0009
+        type: Bash
+        configuration:
+          requiresApproval:
+            approvers:
+              - approvalGateApprover
+            notifications:
+              - integrationName: Bash_ApprovalGates_slack
+                recipients:
+                  - test-channel
+            timeoutSeconds: 15
+        execution:
+          onExecute:
+            - echo "Hello World"
