@@ -8,8 +8,8 @@ pipelines:
             notifications:
               - integrationName: BSAG_4034_SMTP
                 recipients:
-                  - example@jfrog.com
-                  - example@email.com
+                  - pipelines.release@gmail.com
+                  - email@example.com
         execution:
           onExecute:
             - echo "Hello World"

@@ -32,7 +32,6 @@ pipelines:
               - integrationName: BSAG_4034_SMTP_ERROR
                 recipients:
                   - pipelines.release@gmail.com
-                  - benha@jfrog.com
         execution:
           onExecute:
             - echo "executing step..."

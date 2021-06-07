@@ -28,8 +28,8 @@ pipelines:
             notifications:
               - integrationName: BSAG_4034_SMTP
                 recipients:
-                  - benha@jfrog.com
-                  - example@email.com
+                  - pipelines.release@gmail.com
+                  - email@example.com
               - integrationName: BSAG_4034_SLACK
         execution:
           onExecute:
