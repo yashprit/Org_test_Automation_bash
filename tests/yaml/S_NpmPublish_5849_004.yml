@@ -1,0 +1,38 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_NpmPublish_5849_004_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_NpmPublish_5849_004
+    steps:
+      - name: S_NpmPublish_5849_004_1
+        type: NpmBuild
+        configuration:
+          inputResources:
+            - name: S_NpmPublish_5849_004_GitRepo
+          integrations:
+            - name: s_artifactory
+      - name: S_NpmPublish_5849_004_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_NpmPublish_5849_004_1
+        execution:
+          onExecute:
+            - echo "Testing"
+      - name: S_NpmPublish_5849_004_3
+        type: NpmPublish
+        configuration:
+          inputSteps:
+            - name: S_NpmPublish_5849_004_1
+            - name: S_NpmPublish_5849_004_2
+          integrations:
+            - name: s_artifactory
