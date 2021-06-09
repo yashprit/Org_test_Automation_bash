@@ -1,38 +1,37 @@
 pipelines:
-  - name: PIPE_5691_0001
+  - name: PIPE_5693_0007
     steps:
-      - name: PIPE_5691_0001_step1
+      - name: PIPE_5693_0007_step1
         type: Bash
         execution:
           onExecute:
             - echo "going to sleep"
-            - sleep 100
+            - sleep 40
             - echo "woke up!"
-      - name: PIPE_5691_0001_step2
+      - name: PIPE_5693_0007_step2
         type: Bash
         configuration:
           inputSteps:
-            - name: PIPE_5691_0001_step1
+            - name: PIPE_5693_0007_step1
         execution:
           onExecute:
             - echo "going to sleep"
-            - sleep 100
+            - sleep 40
             - echo "woke up!"
-      - name: PIPE_5691_0001_step3
+      - name: PIPE_5693_0007_step3
         type: Bash
         configuration:
           inputSteps:
-            - name: PIPE_5691_0001_step2
+            - name: PIPE_5693_0007_step2
           requiresApproval:
             timeoutSeconds: 86400
             approvers:
               - owner
               - admin
             notifications:
-              - integrationName: BSAG_4034_SMTP
+              - integrationName: BSAG_4034_SMTP_ERROR
                 recipients:
                   - pipelines.release@gmail.com
-                  - email@example.com
               - integrationName: BSAG_4034_SLACK
         execution:
           onExecute:

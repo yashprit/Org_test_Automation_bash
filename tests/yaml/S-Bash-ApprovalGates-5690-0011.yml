@@ -8,7 +8,7 @@ pipelines:
             notifications:
               - integrationName: intDoesNotExist
                 recipients:
-                  - email@example.com
+                  - pipelines.release@gmail.com
         execution:
           onExecute:
             - echo "Hello World"

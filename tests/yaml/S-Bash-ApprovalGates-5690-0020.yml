@@ -1,7 +1,7 @@
 pipelines:
-  - name: pipeline_S_Bash_Approval_Gates_0005
+  - name: pipeline_S_Bash_Approval_Gates_0020
     steps:
-      - name: step_S_Bash_Approval_Gates_0005
+      - name: step_S_Bash_Approval_Gates_0020
         type: Bash
         configuration:
           requiresApproval:
@@ -9,14 +9,9 @@ pipelines:
             approvers:
               - admin
             notifications:
-              - integrationName: BSAG_4034_SMTP
-                recipients:
-                  - pipelines.release@gmail.com
-                  - email@example.com
               - integrationName: BSAG_4034_SLACK
                 recipients:
-                  - '#channel'
-                  - '@example@email.com'
+                  - '#slackchannel'
         execution:
           onExecute:
             - echo "Hello World"

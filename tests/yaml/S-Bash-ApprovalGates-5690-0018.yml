@@ -11,9 +11,6 @@ pipelines:
             notifications:
               - integrationName: BSAG_4034_SMTP
                 recipients:
-                  - example@jfrog.com
-                  - example@email.com
+                  - pipelines.release@gmail.com
+                  - email@example.com
               - integrationName: BSAG_4034_SLACK
-                recipients:
-                  - '#channel'
-                  - '@example@email.com'

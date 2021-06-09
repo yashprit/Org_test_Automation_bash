@@ -28,12 +28,9 @@ pipelines:
             notifications:
               - integrationName: BSAG_4034_SMTP
                 recipients:
-                  - benha@jfrog.com
-                  - example@email.com
+                  - pipelines.release@gmail.com
+                  - email@example.com
               - integrationName: BSAG_4034_SLACK
-                recipients:
-                  - '#channel'
-                  - '@example@email.com'
         execution:
           onExecute:
             - echo "executing step..."
