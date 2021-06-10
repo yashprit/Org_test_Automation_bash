@@ -1,0 +1,30 @@
+resources:
+  - name: S_HelmDeploy_5933_007_FileSpec_1
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "helmgeneric/"
+      recursive: true
+  - name: S_HelmDeploy_5933_007_FileSpec_2
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "helmgeneric/"
+      recursive: true
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_5933_007
+    configuration:
+      inputResources:
+        - name: S_HelmDeploy_5933_007_FileSpec_1
+    steps:
+      - name: S_HelmDeploy_5933_007
+        type: HelmDeploy
+        configuration:
+          chartPath: ./
+          releaseName: release
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          inputResources:
+            - name: S_HelmDeploy_5933_007_FileSpec_2

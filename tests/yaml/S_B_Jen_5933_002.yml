@@ -1,0 +1,12 @@
+pipelines:
+  - name: pipeline_S_B_Jen_5933_002
+    configuration:
+      integrations:
+        - name: i_testJenkins
+    steps:
+      - name: S_B_Jen_5933_002
+        type: Jenkins
+        configuration:
+          jenkinsJobName: var_output_job
+          integrations:
+            - name: s_B_Jen_5933_002_jenkins

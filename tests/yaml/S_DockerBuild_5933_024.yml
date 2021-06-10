@@ -1,0 +1,52 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerBuild_5933_024_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_DockerBuild_5933_024
+    steps:
+      - name: S_DockerBuild_5933_024_1
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_DockerBuild_5933_024
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933
+          dockerImageTag: "${run_id}"
+          inputResources:
+            - name: S_DockerBuild_5933_024_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - cd $res_S_DockerBuild_5933_024_GitRepo_resourcePath
+            - echo "FROM hello-world" > Dockerfile
+      - name: S_DockerBuild_5933_024_2
+        type: Bash
+        configuration:
+          affinityGroup: S_DockerBuild_5933_024
+          inputSteps:
+            - name: S_DockerBuild_5933_024_1
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - docker rmi "${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933:${run_id}" || true
+            - if [ "${buildStepName}" != "S_DockerBuild_5933_024_1" ]; then return 1; fi
+            - if [ "${S_DockerBuild_5933_024_1_payloadType}" != "docker" ]; then return 1; fi
+            - if [ "${S_DockerBuild_5933_024_1_buildNumber}" != "${JFROG_CLI_BUILD_NUMBER}" ]; then return 1; fi
+            - if [ "${S_DockerBuild_5933_024_1_buildName}" != "${JFROG_CLI_BUILD_NAME}" ]; then return 1; fi
+            - if [ "${S_DockerBuild_5933_024_1_isPromoted}" != "false" ]; then return 1; fi
+            - if [ "${S_DockerBuild_5933_024_1_dockerImageName}" != "${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933" ]; then return 1; fi
+            - if [ "${S_DockerBuild_5933_024_1_dockerImageTag}" != "${run_id}" ]; then return 1; fi
+            - restore_run_files jfrog jfrog
+            - ls jfrog
+            - if [ ! -d "jfrog/builds" ]; then return 1; fi

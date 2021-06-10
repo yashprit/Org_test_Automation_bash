@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_S_DockerBuild_5933_003
+    steps:
+      - name: S_DockerBuild_5933_003_1
+        type: DockerBuild
+        configuration:
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933
+          dockerImageTag: "${run_id}"
+          integrations:
+            - name: s_artifactory

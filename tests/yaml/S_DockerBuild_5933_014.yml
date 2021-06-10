@@ -1,0 +1,44 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerBuild_5933_014_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_DockerBuild_5933_014
+    steps:
+      - name: S_DockerBuild_5933_014_1
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_DockerBuild_5933_014
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933
+          dockerImageTag: "5933_014"
+          inputResources:
+            - name: S_DockerBuild_5933_014_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - cd $res_S_DockerBuild_5933_014_GitRepo_resourcePath
+            - echo "FROM hello-world" > Dockerfile
+      - name: S_DockerBuild_5933_014_2
+        type: Bash
+        configuration:
+          affinityGroup: S_DockerBuild_5933_014
+          inputSteps:
+            - name: S_DockerBuild_5933_014_1
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - image="$(docker images | grep ${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933 | grep 5933_014)"
+            - if [ -z "$image" ]; then return 1; fi
+            - docker rmi "${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933:5933_014" || true

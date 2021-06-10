@@ -1,0 +1,23 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_HelmPublish_5933_006_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_HelmPublish_5933_006
+    steps:
+      - name: S_HelmPublish_5933_006
+        type: HelmPublish
+        configuration:
+          chartPath: "./tests/helmCharts/myChart"
+          inputResources:
+            - name: S_HelmPublish_5933_006_GitRepo
+          integrations:
+            - name: s_artifactory

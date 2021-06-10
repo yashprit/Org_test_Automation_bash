@@ -1,0 +1,68 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_HelmDeploy_5933_013_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+  - name: S_HelmDeploy_5933_013_HelmChart
+    type: HelmChart
+    configuration:
+      sourceArtifactory: s_artifactory
+      repository: test-automation-helm-local
+      version: version
+      chart: simplehelm
+
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_5933_013_1
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: ${run_id}
+    steps:
+      - name: S_HelmDeploy_5933_013_1
+        type: HelmPublish
+        configuration:
+          chartPath: "./tests/core/helmdeploy/simplehelm"
+          helmVersion: 3
+          inputResources:
+            - name: S_HelmDeploy_5933_013_GitRepo
+          outputResources:
+            - name: S_HelmDeploy_5933_013_HelmChart
+          integrations:
+            - name: s_artifactory
+
+  - name: pipeline_S_HelmDeploy_5933_013_2
+    configuration:
+      environmentVariables:
+        readOnly:
+          RELEASE_NAME: "s-helmdeploy-5933-013-${run_id}"
+          k8s_namespace: "pipe-master-pool"
+      inputResources:
+        - name: S_HelmDeploy_5933_013_HelmChart
+    steps:
+      - name: S_HelmDeploy_5933_013_2
+        type: HelmDeploy
+        configuration:
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          chartVersion: 0.3.0
+          helmVersion: 3
+          releaseName: ${RELEASE_NAME}
+          flags: "--wait --timeout 900s -n ${k8s_namespace} --set image.repository=trriplejay/simplehelm --set image.tag=latest"
+          valueFilePaths:
+            - values.yaml
+          lint: true
+          lintFlags: "--strict"
+          test: true
+          testFlags: "-n ${k8s_namespace}"
+        execution:
+          onComplete:
+            - helm3 delete ${RELEASE_NAME} --namespace ${k8s_namespace}

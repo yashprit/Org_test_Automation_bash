@@ -1,0 +1,33 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerBuild_5933_021_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_DockerBuild_5933_021
+    steps:
+      - name: S_DockerBuild_5933_021
+        type: DockerBuild
+        configuration:
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933
+          dockerImageTag: "${run_id}"
+          dockerFileLocation: "${location}"
+          environmentVariables:
+            location: dockerfiles
+          inputResources:
+            - name: S_DockerBuild_5933_021_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - cd $res_S_DockerBuild_5933_021_GitRepo_resourcePath
+            - mkdir -p dockerfiles
+            - echo "FROM hello-world" > dockerfiles/Dockerfile

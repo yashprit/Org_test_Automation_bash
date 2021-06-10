@@ -15,7 +15,7 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          source_location: "tests/Go"
+          source_location: "tests/Go/HelloWorld"
     steps:
       - name: S_GoBuild_0022
         type: GoBuild
@@ -28,7 +28,6 @@ pipelines:
         execution:
           onStart:
             - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)
-            - mv tests/Go/* .
+            - mv tests/Go/HelloWorld/* .
             - ls
-            - go get -insecure
             - popd

@@ -29,7 +29,7 @@ pipelines:
             -  name: S_GoBuild_0020_FileSpec
         execution:
           onExecute:
-            - cd $(find_resource_variable S_GoBuild_0020_GitRepo resourcePath)/tests/Go
+            - cd $(find_resource_variable S_GoBuild_0020_GitRepo resourcePath)/tests/Go/HelloWorld
             - jfrog rt upload main.go test-automation-generic-local/main.go
 
       - name: S_GoBuild_0020_2
@@ -38,12 +38,11 @@ pipelines:
           inputResources:
             - name: S_GoBuild_0020_GitRepo
             - name: S_GoBuild_0020_FileSpec
-          sourceLocation: "tests/Go"
+          sourceLocation: "tests/Go/HelloWorld"
           resolverRepo: test-automation-go-virtual
         execution:
           onStart:
             - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
-            - go get -insecure
             - rm main.go # removing the file to be replaced using the FileSpec
             - ls
             - popd

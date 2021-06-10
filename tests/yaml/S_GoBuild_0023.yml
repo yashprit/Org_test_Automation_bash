@@ -15,7 +15,7 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          source_location: "tests/Go"
+          source_location: "tests/Go/HelloWorld"
     steps:
       - name: S_GoBuild_0023
         type: GoBuild
@@ -26,8 +26,3 @@ pipelines:
             - name: S_GoBuild_0023_GitRepo
           sourceLocation: "${source_location}"
           resolverRepo: test-automation-go-virtual
-        execution:
-          onStart:
-            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
-            - go get -insecure
-            - popd
