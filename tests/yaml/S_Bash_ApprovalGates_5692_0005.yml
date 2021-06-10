@@ -9,8 +9,6 @@ pipelines:
               - approvalGateApprover
             notifications:
               - integrationName: Bash_ApprovalGates_slack
-                recipients:
-                  - test-channel
             timeoutSeconds: 15
         execution:
           onExecute:
