@@ -1,0 +1,33 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: repo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+
+pipelines:
+  - name: pipeline_S_Bash_0578_A
+    steps:
+      - name: S_Bash_0578_A_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing S_Bash_0578_A_1"
+
+      - name: S_Bash_0578_A_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_0578_A_1
+              status:
+                - failure
+                - invalid
+        execution:
+          onExecute:
+            - echo "executing S_Bash_0578_A_2"
