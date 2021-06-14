@@ -1,0 +1,281 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: repo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      
+pipelines:
+  - name: Pipeline_S_Bash_Generic_5858_0001
+    steps:
+      - name: Step_S_Bash_Generic_5858_0001
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0001"
+
+      - name: Step_S_Bash_Generic_5858_0002
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0001
+              status:
+                - failure
+                - error
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0002"
+            
+  - name: Pipeline_S_Bash_Generic_5858_0002
+    steps:
+      - name: Step_S_Bash_Generic_5858_0003
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0003"
+            - blah # failing the step on purpose
+
+      - name: Step_S_Bash_Generic_5858_0004
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0003
+              status:
+                - failure
+                - error
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0004"
+            
+  - name: Pipeline_S_Bash_Generic_5858_0003
+    steps:
+      - name: Step_S_Bash_Generic_5858_0005
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0005"
+
+      - name: Step_S_Bash_Generic_5858_0006
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0005
+              status:
+                - success
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0006"
+ 
+  - name: Pipeline_S_Bash_Generic_5858_0004
+    steps:
+      - name: Step_S_Bash_Generic_5858_0007
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0007"
+            - sleep 60
+
+      - name: Step_S_Bash_Generic_5858_0008
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0007
+              status:
+                - cancelled
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0008"
+ 
+  - name: Pipeline_S_Bash_Generic_5858_0005
+    steps:
+      - name: Step_S_Bash_Generic_5858_0009
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0009"
+            - sleep 10
+
+      - name: Step_S_Bash_Generic_5858_0010
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0009
+              status:
+                - skipped
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0010"
+  
+  - name: Pipeline_S_Bash_Generic_5858_0006
+    steps:
+      - name: Step_S_Bash_Generic_5858_0011
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0011"
+            - sleep 60
+
+      - name: Step_S_Bash_Generic_5858_0012
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0011
+              status:
+                - unstable
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0012"
+   
+  - name: Pipeline_S_Bash_Generic_5858_0007
+    steps:
+      - name: Step_S_Bash_Generic_5858_0013
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0013"
+            - sleep 60
+
+      - name: Step_S_Bash_Generic_5858_0014
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0013
+              status:
+                - timeout
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0014"
+    
+  - name: Pipeline_S_Bash_Generic_5858_0008
+    steps:
+      - name: Step_S_Bash_Generic_5858_0015
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0015"
+            - sleep 60
+
+      - name: Step_S_Bash_Generic_5858_0016
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0015
+              status:
+                - stopped
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0016"
+  - name: Pipeline_S_Bash_Generic_5858_0009
+    steps:
+      - name: Step_S_Bash_Generic_5858_0017
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0017"
+            - sleep 60
+
+      - name: Step_S_Bash_Generic_5858_0018
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0017
+              status:
+                - deleted
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0018"
+  - name: Pipeline_S_Bash_Generic_5858_0010
+    steps:
+      - name: Step_S_Bash_Generic_5858_0019
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0019"
+            - sleep 60
+
+      - name: Step_S_Bash_Generic_5858_0020
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0019
+              status:
+                - cached
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0020"
+  - name: Pipeline_S_Bash_Generic_5858_0011
+    steps:
+      - name: Step_S_Bash_Generic_5858_0021
+        type: Bash
+        configuration:
+          inputResources:
+            - name: repo
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0019"
+      - name: Step_S_Bash_Generic_5858_0022
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0021
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0019"
+            - blah
+      - name: Step_S_Bash_Generic_5858_0023
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0021
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0019"
+
+      - name: Step_S_Bash_Generic_5858_0024
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: Step_S_Bash_Generic_5858_0023
+              status:
+                - success
+            - name: Step_S_Bash_Generic_5858_0022
+              status:
+                - failure
+                - error
+        execution:
+          onExecute:
+            - echo "executing Step_S_Bash_Generic_5858_0020"
+            
