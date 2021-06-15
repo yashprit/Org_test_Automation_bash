@@ -1,0 +1,57 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GradleBuild_5849_001_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GradleBuild_5849_001_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GradleBuild_5849_001
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: ${run_id}
+    steps:
+      - name: S_GradleBuild_5849_001_1
+        type: GradleBuild
+        configuration:
+          inputResources:
+            - name: S_GradleBuild_5849_001_GitRepo
+          outputResources:
+            - name: S_GradleBuild_5849_001_BuildInfo
+          integrations:
+            - name: s_artifactory
+          autoPublishBuildInfo: true
+          resolverRepo: "test-automation-gradle-remote"
+          deployerRepo: "test-automation-gradle-local"
+          sourceLocation: "tests/gradle"
+          gradleCommand: "hello"
+
+      - name: S_GradleBuild_5849_001_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_GradleBuild_5849_001_BuildInfo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - buildInfoFilePath=$(jfrog rt search "*/${JFROG_CLI_BUILD_NAME}/${run_id}*.json" | jq -r '.[0].path')
+            - buildInfoFileData=$(jfrog rt curl -XGET /api/storage/${buildInfoFilePath})
+            - artifactSha=$(echo $buildInfoFileData | jq -r '.checksums.sha256')
+            - if [ -z "${project_key}" ]; then project="default"; else project="${project_key}"; fi
+            - artifactPath="${project}/${JFROG_CLI_BUILD_NAME}/${run_id}"
+            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=buildInfo\")"
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
+            - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
+            - if [ "$stepArtifactSha" != "$artifactSha" ]; then return 1; fi
