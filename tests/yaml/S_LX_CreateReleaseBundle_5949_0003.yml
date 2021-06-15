@@ -1,0 +1,93 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_1
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_2
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_LX_CreateReleaseBundle_5949_0003_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_LX_CreateReleaseBundle_5949_0003_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: pipeline_S_LX_CreateReleaseBundle_5949_0003
+    steps:
+      - name: S_LX_CreateReleaseBundle_5949_0003_1
+        type: GoBuild
+        configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NAME: S_LX_CreateReleaseBundle_5949_0003_buildName
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
+          inputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0003_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go/HelloWorld"
+          resolverRepo: test-automation-go-virtual
+      - name: S_LX_CreateReleaseBundle_5949_0003_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_LX_CreateReleaseBundle_5949_0003_1
+          outputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_1
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+      - name: S_LX_CreateReleaseBundle_5949_0003_3
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_LX_CreateReleaseBundle_5949_0003_1
+          outputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_2
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+      - name: S_LX_CreateReleaseBundle_5949_0003_4
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputSteps:
+            - name: S_LX_CreateReleaseBundle_5949_0003_2
+            - name: S_LX_CreateReleaseBundle_5949_0003_3
+          inputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0003_GitRepo
+        execution:
+          onExecute:
+            # create an invalid signature file
+            - export head_sig_path=$(jfrog rt s artifactory-pipe-info/pipeline_S_LX_CreateReleaseBundle_5949_0003/{{gitBranch}}/${run_number}/s-S_LX_CreateReleaseBundle_5949_0003_2.json.sig | jq '.[0].path')
+            - execute_command "jfrog rt u $res_S_LX_CreateReleaseBundle_5949_0003_GitRepo_resourcePath/tests/artifacts/invalidGPGSig $head_sig_path --quiet"
+      - name: S_LX_CreateReleaseBundle_5949_0003_5
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          failOnValidate: true
+          dryRun: false
+          sign: true
+          inputSteps:
+            - name: S_LX_CreateReleaseBundle_5949_0003_4
+          inputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_1
+            - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_2
+          outputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0003_ReleaseBundle
