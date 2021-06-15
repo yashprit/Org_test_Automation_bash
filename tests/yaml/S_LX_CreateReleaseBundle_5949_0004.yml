@@ -1,0 +1,88 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_LX_CreateReleaseBundle_5949_0004_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_LX_CreateReleaseBundle_5949_0004_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: pipeline_S_LX_CreateReleaseBundle_5949_0004
+    steps:
+      - name: S_LX_CreateReleaseBundle_5949_0004_1
+        type: GoBuild
+        configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NAME: S_LX_CreateReleaseBundle_5949_0004_buildName
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
+          inputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0004_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go/HelloWorld"
+          resolverRepo: test-automation-go-virtual
+      - name: S_LX_CreateReleaseBundle_5949_0004_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_LX_CreateReleaseBundle_5949_0004_1
+          outputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0004_BuildInfo
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+      - name: S_LX_CreateReleaseBundle_5949_0004_3
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          sign: true
+          failOnValidate: true
+          inputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0004_BuildInfo
+          outputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle
+      - name: S_LX_CreateReleaseBundle_5949_0004_4
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle
+        execution:
+          onExecute:
+            - echo "Deleting distribution..."
+            - distributionUrl="$res_S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle_sourceDistribution_url"
+            - releaseBundleName=$(find_resource_variable S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle name)
+            - releaseBundleVersion=$(find_resource_variable S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle version)
+            - "echo '{\"dry_run\": false, \"distribution_rules\": [{\"site_name\": \"*\"}], \"on_success\": \"delete\"}' > $step_tmp_dir/distribution_payload"
+            - curlOptions="--silent --retry 3 -w %{http_code} -u $res_S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle_sourceDistribution_user:$res_S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle_sourceDistribution_apikey"
+            - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
+            - "status=$(curl $curlOptions -H 'Content-Type: application/json' -XPOST \"$distributionUrl/api/v1/distribution/$releaseBundleName/$releaseBundleVersion/delete\" --output $step_tmp_dir/response -T \"$step_tmp_dir/distribution_payload\")"
+            - response=$(cat $step_tmp_dir/response)
+            - if [ $status -gt 299 ]; then return 1; fi
+            - idFromResponse=$(echo $response | tr -d '[:space:]' | grep -o "\"id\":.*")
+            - trackerId=$(echo ${idFromResponse:5} | cut -d "," -f 1)
+            - if [ -z "$trackerId" ]; then return 1; fi
+            - rm -f \$step_tmp_dir/response
+            - distributionStatus="$(curl -XGET $curlOptions $distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion/distribution/$trackerId --output /dev/null)"
+            - while [ $distributionStatus -lt 299 ]; do sleep 5 && distributionStatus="$(curl -XGET $curlOptions $distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion/distribution/$trackerId --output /dev/null)"; done
+            - if [ $distributionStatus != 404 ]; then return 1; fi
+            - echo "Checking resource..."
+            - if [ "$res_S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle_name" != "${JFROG_CLI_BUILD_NAME}" ]; then return 1; fi
+            - if [ "$res_S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle_version" != "${run_id}" ]; then return 1; fi
+            - if [ "$res_S_LX_CreateReleaseBundle_5949_0004_ReleaseBundle_isSigned" != "true" ]; then return 1; fi
