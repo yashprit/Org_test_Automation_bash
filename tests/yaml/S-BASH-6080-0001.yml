@@ -1,0 +1,12 @@
+pipelines:
+  - name: S_Bash_6080_0001
+    steps:
+      - name: S_Bash_6080_0001
+        type: Bash
+        configuration:
+          nodePool: u16k8sdynamic
+          runtime:
+            type: host
+        execution:
+          onExecute:
+            - echo "hi"

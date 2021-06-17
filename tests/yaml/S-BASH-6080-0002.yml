@@ -1,0 +1,11 @@
+pipelines:
+  - name: S_Bash_6080_0002
+    steps:
+      - name: S_Bash_6080_0002
+        type: Bash
+        configuration:
+          runtime:
+            type: host
+        execution:
+          onExecute:
+            - echo "hi"
