@@ -28,7 +28,6 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            # TODO: change this to s_artifactory
             - name: s_artifactory
           outputResources:
             - name: LinuxVMDeploy_buildInfo
@@ -65,8 +64,12 @@ pipelines:
           inputResources:
             - name: myVM
             - name: LinuxVMDeploy_releaseBundle
-          deployCommand: "echo 'this should never execute'"
           sshUser: ubuntu
+          scripts:
+            - name: command1
+              context: "targetCluster"
+              commands:
+                - "echo 'this should never execute'"
 
       # Clean up releaseBundle
       - name: S_LinuxVMDeploy_0007_4

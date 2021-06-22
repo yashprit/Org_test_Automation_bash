@@ -1,0 +1,72 @@
+resources:
+  - name: LinuxVMDeploy_fileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "test-automation-generic-local/LinuxVMDeploy_fileSpec.txt"
+
+  - name: myBlueCluster
+    type: VmCluster
+    configuration:
+      sshKey: s_VM_DEPLOY_SSHKEY
+      targets:
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_0}
+
+  - name: myGreenCluster
+    type: VmCluster
+    configuration:
+      sshKey: s_VM_DEPLOY_SSHKEY
+      targets:
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_1}
+
+pipelines:
+  - name: S_LinuxVMDeploy_BLUEGREEN
+    steps:
+      - name: S_LinuxVMDeploy_BLUEGREEN_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: LinuxVMDeploy_fileSpec
+        execution:
+          onExecute:
+            - echo "File spec ${run_id}" > LinuxVMDeploy_fileSpec.txt
+            - jfrog rt upload LinuxVMDeploy_fileSpec.txt test-automation-generic-local
+      # Check that deploy command runs and FileSpec is uploaded to default dir.
+      - name: S_LinuxVMDeploy_BLUEGREEN_2
+        type: jfrog_dev/LinuxVMDeploy
+        configuration:
+          integrations:
+            - name: s_VM_DEPLOY
+          vmEnvironmentVariables:
+            - "step_name=${step_name}"
+            - "run_id=${run_id}"
+          chronological: true
+          inputResources:
+            - name: myBlueCluster
+            - name: myGreenCluster
+            - name: LinuxVMDeploy_fileSpec
+          sshUser: ubuntu
+          strategy: "blueGreen"
+          scripts:
+            # deployCommand: 'sed -i -e "s/\(<body>\).*\(<\/body>\)/<body>${run_id}<\/body>/g" /home/ubuntu/blueGreenDemo/index.html'
+            # testCommand: 'curl $(eval echo $(echo $(eval echo "$"res_"$idle_cluster_name"_targets) | jq .[0])) | grep "${run_id}" || exit 1'
+            # postDeployCommand: "echo 'this is the postDeployCommand' && hostname -I && curl -X GET http://10.90.110.14/swapCluster"
+            # cleanupCommand: 'sed -i -e "s/\(<body>\).*\(<\/body>\)/<body><\/body>/g" /home/ubuntu/blueGreenDemo/index.html'
+            - name: deploy
+              context: "targetCluster"
+              commands:
+                - 'sed -i -e "s/\(<body>\).*\(<\/body>\)/<body>${run_id}<\/body>/g" /home/ubuntu/blueGreenDemo/index.html'
+            - name: test
+              context: "buildNode"
+              commands:
+                - 'curl $(eval echo $(echo $(eval echo "$"res_"$idle_cluster_name"_targets) | jq .[0])) | grep "${run_id}" || exit 1'
+            - name: swapCluster
+              context: "buildNode"
+              commands:
+                - "echo 'this is the swapCluster command' && hostname -I && curl -X GET http://10.90.112.250/swapCluster"
+            - name: cleanup
+              context: "currentCluster"
+              commands:
+                - 'sed -i -e "s/\(<body>\).*\(<\/body>\)/<body><\/body>/g" /home/ubuntu/blueGreenDemo/index.html'
