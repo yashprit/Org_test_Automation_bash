@@ -1,0 +1,44 @@
+resources:
+  - name: S_CreateReleaseBundle_0005_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_CreateReleaseBundle_0005_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_CreateReleaseBundle_0005
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: "${run_id}"
+    steps:
+      - name: S_CreateReleaseBundle_0005_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_CreateReleaseBundle_0005_BuildInfo
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_CreateReleaseBundle_0005.txt
+            - jfrog rt upload S_CreateReleaseBundle_0005.txt test-automation-generic-local
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
+            - write_output S_CreateReleaseBundle_0005_BuildInfo buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_CreateReleaseBundle_0005_2
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: true
+          inputResources:
+            - name: S_CreateReleaseBundle_0005_BuildInfo
+          outputResources:
+            - name: S_CreateReleaseBundle_0005_ReleaseBundle
