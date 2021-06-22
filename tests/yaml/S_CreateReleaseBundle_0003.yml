@@ -1,0 +1,33 @@
+resources:
+  - name: S_CreateReleaseBundle_0003_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_CreateReleaseBundle_0003_output
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_CreateReleaseBundle_0003_output2
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_CreateReleaseBundle_0003
+    steps:
+      - name: S_CreateReleaseBundle_0003
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: name
+          releaseBundleVersion: version
+          inputResources:
+            - name: S_CreateReleaseBundle_0003_input
+          outputResources:
+            - name: S_CreateReleaseBundle_0003_output
+            - name: S_CreateReleaseBundle_0003_output2
