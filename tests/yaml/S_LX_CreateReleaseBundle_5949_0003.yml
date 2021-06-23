@@ -32,51 +32,74 @@ pipelines:
   - name: pipeline_S_LX_CreateReleaseBundle_5949_0003
     steps:
       - name: S_LX_CreateReleaseBundle_5949_0003_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "trigger step"
+      - name: S_LX_CreateReleaseBundle_5949_0003_2
         type: GoBuild
         configuration:
+          inputSteps:
+            - name: S_LX_CreateReleaseBundle_5949_0003_1
           environmentVariables:
-            JFROG_CLI_BUILD_NAME: S_LX_CreateReleaseBundle_5949_0003_buildName
+            JFROG_CLI_BUILD_NAME: S_LX_CreateReleaseBundle_5949_0003_buildName_1
             JFROG_CLI_BUILD_NUMBER: ${run_id}
           inputResources:
             - name: S_LX_CreateReleaseBundle_5949_0003_GitRepo
+              trigger: false
           integrations:
             - name: s_artifactory
           sourceLocation: "tests/Go/HelloWorld"
           resolverRepo: test-automation-go-virtual
-      - name: S_LX_CreateReleaseBundle_5949_0003_2
-        type: GoPublishBinary
+      - name: S_LX_CreateReleaseBundle_5949_0003_3
+        type: GoBuild
         configuration:
           inputSteps:
             - name: S_LX_CreateReleaseBundle_5949_0003_1
+          environmentVariables:
+            JFROG_CLI_BUILD_NAME: S_LX_CreateReleaseBundle_5949_0003_buildName_2
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
+          inputResources:
+            - name: S_LX_CreateReleaseBundle_5949_0003_GitRepo
+              trigger: false
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go/HelloWorld"
+          resolverRepo: test-automation-go-virtual
+      - name: S_LX_CreateReleaseBundle_5949_0003_4
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_LX_CreateReleaseBundle_5949_0003_2
           outputResources:
             - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_1
           targetRepository: test-automation-go-local
           autoPublishBuildInfo: true
-      - name: S_LX_CreateReleaseBundle_5949_0003_3
+      - name: S_LX_CreateReleaseBundle_5949_0003_5
         type: GoPublishBinary
         configuration:
           inputSteps:
-            - name: S_LX_CreateReleaseBundle_5949_0003_1
+            - name: S_LX_CreateReleaseBundle_5949_0003_3
           outputResources:
             - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_2
           targetRepository: test-automation-go-local
           autoPublishBuildInfo: true
-      - name: S_LX_CreateReleaseBundle_5949_0003_4
+      - name: S_LX_CreateReleaseBundle_5949_0003_6
         type: Bash
         configuration:
           integrations:
             - name: s_artifactory
           inputSteps:
-            - name: S_LX_CreateReleaseBundle_5949_0003_2
-            - name: S_LX_CreateReleaseBundle_5949_0003_3
+            - name: S_LX_CreateReleaseBundle_5949_0003_4
+            - name: S_LX_CreateReleaseBundle_5949_0003_5
           inputResources:
             - name: S_LX_CreateReleaseBundle_5949_0003_GitRepo
         execution:
           onExecute:
             # create an invalid signature file
-            - export head_sig_path=$(jfrog rt s artifactory-pipe-info/pipeline_S_LX_CreateReleaseBundle_5949_0003/{{gitBranch}}/${run_number}/s-S_LX_CreateReleaseBundle_5949_0003_2.json.sig | jq '.[0].path')
+            - export head_sig_path=$(jfrog rt s artifactory-pipe-info/pipeline_S_LX_CreateReleaseBundle_5949_0003/{{gitBranch}}/${run_number}/s-S_LX_CreateReleaseBundle_5949_0003_4.json.sig | jq '.[0].path')
             - execute_command "jfrog rt u $res_S_LX_CreateReleaseBundle_5949_0003_GitRepo_resourcePath/tests/artifacts/invalidGPGSig $head_sig_path --quiet"
-      - name: S_LX_CreateReleaseBundle_5949_0003_5
+      - name: S_LX_CreateReleaseBundle_5949_0003_7
         type: CreateReleaseBundle
         configuration:
           releaseBundleName: ${JFROG_CLI_BUILD_NAME}
@@ -85,7 +108,7 @@ pipelines:
           dryRun: false
           sign: true
           inputSteps:
-            - name: S_LX_CreateReleaseBundle_5949_0003_4
+            - name: S_LX_CreateReleaseBundle_5949_0003_6
           inputResources:
             - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_1
             - name: S_LX_CreateReleaseBundle_5949_0003_BuildInfo_2
