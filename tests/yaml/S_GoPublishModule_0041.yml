@@ -40,7 +40,10 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
+            - echo "buildname "${JFROG_CLI_BUILD_NAME}
+            - echo "buildname number"${JFROG_CLI_BUILD_NUMBER}
             - buildInfoName=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.name)
+            - echo "buildInfoName "$buildInfoName
             - if [ "$buildInfoName" != "null" ]; then return 1; fi
             - restore_run_files jfrog /tmp/jfrog
             - ls /tmp/jfrog/builds
