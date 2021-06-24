@@ -42,6 +42,8 @@ pipelines:
           onExecute:
             - echo "buildname "${JFROG_CLI_BUILD_NAME}
             - echo "buildname number"${JFROG_CLI_BUILD_NUMBER}
+            - buildInfo=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}")
+            - echo $buildInfo | jq . 
             - buildInfoName=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.name)
             - echo "buildInfoName "$buildInfoName
             - if [ "$buildInfoName" != "null" ]; then return 1; fi
