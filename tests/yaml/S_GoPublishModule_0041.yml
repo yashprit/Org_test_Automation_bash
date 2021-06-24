@@ -44,13 +44,13 @@ pipelines:
             - echo "buildname "${JFROG_CLI_BUILD_NAME}
             - echo "buildname number"${JFROG_CLI_BUILD_NUMBER}
             - buildInfo=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}")
-            - echo $buildInfo | jq . 
+            - echo $buildInfo | jq .
             - buildInfoName=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.name)
             - echo "buildInfoName "$buildInfoName
             - if [ "$buildInfoName" != "null" ]; then return 1; fi
             - restore_run_files jfrog /tmp/jfrog
             - ls /tmp/jfrog/builds
             - $jfrog_cli_path rt build-publish $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER --insecure-tls=$no_verify_ssl
-            - moduleId=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r .buildInfo.modules[0].id)
-            - if [ "$moduleId" != "go.service" ]; then return 1; fi
+            - moduleId=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}" | jq -r '.buildInfo.modules[] | select(.id == "go.service") | .id')
+            - if [ "$moduleId" != "go.service" ]; then echo "$moduleId"; return 1; fi
             - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${JFROG_CLI_BUILD_NUMBER}&artifacts=1"
