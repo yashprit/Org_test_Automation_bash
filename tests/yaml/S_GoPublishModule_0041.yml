@@ -40,6 +40,7 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
+            - sleep 10
             - echo "buildname "${JFROG_CLI_BUILD_NAME}
             - echo "buildname number"${JFROG_CLI_BUILD_NUMBER}
             - buildInfo=$(jfrog rt curl -XGET "/api/build/${JFROG_CLI_BUILD_NAME}/${JFROG_CLI_BUILD_NUMBER}")
