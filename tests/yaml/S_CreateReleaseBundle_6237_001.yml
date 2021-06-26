@@ -1,0 +1,61 @@
+resources:
+  - name: S_CreateReleaseBundle_6237_001_Aql
+    type: Aql
+    configuration:
+      sourceArtifactory: s_artifactory
+      query: 'items.find({"$and": [{"repo": {"$eq": "test-automation-generic-local"}}, {"name": {"$match": "S_CreateReleaseBundle_6237_001.txt"}}]})'
+
+  - name: S_CreateReleaseBundle_6237_001_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_CreateReleaseBundle_6237_001
+    steps:
+      - name: S_CreateReleaseBundle_6237_001_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_CreateReleaseBundle_6237_001_Aql
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_CreateReleaseBundle_6237_001.txt
+            - jfrog rt upload S_CreateReleaseBundle_6237_001.txt test-automation-generic-local --insecure-tls=$no_verify_ssl
+
+      - name: S_CreateReleaseBundle_6237_001_2
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          inputResources:
+            - name: S_CreateReleaseBundle_6237_001_Aql
+          outputResources:
+            - name: S_CreateReleaseBundle_6237_001_ReleaseBundle
+
+      - name: S_CreateReleaseBundle_6237_001_3
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_CreateReleaseBundle_6237_001_ReleaseBundle
+          integrations:
+            - name: s_artifactory
+            - name: s_distribution
+        execution:
+          onExecute:
+            - echo "Deleting release bundle..."
+            - jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --dist-url $int_s_distribution_url --user $int_s_distribution_user --apikey $int_s_distribution_apikey --interactive=false
+            - jfrog config use distribution
+            - releaseBundleName=$(find_resource_variable S_CreateReleaseBundle_6237_001_ReleaseBundle name)
+            - releaseBundleVersion=$(find_resource_variable S_CreateReleaseBundle_6237_001_ReleaseBundle version)
+            - jfrog rt release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
+            - jfrog config remove distribution
+            - echo "Checking resource..."
+            - if [ "$res_S_CreateReleaseBundle_6237_001_ReleaseBundle_name" != "${JFROG_CLI_BUILD_NAME}" ]; then return 1; fi
+            - if [ "$res_S_CreateReleaseBundle_6237_001_ReleaseBundle_version" != "${run_id}" ]; then return 1; fi
+            - if [ "$res_S_CreateReleaseBundle_6237_001_ReleaseBundle_isSigned" == "true" ]; then return 1; fi

@@ -1,0 +1,99 @@
+resources:
+  - name: S_CreateReleaseBundle_6237_008_BuildInfo_1
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+  - name: S_CreateReleaseBundle_6237_008_BuildInfo_2
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+  - name: S_CreateReleaseBundle_6237_008_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_CreateReleaseBundle_6237_008
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: "${run_id}"
+    steps:
+      - name: S_CreateReleaseBundle_6237_008_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_CreateReleaseBundle_6237_008_BuildInfo_1
+        execution:
+          onExecute:
+            - export JFROG_CLI_BUILD_NAME="S_CreateReleaseBundle_6237_008_1"
+            - echo "${run_id}" > S_CreateReleaseBundle_6237_008_1.txt
+            - jfrog rt upload S_CreateReleaseBundle_6237_008_1.txt test-automation-generic-local --insecure-tls=$no_verify_ssl
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER} --insecure-tls=$no_verify_ssl
+            - write_output S_CreateReleaseBundle_6237_008_BuildInfo_1 buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+
+      - name: S_CreateReleaseBundle_6237_008_2
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputSteps:
+            - name: S_CreateReleaseBundle_6237_008_1
+          outputResources:
+            - name: S_CreateReleaseBundle_6237_008_BuildInfo_2
+        execution:
+          onExecute:
+            - export JFROG_CLI_BUILD_NAME="S_CreateReleaseBundle_6237_008_2"
+            - echo "${run_id}" > S_CreateReleaseBundle_6237_008_2.txt
+            - jfrog rt upload S_CreateReleaseBundle_6237_008_2.txt test-automation-generic-local --insecure-tls=$no_verify_ssl
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER} --insecure-tls=$no_verify_ssl
+            - write_output S_CreateReleaseBundle_6237_008_BuildInfo_2 buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+
+      - name: S_CreateReleaseBundle_6237_008_3
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          inputResources:
+            - name: S_CreateReleaseBundle_6237_008_BuildInfo_1
+            - name: S_CreateReleaseBundle_6237_008_BuildInfo_2
+          outputResources:
+            - name: S_CreateReleaseBundle_6237_008_ReleaseBundle
+
+      - name: S_CreateReleaseBundle_6237_008_4
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_CreateReleaseBundle_6237_008_ReleaseBundle
+          integrations:
+            - name: s_artifactory
+            - name: s_distribution
+        execution:
+          onExecute:
+            - releaseBundleName=$(find_resource_variable S_CreateReleaseBundle_6237_008_ReleaseBundle name)
+            - releaseBundleVersion=$(find_resource_variable S_CreateReleaseBundle_6237_008_ReleaseBundle version)
+            - curlOptions="--silent --retry 3 -w %{http_code} -u $int_s_distribution_user:$int_s_distribution_apikey"
+            - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
+            - "curl $curlOptions -H 'Content-Type: application/json' -XGET \"$int_s_distribution_url/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion\" --output $step_tmp_dir/response"
+            - echo "Deleting release bundle..."
+            - jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --dist-url $int_s_distribution_url --user $int_s_distribution_user --apikey $int_s_distribution_apikey --interactive=false
+            - jfrog config use distribution
+            - jfrog rt release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
+            - jfrog config remove distribution
+            - echo "Checking resources..."
+            - if [ "$(cat $step_tmp_dir/response | jq '.artifacts | length')" != "2" ]; then return 1; fi
+            - artifactOne=$(cat $step_tmp_dir/response | jq '.artifacts[] | select(.sourceRepoPath == "test-automation-generic-local/S_CreateReleaseBundle_6237_008_1.txt")')
+            - artifactTwo=$(cat $step_tmp_dir/response | jq '.artifacts[] | select(.sourceRepoPath == "test-automation-generic-local/S_CreateReleaseBundle_6237_008_2.txt")')
+            - if [ "$(echo "$artifactOne" | jq -r '.sourceRepoPath')" != "test-automation-generic-local/S_CreateReleaseBundle_6237_008_1.txt" ]; then return 1; fi
+            - if [ "$(echo "$artifactTwo" | jq -r '.sourceRepoPath')" != "test-automation-generic-local/S_CreateReleaseBundle_6237_008_2.txt" ]; then return 1; fi

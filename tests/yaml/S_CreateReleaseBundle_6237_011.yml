@@ -1,0 +1,75 @@
+resources:
+  - name: S_CreateReleaseBundle_6237_011_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+  - name: S_CreateReleaseBundle_6237_011_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_CreateReleaseBundle_6237_011
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: "${run_id}"
+    steps:
+      - name: S_CreateReleaseBundle_6237_011_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_CreateReleaseBundle_6237_011_BuildInfo
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_CreateReleaseBundle_6237_011.txt
+            - jfrog rt upload S_CreateReleaseBundle_6237_011.txt test-automation-generic-local --insecure-tls=$no_verify_ssl
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER} --insecure-tls=$no_verify_ssl
+            - write_output S_CreateReleaseBundle_6237_011_BuildInfo buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+
+      - name: S_CreateReleaseBundle_6237_011_2
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          sign: true
+          inputResources:
+            - name: S_CreateReleaseBundle_6237_011_BuildInfo
+          outputResources:
+            - name: S_CreateReleaseBundle_6237_011_ReleaseBundle
+
+      - name: S_CreateReleaseBundle_6237_011_3
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_CreateReleaseBundle_6237_011_ReleaseBundle
+          integrations:
+            - name: s_artifactory
+            - name: s_distribution
+        execution:
+          onExecute:
+            - releaseBundleName=$(find_resource_variable S_CreateReleaseBundle_6237_011_ReleaseBundle name)
+            - releaseBundleVersion=$(find_resource_variable S_CreateReleaseBundle_6237_011_ReleaseBundle version)
+            - curlOptions="--silent --retry 3 -w %{http_code} -u $int_s_distribution_user:$int_s_distribution_apikey"
+            - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
+            - "curl $curlOptions -H 'Content-Type: application/json' -XGET -L \"$int_s_distribution_url/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion\" --output $step_tmp_dir/response --dump-header $step_tmp_dir/response_header"
+            - "artifactSha=$(cat $step_tmp_dir/response_header | grep 'X-Checksum-Sha256: ' | awk '{print $2}' | tr -d '[:space:]')"
+            - artifactPath="${releaseBundleName}/${releaseBundleVersion}"
+            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=releaseBundle\")"
+            - echo $stepArtifact
+            - echo "Deleting release bundle..."
+            - jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --dist-url $int_s_distribution_url --user $int_s_distribution_user --apikey $int_s_distribution_apikey --interactive=false
+            - jfrog config use distribution
+            - jfrog rt release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
+            - jfrog config remove distribution
+            - echo "Checking resources..."
+            - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
+            - if [ "$stepArtifactSha" != "$artifactSha" ]; then return 1; fi
