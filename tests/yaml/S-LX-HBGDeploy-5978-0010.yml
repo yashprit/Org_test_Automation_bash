@@ -1,0 +1,53 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_LX_HBGDeploy_5978_0010_git_resource
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: S_LX_HBGDeploy_5978_0010
+    configuration:
+      environmentVariables:
+        readOnly:
+          blue_release_name: "blue-hbgdeploy-10-${run_id}"
+          green_release_name: "green-hbgdeploy-10-${run_id}"
+          idle_name: "idle-hbgdeploy-10-${run_id}"
+          live_name: "live-hbgdeploy-10-${run_id}"
+          k8s_namespace: {{ .Values.Kubernetes.namespace }}
+    steps:
+      - name: S_LX_HBGDeploy_5978_0010_1
+        type: HelmBlueGreenDeploy
+        configuration:
+          integrations:
+            - name: s_kubernetes
+          inputResources:
+            - name: S_LX_HBGDeploy_5978_0010_git_resource
+          helmVersion: 2
+          chartPath: tests/core/helmbluegreen/simplehelm
+          namespace: ${k8s_namespace}
+          blueReleaseName: ${blue_release_name}
+          greenReleaseName: ${green_release_name}
+          roleServices:
+            - blueReferenceName: ${blue_release_name}-simplehelm
+              greenReferenceName: ${green_release_name}-simplehelm
+              idleName: ${idle_name}
+              liveName: ${live_name}
+        execution:
+          onStart:
+            - helm init --client-only --stable-repo-url https://charts.helm.sh/stable
+            - helm plugin install https://github.com/rimusz/helm-tiller
+            - helm tiller start-ci ${k8s_namespace}
+            - export HELM_HOST=127.0.0.1:44134
+          onSuccess:
+            - helm status ${blue_release_name}
+            - kubectl get service ${idle_name}
+          onComplete:
+            - helm delete ${blue_release_name} || true
+            - kubectl delete service ${idle_name} --namespace ${k8s_namespace} || true
+            - helm tiller stop || true

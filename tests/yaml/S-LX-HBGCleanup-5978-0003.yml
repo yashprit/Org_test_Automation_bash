@@ -1,0 +1,81 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_LX_HBGCleanUp_5978_0003_git_resource
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: S_LX_HBGCleanUp_5978_0003
+    configuration:
+      environmentVariables:
+        readOnly:
+          blue_release_name: "blue-hbgcleanup-3-${run_id}"
+          green_release_name: "green-hbgcleanup-3-${run_id}"
+          idle_name: "idle-hbgcleanup-3-${run_id}"
+          live_name: "live-hbgcleanup-3-${run_id}"
+          k8s_namespace: {{ .Values.Kubernetes.namespace }}
+    steps:
+      - name: S_LX_HBGCleanUp_5978_0003_1
+        type: HelmBlueGreenDeploy
+        configuration:
+          integrations:
+            - name: s_kubernetes
+          inputResources:
+            - name: S_LX_HBGCleanUp_5978_0003_git_resource
+          chartPath: tests/core/helmbluegreen/simplehelm
+          namespace: ${k8s_namespace}
+          blueReleaseName: ${blue_release_name}
+          greenReleaseName: ${green_release_name}
+          roleServices:
+            - blueReferenceName: ${blue_release_name}-simplehelm
+              greenReferenceName: ${green_release_name}-simplehelm
+              idleName: ${idle_name}
+              liveName: ${live_name}
+        execution:
+          onSuccess:
+            - helm3 status ${blue_release_name}
+            - kubectl get service ${idle_name}
+          onFailure:
+            - helm3 delete ${blue_release_name} --namespace ${k8s_namespace} || true
+            - kubectl delete service ${idle_name} --namespace ${k8s_namespace} || true
+
+      - name: S_LX_HBGCleanUp_5978_0003_2
+        type: HelmBlueGreenRoleSwitch
+        configuration:
+          inputSteps:
+            - name: S_LX_HBGCleanUp_5978_0003_1
+          integrations:
+            - name: s_kubernetes
+          deployStep: S_LX_HBGCleanUp_5978_0003_1
+        execution:
+          onSuccess:
+            - kubectl get service ${live_name}
+          onFailure:
+            - helm3 delete ${blue_release_name} --namespace ${k8s_namespace} || true
+            - kubectl delete service ${idle_name} --namespace ${k8s_namespace} || true
+            - kubectl delete service ${live_name} --namespace ${k8s_namespace} || true
+
+      - name: S_LX_HBGCleanUp_5978_0003_3
+        type: HelmBlueGreenCleanup
+        configuration:
+          inputSteps:
+            - name: S_LX_HBGCleanUp_5978_0003_2
+          integrations:
+            - name: s_kubernetes
+          deployStep: S_LX_HBGCleanUp_5978_0003_1
+        execution:
+          onSuccess:
+            - helm3 status ${blue_release_name}
+            - kubectl get service ${idle_name}
+            - kubectl get service ${live_name}
+          onComplete:
+            - helm3 delete ${blue_release_name} --namespace ${k8s_namespace} || true
+            - kubectl delete service ${idle_name} --namespace ${k8s_namespace} || true
+            - kubectl delete service ${live_name} --namespace ${k8s_namespace} || true
+

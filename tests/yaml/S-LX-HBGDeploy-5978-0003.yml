@@ -1,0 +1,78 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_LX_HBGDeploy_5978_0003_helm_resource
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: >-
+        simplecharts/
+      recursive: true
+
+  - name: S_LX_HBGDeploy_5978_0003_git_resource
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: S_LX_HBGDeploy_5978_0003
+    configuration:
+      environmentVariables:
+        readOnly:
+          blue_release_name: "blue-hbgdeploy-3-${run_id}"
+          green_release_name: "green-hbgdeploy-3-${run_id}"
+          idle_name: "idle-hbgdeploy-3-${run_id}"
+          live_name: "live-hbgdeploy-3-${run_id}"
+          k8s_namespace: {{ .Values.Kubernetes.namespace }}
+    steps:
+      - name: S_LX_HBGDeploy_5978_0003_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_LX_HBGDeploy_5978_0003_git_resource
+              trigger: false
+        execution:
+          onExecute:
+            - request='{"key":"simplecharts", "rclass":"local", "packageType":"helm", "description":"This repo is a test repo used by test automation", "repoLayoutRef":"simple-default"}'
+            - echo $request > request.json
+            - jfrog rt repo-delete simplecharts --quiet || true
+            - jfrog rt repo-create request.json
+            - jfrog rt u ${res_S_LX_HBGDeploy_5978_0003_git_resource_resourcePath}/tests/core/helmbluegreen/simplehelm-0.3.0.tgz "simplecharts/"
+            - jfrog rt u ${res_S_LX_HBGDeploy_5978_0003_git_resource_resourcePath}/tests/core/helmbluegreen/index.yaml "simplecharts/"
+          onFailure:
+            - jfrog rt repo-delete simplecharts --quiet
+
+      - name: S_LX_HBGDeploy_5978_0003_2
+        type: HelmBlueGreenDeploy
+        configuration:
+          inputSteps:
+            - name: S_LX_HBGDeploy_5978_0003_1
+          integrations:
+            - name: s_kubernetes
+          inputResources:
+            - name: S_LX_HBGDeploy_5978_0003_helm_resource
+          chartPath: ./
+          chartName: simplehelm
+          chartVersion: 0.3.0
+          namespace: ${k8s_namespace}
+          blueReleaseName: ${blue_release_name}
+          greenReleaseName: ${green_release_name}
+          roleServices:
+            - blueReferenceName: ${blue_release_name}-simplehelm
+              greenReferenceName: ${green_release_name}-simplehelm
+              idleName: ${idle_name}
+              liveName: ${live_name}
+        execution:
+          onSuccess:
+            - helm3 status ${blue_release_name}
+            - kubectl get service ${idle_name}
+          onComplete:
+            - jfrog rt repo-delete simplecharts --quiet || true
+            - helm3 delete ${blue_release_name} --namespace ${k8s_namespace} || true
+            - kubectl delete service ${idle_name} --namespace ${k8s_namespace} || true
