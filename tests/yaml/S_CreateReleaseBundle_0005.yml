@@ -42,3 +42,18 @@ pipelines:
             - name: S_CreateReleaseBundle_0005_BuildInfo
           outputResources:
             - name: S_CreateReleaseBundle_0005_ReleaseBundle
+
+      - name: S_CreateReleaseBundle_0005_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_CreateReleaseBundle_0005_2
+          integrations:
+            - name: s_artifactory
+            - name: s_distribution
+        execution:
+          onExecute:
+            - curlOptions="--silent --retry 3 -w %{http_code} -u $int_s_distribution_user:$int_s_distribution_apikey"
+            - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
+            - "status=$(curl $curlOptions -H 'Content-Type: application/json' -XGET \"$int_s_distribution_url/api/v1/release_bundle/${JFROG_CLI_BUILD_NAME}/${run_id}\" --output $step_tmp_dir/response)"
+            - 'if [ "$status" != "404" ]; then echo "status: $status"; return 1; fi'

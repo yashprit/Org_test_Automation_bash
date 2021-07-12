@@ -53,19 +53,10 @@ pipelines:
             - distributionUrl="$res_S_CreateReleaseBundle_0006_ReleaseBundle_sourceDistribution_url"
             - releaseBundleName=$(find_resource_variable S_CreateReleaseBundle_0006_ReleaseBundle name)
             - releaseBundleVersion=$(find_resource_variable S_CreateReleaseBundle_0006_ReleaseBundle version)
-            - "echo '{\"dry_run\": false, \"distribution_rules\": [{\"site_name\": \"*\"}], \"on_success\": \"delete\"}' > $step_tmp_dir/distribution_payload"
-            - curlOptions="--silent --retry 3 -w %{http_code} -u $res_S_CreateReleaseBundle_0006_ReleaseBundle_sourceDistribution_user:$res_S_CreateReleaseBundle_0006_ReleaseBundle_sourceDistribution_apikey"
-            - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
-            - "status=$(curl $curlOptions -H 'Content-Type: application/json' -XPOST \"$distributionUrl/api/v1/distribution/$releaseBundleName/$releaseBundleVersion/delete\" --output $step_tmp_dir/response -T \"$step_tmp_dir/distribution_payload\")"
-            - response=$(cat $step_tmp_dir/response)
-            - if [ $status -gt 299 ]; then return 1; fi
-            - idFromResponse=$(echo $response | tr -d '[:space:]' | grep -o "\"id\":.*")
-            - trackerId=$(echo ${idFromResponse:5} | cut -d "," -f 1)
-            - if [ -z "$trackerId" ]; then return 1; fi
-            - rm -f \$step_tmp_dir/response
-            - distributionStatus="$(curl -XGET $curlOptions $distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion/distribution/$trackerId --output /dev/null)"
-            - while [ $distributionStatus -lt 299 ]; do sleep 5 && distributionStatus="$(curl -XGET $curlOptions $distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion/distribution/$trackerId --output /dev/null)"; done
-            - if [ $distributionStatus != 404 ]; then return 1; fi
+            - jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --dist-url $distributionUrl --user $res_S_CreateReleaseBundle_0006_ReleaseBundle_sourceDistribution_user --apikey $res_S_CreateReleaseBundle_0006_ReleaseBundle_sourceDistribution_apikey --interactive=false
+            - jfrog config use distribution
+            - jfrog rt release-bundle-delete --delete-from-dist=true --insecure-tls=$no_verify_ssl $releaseBundleName $releaseBundleVersion
+            - jfrog config remove distribution
             - echo "Checking resource..."
             - if [ "$res_S_CreateReleaseBundle_0006_ReleaseBundle_name" != "${JFROG_CLI_BUILD_NAME}" ]; then return 1; fi
             - if [ "$res_S_CreateReleaseBundle_0006_ReleaseBundle_version" != "${run_id}" ]; then return 1; fi
