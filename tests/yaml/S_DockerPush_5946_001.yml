@@ -1,0 +1,87 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerPush_5946_001_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_DockerPush_5946_001_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_DockerPush_5946_001
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: ${run_id}
+    steps:
+      - name: S_DockerPush_5946_001_1
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_DockerPush_5946_001
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerpush_5946
+          dockerImageTag: ${run_id}
+          inputResources:
+            - name: S_DockerPush_5946_001_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            # creating the artifactory docker registry URL from the configured artifactory integration
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - cd $res_S_DockerPush_5946_001_GitRepo_resourcePath
+            - echo "FROM hello-world" > Dockerfile
+      - name: S_DockerPush_5946_001_2
+        type: DockerPush
+        configuration:
+          affinityGroup: S_DockerPush_5946_001
+          targetRepository: test-automation-docker-local
+          autoPublishBuildInfo: true
+          inputSteps:
+            - name: S_DockerPush_5946_001_1
+          outputResources:
+            - name: S_DockerPush_5946_001_BuildInfo
+          integrations:
+            - name: s_artifactory
+      - name: S_DockerPush_5946_001_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_DockerPush_5946_001_2
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            # Calling artifactory search to find the step artifacts that got pushed as part of
+            # the previous step to artifactory. Then, fetching from that list the step artifacts
+            # paths and sha256s that are needed for calling the pipelines stepArtifacts API
+            - fileStepArtifacts=$(jfrog rt search "*/dockerpush_5946/${run_id}/*" | jq -r '.[] | "\(.path) \(.props.sha256 | first )"')
+            - fileStepArtifactsArray=($fileStepArtifacts)
+            - fileStepArtifactPath1=${fileStepArtifactsArray[0]}
+            - fileStepArtifacSha1=${fileStepArtifactsArray[1]}
+            - echo $fileStepArtifacSha1
+            - echo $fileStepArtifactPath1
+            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath1}&artifactSha=${fileStepArtifacSha1}&artifactType=artifact\")"
+            - echo $stepArtifact
+            - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
+            - echo $stepArtifactSha
+            - if [ "$stepArtifactSha" != "$fileStepArtifacSha1" ]; then return 1; fi
+            - fileStepArtifactPath2=${fileStepArtifactsArray[2]}
+            - fileStepArtifacSha2=${fileStepArtifactsArray[3]}
+            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath2}&artifactSha=${fileStepArtifacSha2}&artifactType=artifact\")"
+            - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
+            - if [ "$stepArtifactSha" != "$fileStepArtifacSha2" ]; then return 1; fi
+            - fileStepArtifactPath3=${fileStepArtifactsArray[2]}
+            - fileStepArtifacSha3=${fileStepArtifactsArray[3]}
+            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath3}&artifactSha=${fileStepArtifacSha3}&artifactType=artifact\")"
+            - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
+            - if [ "$stepArtifactSha" != "$fileStepArtifacSha3" ]; then return 1; fi
+          onComplete:
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
