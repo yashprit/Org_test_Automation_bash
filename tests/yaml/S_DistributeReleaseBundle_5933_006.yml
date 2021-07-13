@@ -1,0 +1,44 @@
+resources:
+  - name: S_DistributeReleaseBundle_5933_006_ReleaseBundle_1
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_DistributeReleaseBundle_5933_006_ReleaseBundle_2
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_DistributeReleaseBundle_5933_006_ReleaseBundle_3
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_DistributeReleaseBundle_5933_006_DistributionRule
+    type: DistributionRule
+    configuration:
+      sourceDistribution: s_distribution
+      serviceName: "*"
+      siteName: "*"
+      cityName: "*"
+      countryCodes:
+        - "*"
+
+pipelines:
+  - name: pipeline_S_DistributeReleaseBundle_5933_006
+    configuration:
+      outputResources:
+        - name: S_DistributeReleaseBundle_5933_006_ReleaseBundle_3
+    steps:
+      - name: S_DistributeReleaseBundle_5933_006
+        type: DistributeReleaseBundle
+        configuration:
+          dryRun: true
+          inputResources:
+            - name: S_DistributeReleaseBundle_5933_006_DistributionRule
+            - name: S_DistributeReleaseBundle_5933_006_ReleaseBundle_1
+          outputResources:
+            - name: S_DistributeReleaseBundle_5933_006_ReleaseBundle_2

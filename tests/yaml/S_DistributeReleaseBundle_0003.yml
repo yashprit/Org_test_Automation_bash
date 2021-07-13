@@ -1,0 +1,98 @@
+resources:
+  - name: S_DistributeReleaseBundle_0003_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_DistributeReleaseBundle_0003_ReleaseBundle_1
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_DistributeReleaseBundle_0003_ReleaseBundle_2
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_DistributeReleaseBundle_0003_DistributionRule
+    type: DistributionRule
+    configuration:
+      sourceDistribution: s_distribution
+      serviceName: "*"
+      siteName: "*"
+      cityName: "*"
+      countryCodes:
+        - "*"
+
+pipelines:
+  - name: pipeline_S_DistributeReleaseBundle_0003
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: "${run_id}"
+    steps:
+      - name: S_DistributeReleaseBundle_0003_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_DistributeReleaseBundle_0003_BuildInfo
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_DistributeReleaseBundle_0003.txt
+            - jfrog rt upload S_DistributeReleaseBundle_0003.txt test-automation-generic-local
+            - jfrog rt build-publish ${JFROG_CLI_BUILD_NAME} ${JFROG_CLI_BUILD_NUMBER}
+            - write_output S_DistributeReleaseBundle_0003_BuildInfo buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_DistributeReleaseBundle_0003_2
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: false
+          sign: true
+          inputResources:
+            - name: S_DistributeReleaseBundle_0003_BuildInfo
+          outputResources:
+            - name: S_DistributeReleaseBundle_0003_ReleaseBundle_1
+      - name: S_DistributeReleaseBundle_0003_3
+        type: DistributeReleaseBundle
+        configuration:
+          dryRun: false
+          inputResources:
+            - name: S_DistributeReleaseBundle_0003_ReleaseBundle_1
+            - name: S_DistributeReleaseBundle_0003_DistributionRule
+          outputResources:
+            - name: S_DistributeReleaseBundle_0003_ReleaseBundle_2
+      - name: S_DistributeReleaseBundle_0003_4
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_DistributeReleaseBundle_0003_ReleaseBundle_1
+            - name: S_DistributeReleaseBundle_0003_ReleaseBundle_2
+        execution:
+          onExecute:
+            - echo "Deleting distribution..."
+            - distributionUrl="$res_S_DistributeReleaseBundle_0003_ReleaseBundle_2_sourceDistribution_url"
+            - releaseBundleName=$(find_resource_variable S_DistributeReleaseBundle_0003_ReleaseBundle_2 name)
+            - releaseBundleVersion=$(find_resource_variable S_DistributeReleaseBundle_0003_ReleaseBundle_2 version)
+            - "echo '{\"dry_run\": false, \"distribution_rules\": [{\"site_name\": \"*\"}], \"on_success\": \"delete\"}' > $step_tmp_dir/distribution_payload"
+            - curlOptions="--silent --retry 3 -w %{http_code} -u $res_S_DistributeReleaseBundle_0003_ReleaseBundle_2_sourceDistribution_user:$res_S_DistributeReleaseBundle_0003_ReleaseBundle_2_sourceDistribution_apikey"
+            - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
+            - "status=$(curl $curlOptions -H 'Content-Type: application/json' -XPOST \"$distributionUrl/api/v1/distribution/$releaseBundleName/$releaseBundleVersion/delete\" --output $step_tmp_dir/response -T \"$step_tmp_dir/distribution_payload\")"
+            - response=$(cat $step_tmp_dir/response)
+            - if [ $status -gt 299 ]; then return 1; fi
+            - idFromResponse=$(echo $response | tr -d '[:space:]' | grep -o "\"id\":.*")
+            - trackerId=$(echo ${idFromResponse:5} | cut -d "," -f 1)
+            - if [ -z "$trackerId" ]; then return 1; fi
+            - rm -f \$step_tmp_dir/response
+            - distributionStatus="$(curl -XGET $curlOptions $distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion/distribution/$trackerId)"
+            - distributionStatus="$(curl -XGET $curlOptions $distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion/distribution/$trackerId --output /dev/null)"
+            - while [ $distributionStatus -lt 299 ]; do sleep 5 && distributionStatus="$(curl -XGET $curlOptions $distributionUrl/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion/distribution/$trackerId --output /dev/null)"; done
+            - echo "Checking resources..."
+            - if [ "$res_S_DistributeReleaseBundle_0003_ReleaseBundle_1_name" != "$res_S_DistributeReleaseBundle_0003_ReleaseBundle_2_name" ]; then return 1; fi
+            - if [ "$res_S_DistributeReleaseBundle_0003_ReleaseBundle_1_version" != "$res_S_DistributeReleaseBundle_0003_ReleaseBundle_2_version" ]; then return 1; fi
+            - if [ "$res_S_DistributeReleaseBundle_0003_ReleaseBundle_1_isSigned" != "$res_S_DistributeReleaseBundle_0003_ReleaseBundle_2_isSigned" ]; then return 1; fi

@@ -1,0 +1,33 @@
+resources:
+  - name: S_CreateReleaseBundle_5933_002_Aql_1
+    type: Aql
+    configuration:
+      sourceArtifactory: s_artifactory
+      query: items.find({"@build.name":{"$eq":"buildName"}})
+  - name: S_CreateReleaseBundle_5933_002_Aql_2
+    type: Aql
+    configuration:
+      sourceArtifactory: s_artifactory
+      query: items.find({"@build.name":{"$eq":"buildName"}})
+  - name: S_CreateReleaseBundle_5933_002_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_CreateReleaseBundle_5933_002
+    configuration:
+      inputResources:
+        - name: S_CreateReleaseBundle_5933_002_Aql_1
+    steps:
+      - name: S_CreateReleaseBundle_5933_002
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: name
+          releaseBundleVersion: version
+          inputResources:
+            - name: S_CreateReleaseBundle_5933_002_Aql_2
+          outputResources:
+            - name: S_CreateReleaseBundle_5933_002_ReleaseBundle
