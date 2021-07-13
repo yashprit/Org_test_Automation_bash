@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "totals": {
+    "success": 1,
+    "failure": 0
+  },
+  "files": [
+    {
+      "source": "http://host:8082/artifactory/var/opt/jfrog/pipelines/data/pipeline_S_MvnBuild_5849_001/runs/1118/steps/S_MvnBuild_5849_001_1/2268/dependencyState/resources/S_MvnBuild_5849_001_GitRepo/tests/mvn/pom.xml",
+      "target": "http://host:8082/artifactory/org/jfrog/test/maventest/2.17-SNAPSHOT/maventest-2.17-SNAPSHOT.pom",
+      "sha256": ""
+    }
+  ],
+  "projectKey": "default"
+}
