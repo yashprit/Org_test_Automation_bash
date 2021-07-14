@@ -1,0 +1,21 @@
+resources:
+  - name: S_XrayScan_0002_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_XrayScan_0002_PropertyBag
+    type: PropertyBag
+    configuration:
+      propertyOne: 1
+
+pipelines:
+  - name: pipeline_S_XrayScan_0002
+    steps:
+      - name: S_XrayScan_0002
+        type: XrayScan
+        configuration:
+          inputResources:
+            - name: S_XrayScan_0002_BuildInfo
+            - name: S_XrayScan_0002_PropertyBag

@@ -1,0 +1,33 @@
+resources:
+  - name: S_XrayScan_5933_002_BuildInfo_input1
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_XrayScan_5933_002_BuildInfo_input2
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_XrayScan_5933_002_BuildInfo_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_XrayScan_5933_002
+    configuration:
+      inputResources:
+        - name: S_XrayScan_5933_002_BuildInfo_input1
+    steps:
+      - name: S_XrayScan_5933_002
+        type: XrayScan
+        configuration:
+          inputResources:
+            - name: S_XrayScan_5933_002_BuildInfo_input2
+          outputResources:
+            - name: S_XrayScan_5933_002_BuildInfo_output

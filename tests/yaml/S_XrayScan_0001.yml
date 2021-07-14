@@ -1,0 +1,17 @@
+resources:
+  - name: S_XrayScan_0001_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_XrayScan_0001
+    steps:
+      - name: S_XrayScan_0001
+        type: XrayScan
+        configuration:
+          inputResources:
+            - name: S_XrayScan_0001_BuildInfo
+              newVersionOnly: true
