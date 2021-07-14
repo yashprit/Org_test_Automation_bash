@@ -62,7 +62,9 @@ pipelines:
             - if [ "$no_verify_ssl" == "true" ]; then curlOptions+=" --insecure"; fi
             - "curl $curlOptions -H 'Content-Type: application/json' -XGET -L \"$int_s_distribution_url/api/v1/release_bundle/$releaseBundleName/$releaseBundleVersion\" --output $step_tmp_dir/response --dump-header $step_tmp_dir/response_header"
             - "artifactSha=$(cat $step_tmp_dir/response_header | grep 'X-Checksum-Sha256: ' | awk '{print $2}' | tr -d '[:space:]')"
+            - echo $artifactSha
             - artifactPath="${releaseBundleName}/${releaseBundleVersion}"
+            - echo $artifactPath
             - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=releaseBundle\")"
             - echo $stepArtifact
             - echo "Deleting release bundle..."
