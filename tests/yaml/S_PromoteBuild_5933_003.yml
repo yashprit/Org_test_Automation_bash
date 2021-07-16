@@ -1,0 +1,26 @@
+resources:
+  - name: S_PromoteBuild_5933_003_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+  - name: S_PromoteBuild_5933_003_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+
+pipelines:
+  - name: pipeline_S_PromoteBuild_5933_003
+    configuration:
+      outputResources:
+        - name: S_PromoteBuild_5933_003_output
+    steps:
+      - name: S_PromoteBuild_5933_003
+        type: PromoteBuild
+        configuration:
+          targetRepository: repository
+          inputResources:
+            - name: S_PromoteBuild_5933_003_input

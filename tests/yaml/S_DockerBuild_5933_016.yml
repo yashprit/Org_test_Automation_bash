@@ -1,0 +1,53 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerBuild_5933_016_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_DockerBuild_5933_016_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/DockerBuild_5933_016
+
+pipelines:
+  - name: pipeline_S_DockerBuild_5933_016
+    steps:
+      - name: S_DockerBuild_5933_016_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_DockerBuild_5933_016_FileSpec
+        execution:
+          onExecute:
+            - echo "FROM hello-world" > Dockerfile
+            - jfrog rt upload Dockerfile test-automation-generic-local/DockerBuild_5933_016_Dockerfile
+
+  - name: pipeline_S_DockerBuild_5933_016_2
+    configuration:
+      inputResources:
+        - name: S_DockerBuild_5933_016_GitRepo
+        - name: S_DockerBuild_5933_016_FileSpec
+    steps:
+      - name: S_DockerBuild_5933_016_2
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_DockerBuild_5933_016
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933
+          dockerImageTag: "${run_id}"
+          dockerFileName: DockerBuild_5933_016_Dockerfile
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+          onComplete:
+            - docker rmi "${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933:${run_id}" || true

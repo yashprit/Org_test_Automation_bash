@@ -1,0 +1,66 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_XrayScan_5933_005_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_XrayScan_5933_005_BuildInfo_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: 'name'
+      buildNumber: '1'
+  - name: S_XrayScan_5933_005_BuildInfo_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_XrayScan_5933_005_1
+    steps:
+      - name: S_XrayScan_5933_005_1
+        type: GoBuild
+        configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
+          inputResources:
+            - name: S_XrayScan_5933_005_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go/HelloWorld"
+          resolverRepo: test-automation-go-virtual
+      - name: S_XrayScan_5933_005_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_XrayScan_5933_005_1
+          outputResources:
+            - name: S_XrayScan_5933_005_BuildInfo_input
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true
+  - name: pipeline_S_XrayScan_5933_005_2
+    configuration:
+      inputResources:
+        - name: S_XrayScan_5933_005_BuildInfo_input
+      outputResources:
+        - name: S_XrayScan_5933_005_BuildInfo_output
+    steps:
+      - name: S_XrayScan_5933_005_3
+        type: XrayScan
+        configuration:
+          affinityGroup: one
+      - name: S_XrayScan_5933_005_4
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_XrayScan_5933_005_3
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog rt curl -XDELETE "/api/build/${res_S_XrayScan_5933_005_BuildInfo_input_buildName}?buildNumbers=${res_S_XrayScan_5933_005_BuildInfo_input_buildNumber}&artifacts=1"

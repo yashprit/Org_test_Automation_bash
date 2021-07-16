@@ -1,0 +1,54 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_NpmBuild_5933_007_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_NpmBuild_5933_007_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/myFile
+
+pipelines:
+  - name: pipeline_S_NpmBuild_5933_007_1
+    steps:
+      - name: S_NpmBuild_5933_007_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_NpmBuild_5933_007_GitRepo
+          outputResources:
+            -  name: S_NpmBuild_5933_007_FileSpec
+        execution:
+          onExecute:
+            - cd $(find_resource_variable S_NpmBuild_5933_007_GitRepo resourcePath)/tests/npm
+            - jfrog rt upload package.json test-automation-generic-local/package.json
+            - write_output S_NpmBuild_5933_007_FileSpec pattern="test-automation-generic-local/package.json"
+
+  - name: pipeline_S_NpmBuild_5933_007_2
+    configuration:
+      inputResources:
+        - name: S_NpmBuild_5933_007_GitRepo
+        - name: S_NpmBuild_5933_007_FileSpec
+      integrations:
+        - name: s_artifactory
+    steps:
+      - name: S_NpmBuild_5933_007_2
+        type: NpmBuild
+        configuration:
+          sourceLocation: "tests/npm"
+          resolverRepo: test-automation-npm-remote
+        execution:
+          onStart:
+            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
+            - rm package.json # removing the file to be replaced using the FileSpec
+            - ls
+            - popd

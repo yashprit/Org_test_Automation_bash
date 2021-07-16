@@ -1,0 +1,27 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoBuild_5933_002_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_GoBuild_5933_002
+    configuration:
+      integrations:
+        - name: s_artifactory
+    steps:
+      - name: S_GoBuild_5933_002
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoBuild_5933_002_GitRepo
+          integrations:
+            - name: s_GoBuild_5933_artifactory
+          sourceLocation: "tests/Go/HelloWorld"
+          resolverRepo: test-automation-go-virtual

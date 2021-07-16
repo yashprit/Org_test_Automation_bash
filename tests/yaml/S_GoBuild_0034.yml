@@ -20,13 +20,8 @@ pipelines:
             - name: S_GoBuild_0034_GitRepo
           integrations:
             - name: s_artifactory
-          sourceLocation: "tests/Go"
+          sourceLocation: "tests/Go/HelloWorld"
           resolverRepo: test-automation-go-virtual
-        execution:
-          onStart:
-            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
-            - go get -insecure
-            - popd
       - name: S_GoBuild_0034_2
         type: Bash
         configuration:
@@ -43,7 +38,7 @@ pipelines:
             - if [ "${S_GoBuild_0034_1_buildName}" != "${JFROG_CLI_BUILD_NAME}" ]; then return 1; fi
             - if [ "${S_GoBuild_0034_1_isPromoted}" != "false" ]; then return 1; fi
             - if [ "${S_GoBuild_0034_1_outputStateName}" != "output" ]; then return 1; fi
-            - if [ "${S_GoBuild_0034_1_sourceLocation}" != "tests/Go" ]; then return 1; fi
+            - if [ "${S_GoBuild_0034_1_sourceLocation}" != "tests/Go/HelloWorld" ]; then return 1; fi
             - restore_run_files output output
             - ls output
             - if [ ! -f "output/S_GoBuild_0034_1" ]; then return 1; fi

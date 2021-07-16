@@ -1,0 +1,45 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoBuild_5933_007_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_GoBuild_5933_007_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/myFile.txt
+
+pipelines:
+  - name: pipeline_S_GoBuild_5933_007_1
+    steps:
+      - name: S_GoBuild_5933_007_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_GoBuild_5933_007_FileSpec
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_GoBuild_5933_007.txt
+            - jfrog rt upload S_GoBuild_5933_007.txt test-automation-generic-local
+            - write_output S_GoBuild_5933_007_FileSpec pattern="test-automation-generic-local/S_GoBuild_5933_007.txt"
+  - name: pipeline_S_GoBuild_5933_007_2
+    configuration:
+      inputResources:
+        - name: S_GoBuild_5933_007_GitRepo
+        - name: S_GoBuild_5933_007_FileSpec
+      integrations:
+        - name: s_artifactory
+    steps:
+      - name: S_GoBuild_5933_007_2
+        type: GoBuild
+        configuration:
+          sourceLocation: "tests/Go/HelloWorld"
+          resolverRepo: test-automation-go-virtual

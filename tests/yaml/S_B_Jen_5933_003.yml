@@ -1,0 +1,10 @@
+pipelines:
+  - name: pipeline_S_B_Jen_5933_003
+    configuration:
+      integrations:
+        - name: S_B_Jenkins
+    steps:
+      - name: S_B_Jen_5933_003
+        type: Jenkins
+        configuration:
+          jenkinsJobName: testPipeline

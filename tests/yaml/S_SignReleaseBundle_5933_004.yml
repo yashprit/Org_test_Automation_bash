@@ -1,0 +1,33 @@
+resources:
+  - name: S_SignReleaseBundle_5933_004_input
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_SignReleaseBundle_5933_004_output_1
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+  - name: S_SignReleaseBundle_5933_004_output_2
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_SignReleaseBundle_5933_004
+    configuration:
+      outputResources:
+        - name: S_SignReleaseBundle_5933_004_output_1
+    steps:
+      - name: S_SignReleaseBundle_5933_004
+        type: SignReleaseBundle
+        configuration:
+          inputResources:
+            - name: S_SignReleaseBundle_5933_004_input
+          outputResources:
+            - name: S_SignReleaseBundle_5933_004_output_2

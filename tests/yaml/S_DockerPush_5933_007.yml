@@ -1,0 +1,63 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerPush_5933_007_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_DockerPush_5933_007_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_DockerPush_5933_007
+    configuration:
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_BUILD_NUMBER: ${run_id}
+      outputResources:
+        - name: S_DockerPush_5933_007_BuildInfo
+    steps:
+      - name: S_DockerPush_5933_007_1
+        type: DockerBuild
+        configuration:
+          affinityGroup: S_DockerPush_5933_007
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerpush_5933
+          dockerImageTag: ${run_id}
+          inputResources:
+            - name: S_DockerPush_5933_007_GitRepo
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - artifactory_registry_url=$(echo "$int_s_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - cd $res_S_DockerPush_5933_007_GitRepo_resourcePath
+            - echo "FROM hello-world" > Dockerfile
+      - name: S_DockerPush_5933_007_2
+        type: DockerPush
+        configuration:
+          affinityGroup: S_DockerPush_5933_007
+          targetRepository: test-automation-docker-local
+          autoPublishBuildInfo: true
+          inputSteps:
+            - name: S_DockerPush_5933_007_1
+          integrations:
+            - name: s_artifactory
+      - name: S_DockerPush_5933_007_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_DockerPush_5933_007_2
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - if [ "${res_S_DockerPush_5933_007_BuildInfo_buildName}" != "${JFROG_CLI_BUILD_NAME}"]; then return 1; fi
+            - if [ "${res_S_DockerPush_5933_007_BuildInfo_buildNumber}" != "${run_id}"]; then return 1; fi
+            - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"

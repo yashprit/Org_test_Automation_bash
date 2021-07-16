@@ -20,14 +20,10 @@ pipelines:
             - name: S_GoBuild_0026_GitRepo
           integrations:
             - name: s_artifactory
-          sourceLocation: "tests/Go"
+          sourceLocation: "tests/Go/HelloWorld"
           resolverRepo: test-automation-go-virtual
           outputFile: "myFile"
         execution:
-          onStart:
-            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
-            - go get -insecure
-            - popd
           onSuccess:
             - if [ ! -f "$step_workspace_dir/GoBuild/myFile" ]; then echo "TEST FAILED"; add_run_variables TEST_FAILED=true; return 1; fi
       - name: S_GoBuild_0026_2

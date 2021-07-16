@@ -1,0 +1,39 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GoPublishBinary_5933_003_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_GoPublishBinary_5933_003_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: pipeline_S_GoPublishBinary_5933_003
+    configuration:
+      outputResources:
+        - name: S_GoPublishBinary_5933_003_BuildInfo
+    steps:
+      - name: S_GoPublishBinary_5933_003_1
+        type: GoBuild
+        configuration:
+          inputResources:
+            - name: S_GoPublishBinary_5933_003_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/Go/HelloWorld"
+          resolverRepo: test-automation-go-virtual
+      - name: S_GoPublishBinary_5933_003_2
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: S_GoPublishBinary_5933_003_1
+          targetRepository: test-automation-go-local
+          autoPublishBuildInfo: true

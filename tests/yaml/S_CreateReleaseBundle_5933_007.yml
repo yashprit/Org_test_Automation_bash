@@ -1,0 +1,47 @@
+resources:
+  - name: S_CreateReleaseBundle_5933_007_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+      buildName: name
+      buildNumber: '1'
+  - name: S_CreateReleaseBundle_5933_007_ReleaseBundle
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: s_distribution
+      name: name
+      version: '1'
+
+pipelines:
+  - name: pipeline_S_CreateReleaseBundle_5933_007_1
+    steps:
+      - name: S_CreateReleaseBundle_5933_007_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_CreateReleaseBundle_5933_007_BuildInfo
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_CreateReleaseBundle_5933_007.txt
+            - jfrog rt upload S_CreateReleaseBundle_5933_007.txt test-automation-generic-local  --build-name=S_CreateReleaseBundle_5933_007 --build-number=1
+            - jfrog rt build-publish S_CreateReleaseBundle_5933_007 1
+            - write_output S_CreateReleaseBundle_5933_007_BuildInfo buildName=S_CreateReleaseBundle_5933_007 buildNumber=1
+
+  - name: pipeline_S_CreateReleaseBundle_5933_007_2
+    configuration:
+      inputResources:
+        - name: S_CreateReleaseBundle_5933_007_BuildInfo
+      outputResources:
+        - name: S_CreateReleaseBundle_5933_007_ReleaseBundle
+    steps:
+      - name: S_CreateReleaseBundle_5933_007_2
+        type: CreateReleaseBundle
+        configuration:
+          releaseBundleName: ${JFROG_CLI_BUILD_NAME}
+          releaseBundleVersion: ${run_id}
+          dryRun: true
+        execution:
+          onSuccess:
+            - jfrog rt curl -XDELETE "/api/build/S_CreateReleaseBundle_5933_007?buildNumbers=1&artifacts=1"

@@ -1,0 +1,32 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_NpmPublish_5933_007_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_NpmPublish_5933_007
+    steps:
+      - name: S_NpmPublish_5933_007_1
+        type: NpmBuild
+        configuration:
+          inputResources:
+            - name: S_NpmPublish_5933_007_GitRepo
+          integrations:
+            - name: s_artifactory
+          sourceLocation: "tests/npm"
+          repositoryName: test-automation-npm-remote
+      - name: S_NpmPublish_5933_007_2
+        type: NpmPublish
+        configuration:
+          repositoryName: test-automation-npm-local
+          inputSteps:
+            - name: S_NpmPublish_5933_007_1
+          integrations:
+            - name: s_artifactory

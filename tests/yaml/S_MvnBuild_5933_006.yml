@@ -1,0 +1,36 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_MvnBuild_5933_006_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_MvnBuild_5933_006_FileSpec_1
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/test
+  - name: S_MvnBuild_5933_006_FileSpec_2
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: test-automation-generic-local/test
+
+pipelines:
+  - name: pipeline_S_MvnBuild_5933_006
+    configuration:
+      inputResources:
+        - name: S_MvnBuild_5933_006_FileSpec_1
+    steps:
+      - name: S_MvnBuild_5933_006
+        type: MvnBuild
+        configuration:
+          inputResources:
+            - name: S_MvnBuild_5933_006_GitRepo
+            - name: S_MvnBuild_5933_006_FileSpec_2
+          integrations:
+            - name: s_artifactory

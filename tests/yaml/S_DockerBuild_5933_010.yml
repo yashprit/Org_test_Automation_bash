@@ -1,0 +1,23 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerBuild_5933_010_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_S_DockerBuild_5933_010
+    steps:
+      - name: S_DockerBuild_5933_010_1
+        type: DockerBuild
+        configuration:
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerbuild_5933
+          inputResources:
+            - name: S_DockerBuild_5933_010_GitRepo
+          integrations:
+            - name: s_artifactory

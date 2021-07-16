@@ -1,0 +1,67 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_HelmDeploy_5933_014_FileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      pattern: "test-automation-helm-local/S_HelmDeploy_5933_014/*"
+
+  - name: S_HelmDeploy_5933_014_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: pipeline_S_HelmDeploy_5933_014
+    steps:
+      - name: S_HelmDeploy_5933_014_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+          inputResources:
+            - name: S_HelmDeploy_5933_014_GitRepo
+              trigger: false
+          outputResources:
+            - name: S_HelmDeploy_5933_014_FileSpec
+        execution:
+          onExecute:
+            - jfrog rt upload ${res_S_HelmDeploy_5933_014_GitRepo_resourcePath}/tests/core/helmdeploy/simplehelm-0.3.0.tgz "test-automation-helm-local/S_HelmDeploy_5933_014/simplehelm-0.3.0.tgz"
+            - jfrog rt upload ${res_S_HelmDeploy_5933_014_GitRepo_resourcePath}/tests/core/helmdeploy/index.yaml "test-automation-helm-local/S_HelmDeploy_5933_014/index.yaml"
+            - write_output S_HelmDeploy_5933_014_FileSpec recursive=true
+
+  - name: pipeline_S_HelmDeploy_5933_014_2
+    configuration:
+      environmentVariables:
+        readOnly:
+          RELEASE_NAME: "s-helmdeploy-5933-014-${run_id}"
+          k8s_namespace: "pipe-master-pool"
+      inputResources:
+        - name: S_HelmDeploy_5933_014_FileSpec
+    steps:
+      - name: S_HelmDeploy_5933_014_2
+        type: HelmDeploy
+        configuration:
+          integrations:
+            - name: s_artifactory
+            - name: s_kubernetes
+          chartPath: "S_HelmDeploy_5933_014"
+          chartName: simplehelm
+          chartVersion: 0.3.0
+          helmVersion: 3
+          releaseName: ${RELEASE_NAME}
+          flags: "--wait --timeout 900s -n ${k8s_namespace} --set image.repository=trriplejay/simplehelm --set image.tag=latest"
+          valueFilePaths:
+            - values.yaml
+          lint: true
+          lintFlags: "--strict"
+          test: true
+          testFlags: "-n ${k8s_namespace}"
+        execution:
+          onComplete:
+            - helm3 delete ${RELEASE_NAME} --namespace ${k8s_namespace}

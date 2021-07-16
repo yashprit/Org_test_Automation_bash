@@ -25,13 +25,8 @@ pipelines:
             - name: S_GoPublishBinary_0033_GitRepo
           integrations:
             - name: s_artifactory
-          sourceLocation: "tests/Go"
+          sourceLocation: "tests/Go/HelloWorld"
           resolverRepo: test-automation-go-virtual
-        execution:
-          onStart:
-            - pushd $(find_resource_variable $inputGitRepoResourceName resourcePath)/$(find_step_configuration_value sourceLocation)
-            - go get -insecure
-            - popd
       - name: S_GoPublishBinary_0033_2
         type: GoPublishBinary
         configuration:
