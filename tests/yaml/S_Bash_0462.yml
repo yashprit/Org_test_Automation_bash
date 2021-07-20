@@ -15,7 +15,7 @@ pipelines:
         execution:
           onExecute:
             - |
-              [[ "$step_image_name:$step_image_tag" == "docker.bintray.io/jfrog/pipelines-u18cpp:9.0.0" ]]
+              [[ "$step_image_name:$step_image_tag" == "releases-docker.jfrog.io/jfrog/pipelines-u18cpp:9.0.0" ]]
             - clang --version
             - gcc --version
             - |
