@@ -1,0 +1,8 @@
+pipelines:
+  - name: S_Bash_6152_0002
+    steps:
+      - name: S_Bash_6152_0002
+        type: Bash
+        execution:
+          onExecute:
+            - docker run --rm --privileged alpine ls
