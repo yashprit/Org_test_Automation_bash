@@ -8,4 +8,5 @@ pipelines:
             - name: s_artifactory
         execution:
           onExecute:
+            - echo "{}" > output.json
             - save_artifact_info releaseBundle output.json
