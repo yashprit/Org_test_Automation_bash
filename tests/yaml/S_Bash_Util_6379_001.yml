@@ -1,0 +1,23 @@
+pipelines:
+  - name: pipeline_S_Bash_Util_6379_001
+    steps:
+      - name: S_Bash_Util_6379_001_1
+        type: Bash
+        execution:
+          onExecute:
+            - add_run_variables var1="one"
+            - add_run_variables var2="two"
+
+      - name: S_Bash_Util_6379_001_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_6379_001_1
+        execution:
+          onExecute:
+            - "stepVariables=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' ${pipelines_api_url}/stepVariables?runIds=${run_id})"
+            - if [ "$(echo "$stepVariables" | jq 'length')" != "1" ]; then exit 1; fi
+            - runVariables=$(echo "$stepVariables" | jq '.[0].variables.runVariables')
+            - if [ "$(echo "$runVariables" | jq 'length')" != "2" ]; then exit 1; fi
+            - if [ "$(echo "$runVariables" | jq -r '.[0].key')" != "var1" ]; then exit 1; fi
+            - if [ "$(echo "$runVariables" | jq -r '.[1].key')" != "var2" ]; then exit 1; fi
