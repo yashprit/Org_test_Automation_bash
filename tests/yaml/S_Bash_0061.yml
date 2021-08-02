@@ -7,4 +7,4 @@ pipelines:
           onExecute:
             - java --version
           onFailure:
-            - echo "Job well done!"
+            - echo "Job well done! in onFailure"
