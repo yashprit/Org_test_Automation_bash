@@ -1,0 +1,14 @@
+pipelines:
+  - name: S_Bash_Util_6380_011
+    steps:
+      - name: S_Bash_Util_6380_011_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - configure_jfrog_cli --artifactory-url $int_s_artifactory_url --user $int_s_artifactory_user --apikey $int_s_artifactory_apikey --server-name test_config
+            - jfrog config show test_config
+            - cleanup_jfrog_cli --server-name test_config
+            - if jfrog config show test_config; then exit 1; fi

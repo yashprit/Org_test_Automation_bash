@@ -1,0 +1,40 @@
+pipelines:
+  - name: S_Bash_Util_6380_005
+    steps:
+      - name: S_Bash_Util_6380_005_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "Testing..."
+      - name: S_Bash_Util_6380_005_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_6380_005_1
+        execution:
+          onExecute:
+            - mkdir test_directory
+            - echo ${run_id} > test_directory/my_file_1
+            - add_run_files test_directory test_directory
+      - name: S_Bash_Util_6380_005_3
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_6380_005_1
+        execution:
+          onExecute:
+            - mkdir test_directory
+            - echo ${run_id} > test_directory/my_file_2
+            - add_run_files test_directory test_directory
+      - name: S_Bash_Util_6380_005_4
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_6380_005_2
+            - name: S_Bash_Util_6380_005_3
+        execution:
+          onExecute:
+            - restore_run_files test_directory test_directory
+            - ls -R test_directory
+            - if [ ! -f "test_directory/my_file_1" ]; then exit 1; fi
+            - if [ ! -f "test_directory/my_file_2" ]; then exit 1; fi
