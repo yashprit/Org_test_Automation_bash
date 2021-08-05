@@ -1,10 +1,10 @@
 GitHub:
   Org_test_Automation:
-    path: deepikasl/Org_test_Automation
+    path: jfbetapipeorg/Org_test_Automation
   Org_test_Automation_bash:
-    path: deepikasl/Org_test_Automation_bash
+    path: jfbetapipeorg/Org_test_Automation_bash
   Org_test_Automation_PowerShell:
-    path: deepikasl/Org_test_Automation_PowerShell
+    path: jfbetapipeorg/Org_test_Automation_PowerShell
 
 GitHubEnterprise:
   Org_test_Automation:
