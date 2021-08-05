@@ -5,8 +5,7 @@ resources:
   - name: repo
     type: GitRepo
     configuration:
-#       gitProvider: s_gitHub
-      gitProvider: deepikaGithub
+      gitProvider: s_gitHub
       path: {{ .Values.GitHub.Org_test_Automation.path }}
       
 pipelines:
@@ -300,7 +299,6 @@ pipelines:
           onExecute:
             - echo "executing Step_S_Bash_Generic_5858_0026"
             - printenv
-            - sleep 60
             - |
               if [ -z "$step_Step_S_Bash_Generic_5858_0025_statusName" ];
               then
