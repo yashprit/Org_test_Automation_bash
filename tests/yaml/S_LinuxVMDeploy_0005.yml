@@ -34,11 +34,12 @@ pipelines:
         configuration:
           integrations:
             - name: s_VM_DEPLOY
-          vmEnvironmentVariables:
-            - "step_name=${step_name}"
-            - "run_id=${run_id}"
           inputResources:
             - name: myVM
             - name: LinuxVMDeploy_buildInfo
-          deployCommand: "ls ~/${step_name}/${run_id}/LinuxVMDeploy_buildInfo.txt || exit 1"
           sshUser: ubuntu
+          scripts:
+            - name: command1
+              context: "buildNode"
+              commands:
+                - "echo 'command1'"

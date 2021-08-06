@@ -5,19 +5,18 @@ resources:
       sourceArtifactory: s_artifactory
       pattern: "test-automation-generic-local/LinuxVMDeploy_fileSpec.txt"
 
-  - name: myVMError
+  - name: myVM
     type: VmCluster
     configuration:
       sshKey: s_VM_DEPLOY_SSHKEY
       targets:
         - ${int_s_VM_DEPLOY_VM_ADDRESS_0}
-        - ${int_s_VM_DEPLOY_VM_ADDRESS_ERROR_0}
-        - ${int_s_VM_DEPLOY_VM_ADDRESS_ERROR_1}
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_1}
 
 pipelines:
-  - name: S_LinuxVMDeploy_0003
+  - name: S_LinuxVMDeploy_5950_0009
     steps:
-      - name: S_LinuxVMDeploy_0003_1
+      - name: S_LinuxVMDeploy_5950_0009_1
         type: Bash
         configuration:
           integrations:
@@ -28,18 +27,23 @@ pipelines:
           onExecute:
             - echo "File spec ${run_id}" > LinuxVMDeploy_fileSpec.txt
             - jfrog rt upload LinuxVMDeploy_fileSpec.txt test-automation-generic-local
-      # Check that deploy artifacts are uploaded to non-default dir.
-      - name: S_LinuxVMDeploy_0003_2
+      - name: S_LinuxVMDeploy_5950_0009_2
         type: jfrog_dev/LinuxVMDeploy
         configuration:
           integrations:
             - name: s_VM_DEPLOY
           inputResources:
-            - name: myVMError
+            - name: myVM
             - name: LinuxVMDeploy_fileSpec
           sshUser: ubuntu
           scripts:
             - name: command1
               context: "targetCluster"
               commands:
-                - "echo 'command1 runs'"
+                - 'echo "command1:line1"'
+                - 'echo "command1:line2"'
+            - name: command2
+              context: "targetCluster"
+              commands:
+                - 'echo "command2:line1"'
+                - 'echo "command2:line2"'

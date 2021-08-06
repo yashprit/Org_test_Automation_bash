@@ -65,9 +65,12 @@ pipelines:
           inputResources:
             - name: myVM
             - name: LinuxVMDeploy_releaseBundle
-          deployCommand: "ls ~/${step_name}/${run_id}/${pipeline_name}/${run_id}/test-automation-generic-local/LinuxVMDeploy_buildInfo.txt || exit 1"
-          postDeployCommand: "ls ~/${step_name}/${run_id}/${pipeline_name}/${run_id}/test-automation-generic-local/LinuxVMDeploy_buildInfo.txt || exit 1"
           sshUser: ubuntu
+          scripts:
+            - name: command1
+              context: "targetCluster"
+              commands:
+                - 'ls ~/${step_name}/${run_id}/${pipeline_name}/${run_id}/test-automation-generic-local/LinuxVMDeploy_buildInfo.txt || exit 1'
 
       # Clean up releaseBundle
       - name: S_LinuxVMDeploy_0006_4

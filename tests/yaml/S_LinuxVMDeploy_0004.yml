@@ -36,7 +36,10 @@ pipelines:
           inputResources:
             - name: myVMError
             - name: LinuxVMDeploy_fileSpec
-          deployCommand: "echo 'deployCommand runs.'"
-          rollbackCommand: "echo 'rollBackCommand runs.'"
           sshUser: ubuntu
           fastFail: false
+          scripts:
+            - name: command1
+              context: "targetCluster"
+              commands:
+                - "echo 'command1 runs'"

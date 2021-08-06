@@ -1,0 +1,25 @@
+resources:
+  - name: myVM
+    type: VmCluster
+    configuration:
+      sshKey: s_VM_DEPLOY_SSHKEY
+      targets:
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_0}
+        - ${int_s_VM_DEPLOY_VM_ADDRESS_1}
+
+pipelines:
+  - name: S_LinuxVMDeploy_5950_0019
+    steps:
+      - name: S_LinuxVMDeploy_5950_0019_1
+        type: jfrog_dev/LinuxVMDeploy
+        configuration:
+          integrations:
+            - name: s_VM_DEPLOY
+          inputResources:
+            - name: myVM
+          sshUser: ubuntu
+          scripts:
+            - name: command1
+              context: "targetCluster"
+              commands:
+                - 'echo "this command should not run" || exit 1'
