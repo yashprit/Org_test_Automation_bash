@@ -1,4 +1,5 @@
-- name: Pipeline_S_CWF_6596_0001
+pipelines:
+  - name: Pipeline_S_CWF_6596_0001
     steps:
       - name: step_S_CWF_6596_0001
         type: Bash
