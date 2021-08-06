@@ -31,7 +31,8 @@ pipelines:
       - name: S_LinuxVMDeploy_0002_2
         type: jfrog_dev/LinuxVMDeploy
         configuration:
-          dry_run: "false"
+          environmentVariables:
+            dry_run: "false"
           integrations:
             - name: s_VM_DEPLOY
           targetDirectory: "~/test/${step_name}/${run_id}"
