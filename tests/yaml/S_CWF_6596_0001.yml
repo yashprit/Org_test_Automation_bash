@@ -1,0 +1,24 @@
+pipelines:
+  - name: Pipeline_S_CWF_6596_0001
+    steps:
+      - name: step_S_CWF_6596_0001
+        type: Bash
+        execution:
+          onExecute:
+            - echo "executing step_S_CWF_6596_0001"
+
+      - name: step_S_CWF_6596_0002
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: step_S_CWF_6596_0001
+        execution:
+          onExecute:
+            - echo "executing step_S_CWF_6596_0002"
+            - printenv
+            - |
+              if [ -z "$step_step_S_CWF_6596_0001_statusName" ];
+              then
+                 echo "env step_Step_S_Bash_Generic_5858_0025_statusName is not present"
+                 exit 1
+              fi
