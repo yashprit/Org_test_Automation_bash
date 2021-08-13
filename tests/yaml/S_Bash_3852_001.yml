@@ -1,0 +1,21 @@
+pipelines:
+  - name: S_Bash_3852_001
+    configuration:
+      environmentVariables:
+        readOnly:
+          pipevar1: 1
+          pipevar2: 2
+    steps:
+      - name: S_Bash_3852_001_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "done"
+      - name: S_Bash_3852_001_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_3852_001_1
+        execution:
+          onExecute:
+            - echo "done"
