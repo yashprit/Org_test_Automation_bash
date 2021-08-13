@@ -51,7 +51,7 @@ pipelines:
             - artifactSha=$(echo $buildInfoFileData | jq -r '.checksums.sha256')
             - if [ -z "${project_key}" ]; then project="default"; else project="${project_key}"; fi
             - artifactPath="${project}/${JFROG_CLI_BUILD_NAME}/${run_id}"
-            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=buildInfo\")"
+            - "stepArtifact=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=buildInfo\")"
             - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
             - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
             - if [ "$stepArtifactSha" != "$artifactSha" ]; then return 1; fi

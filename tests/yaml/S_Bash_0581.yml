@@ -10,5 +10,5 @@ pipelines:
             - echo "project_id $project_id"
             - if [ "$project_name" != "default" ]; then exit 1; fi
             - if [ "$project_key" != "" ]; then exit 1; fi
-            - "project=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' ${pipelines_api_url}/projects/${project_id})"
+            - "project=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' ${pipelines_api_url}/projects/${project_id})"
             - if [ $(echo "$project" | jq -r '.name') != "$project_name" ]; then exit 1; fi

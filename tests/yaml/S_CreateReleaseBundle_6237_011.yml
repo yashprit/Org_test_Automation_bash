@@ -65,7 +65,7 @@ pipelines:
             - echo $artifactSha
             - artifactPath="${releaseBundleName}/${releaseBundleVersion}"
             - echo $artifactPath
-            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=releaseBundle\")"
+            - "stepArtifact=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=releaseBundle\")"
             - echo $stepArtifact
             - echo "Deleting release bundle..."
             - jfrog config add distribution --overwrite --insecure-tls=$no_verify_ssl --dist-url $int_s_distribution_url --user $int_s_distribution_user --apikey $int_s_distribution_apikey --interactive=false

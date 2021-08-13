@@ -54,7 +54,7 @@ pipelines:
             - artifact=$(echo $buildInfo | jq '.modules[]  | select(.id == "npm-example:0.0.1") | .artifacts[0]')
             - artifactPath=$(echo $artifact | jq -r '.path')
             - artifactSha=$(echo $artifact | jq -r '.sha256')
-            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=artifact\")"
+            - "stepArtifact=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${artifactPath}&artifactSha=${artifactSha}&artifactType=artifact\")"
             - jfrog rt curl -XDELETE "/api/build/${JFROG_CLI_BUILD_NAME}?buildNumbers=${run_id}&artifacts=1"
             - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
             - if [ "$stepArtifactSha" != "$artifactSha" ]; then return 1; fi
