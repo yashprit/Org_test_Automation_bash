@@ -68,19 +68,19 @@ pipelines:
             - fileStepArtifacSha1=${fileStepArtifactsArray[1]}
             - echo $fileStepArtifacSha1
             - echo $fileStepArtifactPath1
-            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath1}&artifactSha=${fileStepArtifacSha1}&artifactType=artifact\")"
+            - "stepArtifact=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath1}&artifactSha=${fileStepArtifacSha1}&artifactType=artifact\")"
             - echo $stepArtifact
             - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
             - echo $stepArtifactSha
             - if [ "$stepArtifactSha" != "$fileStepArtifacSha1" ]; then return 1; fi
             - fileStepArtifactPath2=${fileStepArtifactsArray[2]}
             - fileStepArtifacSha2=${fileStepArtifactsArray[3]}
-            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath2}&artifactSha=${fileStepArtifacSha2}&artifactType=artifact\")"
+            - "stepArtifact=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath2}&artifactSha=${fileStepArtifacSha2}&artifactType=artifact\")"
             - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
             - if [ "$stepArtifactSha" != "$fileStepArtifacSha2" ]; then return 1; fi
             - fileStepArtifactPath3=${fileStepArtifactsArray[2]}
             - fileStepArtifacSha3=${fileStepArtifactsArray[3]}
-            - "stepArtifact=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath3}&artifactSha=${fileStepArtifacSha3}&artifactType=artifact\")"
+            - "stepArtifact=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' \"${pipelines_api_url}/stepArtifacts?artifactPath=${fileStepArtifactPath3}&artifactSha=${fileStepArtifacSha3}&artifactType=artifact\")"
             - stepArtifactSha=$(echo $stepArtifact | jq -r '.artifactSha')
             - if [ "$stepArtifactSha" != "$fileStepArtifacSha3" ]; then return 1; fi
           onComplete:
