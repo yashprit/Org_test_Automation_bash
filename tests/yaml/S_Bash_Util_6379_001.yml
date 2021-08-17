@@ -15,7 +15,7 @@ pipelines:
             - name: S_Bash_Util_6379_001_1
         execution:
           onExecute:
-            - "stepVariables=$(curl -sS -H \"Authorization: apiToken $builder_api_token\" -H 'Content-Type: application/json' ${pipelines_api_url}/stepVariables?runIds=${run_id})"
+            - "stepVariables=$(curl -sS -H \"Authorization: Bearer $builder_api_token\" -H 'Content-Type: application/json' ${pipelines_api_url}/stepVariables?runIds=${run_id})"
             - if [ "$(echo "$stepVariables" | jq 'length')" != "1" ]; then exit 1; fi
             - runVariables=$(echo "$stepVariables" | jq '.[0].variables.runVariables')
             - if [ "$(echo "$runVariables" | jq 'length')" != "2" ]; then exit 1; fi
