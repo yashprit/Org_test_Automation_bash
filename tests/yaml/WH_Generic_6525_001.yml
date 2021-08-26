@@ -6,7 +6,7 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: {{ .Values.Projects.FirstProjectKey }}_s_github_duplicate_6525_1
-      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
       branches:
         include: {{gitBranch}}
       buildOn:
