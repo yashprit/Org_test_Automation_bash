@@ -19,6 +19,8 @@ pipelines:
             - source /root/.gvm/scripts/gvm
             - gvm list
             - gvm use 1.15
+            - echo $step_image_tag
+            - echo $(go version) 
             - |
               [[ "$(go version)" == *"$step_image_tag"* ]]
               
