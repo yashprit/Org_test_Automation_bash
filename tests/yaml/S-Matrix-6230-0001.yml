@@ -1,0 +1,43 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_Matrix_6230_0001_gitrepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: S_Matrix_6230_0001_normalStepPipeline
+    steps:
+      - name: normalStep
+        type: Bash
+        configuration:
+          nodePool: Automation_AWS_S-Matrix-6230-0001
+        execution:
+          onExecute:
+            - echo "Normal Step"
+  - name: S_Matrix_6230_0001_matrixStepPipeline
+    steps:
+      - name: matrixStep
+        type: Matrix
+        configuration:
+          nodePool: Automation_AWS_S-Matrix-6230-0001
+          multiNode: true
+          runtime:
+            type: host
+        stepletMultipliers:
+          fastFail: true
+          environmentVariables:
+            - foo: 1
+              bar: echo bar1
+            - foo: 2
+              bar: echo bar2
+        execution:
+          onExecute:
+            - echo $foo
+            - sleep 5;
+            - $bar
