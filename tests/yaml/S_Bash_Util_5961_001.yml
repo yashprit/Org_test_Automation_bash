@@ -1,0 +1,405 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_Bash_Util_5961_001_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_Bash_Util_5961_001_GitRepo_1
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        pullRequestCreate: true
+        commit: false
+      pullRequestSourceBranches:
+        include: ^S_Bash_Util_5961$
+
+  - name: S_Bash_Util_5961_001_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+      pullRequestSourceBranches:
+        include: ^S_Bash_Util_5961$
+
+  - name: S_Bash_Util_5961_002_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+      pullRequestSourceBranches:
+        exclude: ^S_Bash_Util_5961$
+
+  - name: S_Bash_Util_5961_003_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+      pullRequestTargetBranches:
+        include: ^{{gitBranch}}$
+
+  - name: S_Bash_Util_5961_004_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+      pullRequestTargetBranches:
+        exclude: ^{{gitBranch}}$
+
+  - name: S_Bash_Util_5961_005_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+
+  - name: S_Bash_Util_5961_006_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+        exclude: ^{{gitBranch}}$
+
+  - name: S_Bash_Util_5961_007_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+      pullRequestSourceBranches:
+        include: ^{{gitBranch}}$
+      pullRequestTargetBranches:
+        include: ^{{gitBranch}}$
+
+  - name: S_Bash_Util_5961_008_GitRepo_2
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      buildOn:
+        commit: false
+      branches:
+        include: ^{{gitBranch}}$
+      pullRequestSourceBranches:
+        include: ^S_Bash_Util_5961$
+      pullRequestTargetBranches:
+        include: ^S_Bash_Util_5961$
+
+pipelines:
+  - name: pipeline_S_Bash_Util_5961_001_openPullRequest
+    steps:
+      - name: S_Bash_Util_5961_001_openPullRequest
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo
+              trigger: false
+          integrations:
+            - name: s_gitHub
+        execution:
+          onExecute:
+            - |
+              curl -X GET -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: token ${int_s_gitHub_token}" \
+              "https://api.github.com/repos/${res_S_Bash_Util_5961_001_GitRepo_path}/pulls?state=all&sort=updated&direction=desc&head=${res_S_Bash_Util_5961_001_GitRepo_path%%/*}:S_Bash_Util_5961&base={{gitBranch}}" \
+              -o pull_requests.json
+            - pull_request_number=$(cat pull_requests.json | jq -r '.[0].number')
+            - 'echo "Pull request: $pull_request_number"'
+            - |
+              if [ "$pull_request_number" != "null" ]; then
+                status_code=$(curl -X PATCH -H "Accept: application/vnd.github.v3+json" \
+                -H "Authorization: token ${int_s_gitHub_token}" \
+                -w %{http_code} --silent -o /dev/null \
+                "https://api.github.com/repos/${res_S_Bash_Util_5961_001_GitRepo_path}/pulls/${pull_request_number}" \
+                -d "{\"title\":\"${run_id}\",\"state\":\"open\"}")
+                if [ "$status_code" != 200 ]; then
+                  echo "Status code: $status_code"
+                  pull_request_number="null" # Can't reopen (likely branch deleted)
+                fi
+              fi
+            - cd $res_S_Bash_Util_5961_001_GitRepo_resourcePath
+            - git checkout -b S_Bash_Util_5961
+            - echo "$run_id" > test.txt
+            - git add test.txt
+            - git commit -m "$run_id"
+            - origin=$(git config remote.origin.url | sed "s#ssh://##" | sed "s#https://##" | sed "s#:#/#" | sed "s#git@##")
+            - host=$(echo "$origin" | cut -d '/' -f 1 )
+            - git remote set-url origin https://$origin
+            - git config --global credential.helper store
+            - echo "https://token:${int_s_gitHub_token}@${host}" > ~/.git-credentials
+            - git push origin S_Bash_Util_5961 -f
+            - rm ~/.git-credentials
+            - |
+              if [ "$pull_request_number" == "null" ]; then
+                curl -X POST -H "Accept: application/vnd.github.v3+json" \
+                -H "Authorization: token ${int_s_gitHub_token}" \
+                "https://api.github.com/repos/${res_S_Bash_Util_5961_001_GitRepo_path}/pulls" \
+                -d "{\"head\":\"S_Bash_Util_5961\",\"base\":\"{{gitBranch}}\",\"title\":\"${run_id}\"}"
+              fi
+
+  - name: pipeline_S_Bash_Util_5961_001_closePullRequest
+    steps:
+      - name: S_Bash_Util_5961_001_closePullRequest
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo
+              trigger: false
+          integrations:
+            - name: s_gitHub
+        execution:
+          onExecute:
+            - |
+              curl -X GET -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: token ${int_s_gitHub_token}" \
+              "https://api.github.com/repos/${res_S_Bash_Util_5961_001_GitRepo_path}/pulls?state=all&sort=updated&direction=desc&head=${res_S_Bash_Util_5961_001_GitRepo_path%%/*}:S_Bash_Util_5961&base={{gitBranch}}" \
+              -o pull_requests.json
+            - pull_request_number=$(cat pull_requests.json | jq -r '.[0].number')
+            - |
+              if [ "$pull_request_number" != "null" ]; then
+                curl -X PATCH -H "Accept: application/vnd.github.v3+json" \
+                -H "Authorization: token ${int_s_gitHub_token}" \
+                "https://api.github.com/repos/${res_S_Bash_Util_5961_001_GitRepo_path}/pulls/${pull_request_number}" \
+                -d '{"state":"closed"}'
+              fi
+
+  - name: S_Bash_Util_5961_001
+    steps:
+      - name: S_Bash_Util_5961_001_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_001_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_001_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_001_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_001_GitRepo_2_isPullRequest" != "true" ]; then return 1; fi
+
+  - name: S_Bash_Util_5961_002
+    steps:
+      - name: S_Bash_Util_5961_002_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_002_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_002_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_002_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_002_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_002_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_002_GitRepo_2_isPullRequest" == "true" ]; then return 1; fi
+
+  - name: S_Bash_Util_5961_003
+    steps:
+      - name: S_Bash_Util_5961_003_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_003_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_003_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_003_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_003_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_003_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_003_GitRepo_2_isPullRequest" != "true" ]; then return 1; fi
+
+  - name: S_Bash_Util_5961_004
+    steps:
+      - name: S_Bash_Util_5961_004_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_004_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_004_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_004_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_004_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_004_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_004_GitRepo_2_isPullRequest" == "true" ]; then return 1; fi
+
+  - name: S_Bash_Util_5961_005
+    steps:
+      - name: S_Bash_Util_5961_005_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_005_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_005_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_005_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_005_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_005_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_005_GitRepo_2_isPullRequest" != "true" ]; then return 1; fi
+
+  - name: S_Bash_Util_5961_006
+    steps:
+      - name: S_Bash_Util_5961_006_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_006_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_006_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_006_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_006_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_006_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_006_GitRepo_2_isPullRequest" == "true" ]; then return 1; fi
+
+  - name: S_Bash_Util_5961_007
+    steps:
+      - name: S_Bash_Util_5961_007_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_007_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_007_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_007_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_007_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_007_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_007_GitRepo_2_isPullRequest" == "true" ]; then return 1; fi
+
+  - name: S_Bash_Util_5961_008
+    steps:
+      - name: S_Bash_Util_5961_008_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_001_GitRepo_1
+              trigger: false
+          outputResources:
+            - name: S_Bash_Util_5961_008_GitRepo_2
+        execution:
+          onExecute:
+            - replicate_resource S_Bash_Util_5961_001_GitRepo_1 S_Bash_Util_5961_008_GitRepo_2 --match-settings
+
+      - name: S_Bash_Util_5961_008_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_Bash_Util_5961_008_GitRepo_2
+              trigger: false
+          inputSteps:
+            - name: S_Bash_Util_5961_008_1
+        execution:
+          onExecute:
+            - if [ "$res_S_Bash_Util_5961_008_GitRepo_2_isPullRequest" == "true" ]; then return 1; fi
