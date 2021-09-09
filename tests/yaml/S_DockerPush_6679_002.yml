@@ -1,0 +1,46 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_DockerPush_6679_002_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_DockerPush_6679_002_buildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: S_DockerPush_6679_002
+    steps:
+      - name: S_DockerPush_6679_002_1
+        type: DockerBuild
+        execution:
+          onStart:
+            - echo 'failing on purpose'
+            - exit 1
+        configuration:
+          dockerImageName: foo/bar/baz
+          dockerImageTag: ${run_id}
+          affinityGroup: S_DockerPush_6679_002
+          dockerFileLocation: "tests/docker"
+          inputResources:
+            - name: S_DockerPush_6679_002_GitRepo
+          integrations:
+            - name: s_artifactory
+      - name: S_DockerPush_6679_002_2
+        type: DockerPush
+        configuration:
+          autoPublishBuildInfo: true
+          affinityGroup: S_DockerPush_6679_002
+          targetRepository: test-automation-docker-local
+          inputSteps:
+            - name: S_DockerPush_6679_002_1
+          integrations:
+            - name: s_artifactory
+          outputResources:
+            - name: S_DockerPush_6679_002_buildInfo
