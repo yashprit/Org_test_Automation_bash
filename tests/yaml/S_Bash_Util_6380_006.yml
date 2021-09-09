@@ -1,0 +1,18 @@
+pipelines:
+  - name: S_Bash_Util_6380_006
+    steps:
+      - name: S_Bash_Util_6380_006_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo ${run_id} > test_file
+            - add_run_files test_file test_file
+      - name: S_Bash_Util_6380_006_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_6380_006_1
+        execution:
+          onExecute:
+            - restore_run_files test_file test_file
+            - restore_run_files test_file test_file2

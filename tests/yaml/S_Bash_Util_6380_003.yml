@@ -1,0 +1,21 @@
+pipelines:
+  - name: S_Bash_Util_6380_003
+    steps:
+      - name: S_Bash_Util_6380_003_1
+        type: Bash
+        execution:
+          onExecute:
+            - mkdir test_directory
+            - echo ${run_id} > test_directory/run.env
+            - add_run_files test_directory test_directory
+      - name: S_Bash_Util_6380_003_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_6380_003_1
+        execution:
+          onExecute:
+            - restore_run_files test_directory test_directory
+            - ls -R test_directory
+            - contents="$(cat test_directory/run.env)"
+            - if [ "$contents" != "$run_id" ]; then exit 1; fi

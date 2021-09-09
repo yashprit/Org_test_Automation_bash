@@ -1,0 +1,15 @@
+pipelines:
+  - name: S_Bash_Util_6380_009
+    steps:
+      - name: S_Bash_Util_6380_009_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+            - name: BSU_ArtifactoryToken
+        execution:
+          onExecute:
+            - configure_jfrog_cli --artifactory-url $int_s_artifactory_url --access-token $int_BSU_ArtifactoryToken_token --server-name test_config
+            - jfrog config show test_config
+          onComplete:
+            - cleanup_jfrog_cli --server-name test_config

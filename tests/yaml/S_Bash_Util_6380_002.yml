@@ -1,0 +1,26 @@
+pipelines:
+  - name: S_Bash_Util_6380_002
+    steps:
+      - name: S_Bash_Util_6380_002_1
+        type: Bash
+        execution:
+          onExecute:
+            - mkdir run_state
+            - echo ${run_id} > run_state/test_file
+            - tar -czf run.tar.gz -C run_state .
+            - if [ "$no_verify_ssl"  == "true" ]; then curl_opts="--insecure"; fi
+            - "curl -H 'Content-Type: application/json; charset=utf-8' -H \"Authorization: Bearer $builder_api_token\" -o url_output \ -XGET \"${pipelines_api_url}/runs/${run_id}/artifactUrl?artifactName=${run_id}.tar.gz\" $curl_opts"
+            - headers="$(jq -r '.putOpts' url_output)"
+            - url="$(jq -r '.put' url_output)"
+            - eval "curl $headers -XPUT \"$url\" -T run.tar.gz $curl_opts"
+      - name: S_Bash_Util_6380_002_2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: S_Bash_Util_6380_002_1
+        execution:
+          onExecute:
+            - restore_run_files test_file test_file
+            - ls -R test_file
+            - contents="$(cat test_file)"
+            - if [ "$contents" != "$run_id" ]; then exit 1; fi

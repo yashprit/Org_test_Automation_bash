@@ -1,0 +1,17 @@
+pipelines:
+  - name: S_Bash_Util_6380_008
+    steps:
+      - name: S_Bash_Util_6380_008_1
+        type: Bash
+        configuration:
+          environmentVariables:
+            USE_LOCAL_JFROG_CLI: "true"
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - configure_jfrog_cli --artifactory-url $int_s_artifactory_url --user $int_s_artifactory_user --apikey $int_s_artifactory_apikey --server-name test_config
+            - jfrog rt config show test_config
+            - jfrog rt ping --server-id test_config
+          onComplete:
+            - cleanup_jfrog_cli --server-name test_config
