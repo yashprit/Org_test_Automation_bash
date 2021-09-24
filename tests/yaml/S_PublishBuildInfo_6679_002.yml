@@ -1,0 +1,25 @@
+resources:
+  - name: S_PublishBuildInfo_6679_002_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: S_PublishBuildInfo_6679_002
+    steps:
+      - name: S_PublishBuildInfo_6679_002_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onStart:
+            - echo 'failing on purpose'
+            - exit 1
+      - name: S_PublishBuildInfo_6679_002_2
+        type: PublishBuildInfo
+        configuration:
+          outputResources:
+            - name: S_PublishBuildInfo_6679_002_output
+          inputSteps:
+            - name: S_PublishBuildInfo_6679_002_1

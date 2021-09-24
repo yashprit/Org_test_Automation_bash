@@ -1,0 +1,34 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_GradleBuild_6679_002_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+  - name: S_GradleBuild_6679_002_BuildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+pipelines:
+  - name: S_GradleBuild_6679_002
+    steps:
+      - name: S_GradleBuild_6679_002_1
+        type: GradleBuild
+        execution:
+          onStart:
+            - echo 'failing on purpose'
+            - exit 1
+        configuration:
+          sourceLocation: "tests/gradle"
+          autoPublishBuildInfo: true
+          gradleCommand: "hello"
+          inputResources:
+            - name: S_GradleBuild_6679_002_GitRepo
+          outputResources:
+            - name: S_GradleBuild_6679_002_BuildInfo
+          integrations:
+            - name: s_artifactory

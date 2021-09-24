@@ -1,0 +1,52 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: S_XrayScan_6679_001_BuildInfo_input
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+  - name: S_XrayScan_6679_001_BuildInfo_output
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: s_artifactory
+
+pipelines:
+  - name: S_XrayScan_6679_001
+    steps:
+      - name: S_XrayScan_6679_001_1
+        type: Bash
+        configuration:
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - echo "${run_id}" > S_XrayScan_6679_001.txt
+            - $jfrog_cli_path rt upload S_XrayScan_6679_001.txt test-automation-generic-local
+            - add_run_files /tmp/jfrog/. jfrog
+            - add_run_variables buildName=${JFROG_CLI_BUILD_NAME} buildNumber=${JFROG_CLI_BUILD_NUMBER}
+      - name: S_XrayScan_6679_001_2
+        type: PublishBuildInfo
+        configuration:
+          forceXrayScan: false
+          outputResources:
+            - name: S_XrayScan_6679_001_BuildInfo_output
+          inputSteps:
+            - name: S_XrayScan_6679_001_1
+      - name: S_XrayScan_6679_001_3
+        type: XrayScan
+        configuration:
+          inputResources:
+            - name: S_XrayScan_6679_001_BuildInfo_output
+      - name: S_XrayScan_6679_001_4
+        type: Bash
+        configuration:
+          inputResources:
+            - name: S_XrayScan_6679_001_BuildInfo_output
+          inputSteps:
+            - name: S_XrayScan_6679_001_3
+          integrations:
+            - name: s_artifactory
+        execution:
+          onExecute:
+            - jfrog rt curl -XDELETE "/api/build/${res_S_XrayScan_6679_001_BuildInfo_output_buildName}?buildNumbers=${res_S_XrayScan_6679_001_BuildInfo_output_buildNumber}&artifacts=1"
