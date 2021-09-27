@@ -23,7 +23,7 @@ pipelines:
         execution:
           onExecute:
             - cd $res_script_repo1_resourcePath
-            - python -m py_compile tests/core/sampleExecutionFile/calc.py
+            - python3 -m py_compile tests/core/sampleExecutionFile/calc.py
             - pip install --upgrade pip
             - hash -d pip
             - pip install pytest

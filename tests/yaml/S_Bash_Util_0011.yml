@@ -22,7 +22,7 @@ pipelines:
             - pushd $res_repo_pipe_resourcePath
             - touch test.xml
             - echo "hello frog" > test.xml
-            - python -m py_compile tests/core/sampleExecutionFile/calc.py
+            - python3 -m py_compile tests/core/sampleExecutionFile/calc.py
             - pip install --upgrade pip
             - hash -d pip
             - pip install pytest
