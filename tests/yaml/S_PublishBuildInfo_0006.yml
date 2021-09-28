@@ -2,7 +2,7 @@ resources:
   - name: S_PublishBuildInfo_0006_output
     type: BuildInfo
     configuration:
-      sourceArtifactory: s_artifactory
+      sourceArtifactory: second_s_artifactory
       buildName: 'name'
       buildNumber: '1'
 
@@ -13,7 +13,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: s_artifactory
+            - name: second_s_artifactory
         execution:
           onExecute:
             - echo "${run_id}" > S_PublishBuildInfo_0006.txt
@@ -31,7 +31,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: s_artifactory
+            - name: second_s_artifactory
           inputResources:
             - name: S_PublishBuildInfo_0006_output
         execution:
