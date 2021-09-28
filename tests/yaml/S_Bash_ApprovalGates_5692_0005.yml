@@ -8,7 +8,7 @@ pipelines:
             approvers:
               - approvalGateApprover
             notifications:
-              - integrationName: Bash_ApprovalGates_slack
+              - integrationName: first_Bash_ApprovalGates_slack
             timeoutSeconds: 15
         execution:
           onExecute:
