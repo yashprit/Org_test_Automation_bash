@@ -11,13 +11,13 @@ pipelines:
               auto:
                 language: go
                 versions:
-                  - 1.14.4
+                  - 1.15
         execution:
           onExecute:
             - |
-              [[ "$step_image_name:$step_image_tag" == "releases-docker.jfrog.io/jfrog/pipelines-u20go:1.14.4" ]]
+              [[ "$step_image_name:$step_image_tag" == "releases-docker.jfrog.io/jfrog/pipelines-u20go:1.15" ]]
             - source /root/.gvm/scripts/gvm
             - gvm list
-            - gvm use 1.14
+            - gvm use 1.15
             - |
               [[ "$(go version)" == *"$step_image_tag"* ]]
