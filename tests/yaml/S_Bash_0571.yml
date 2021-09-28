@@ -11,10 +11,10 @@ pipelines:
               auto:
                 language: node
                 versions:
-                  - 8.17.0
+                  - 12
         execution:
           onExecute:
             - |
-              [[ "$step_image_name:$step_image_tag" == "releases-docker.jfrog.io/jfrog/pipelines-c8node:8.17.0" ]]
+              [[ "$step_image_name:$step_image_tag" == "releases-docker.jfrog.io/jfrog/pipelines-c8node:12" ]]
             - |
               [[ "$(node --version)" == *"$step_image_tag"* ]]

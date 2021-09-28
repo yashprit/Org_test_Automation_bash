@@ -11,10 +11,10 @@ pipelines:
               auto:
                 language: node
                 versions:
-                  - 10.21.0
+                  - 14
         execution:
           onExecute:
             - |
-              [[ "$step_image_name:$step_image_tag" == "releases-docker.jfrog.io/jfrog/pipelines-u18node:10.21.0" ]]
+              [[ "$step_image_name:$step_image_tag" == "releases-docker.jfrog.io/jfrog/pipelines-u18node:14" ]]
             - |
               [[ "$(node --version)" == *"$step_image_tag"* ]]
