@@ -30,3 +30,7 @@ BitbucketServer:
 
 Kubernetes:
   namespace: pipe-master-pool
+
+Projects:
+  FirstProjectKey: proj1
+  SecondProjectKey: proj2

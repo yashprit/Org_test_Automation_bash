@@ -1,0 +1,28 @@
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: WH_Generic_6525_001_gitrepo
+    type: GitRepo
+    configuration:
+      gitProvider: {{ .Values.Projects.FirstProjectKey }}_s_github_duplicate_6525_1
+      path: {{ .Values.GitHub.Org_test_Automation_bash.path }}
+      branches:
+        include: {{gitBranch}}
+      buildOn:
+        pullRequestCreate: true
+        pullRequestClose: true
+
+pipelines:
+  - name: WH_Generic_6525_001
+    steps:
+      - name: WH_Generic_6525_001_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: WH_Generic_6525_001_gitrepo
+        execution:
+          onExecute:
+            - pushd ${res_WH_Generic_6525_001_gitrepo_resourcePath}
+            - ls -la
+            - popd
